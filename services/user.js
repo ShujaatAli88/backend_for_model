@@ -1,0 +1,1 @@
+const userSchema = require("../models/users.model.js")
