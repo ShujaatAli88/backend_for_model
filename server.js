@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const cors = require("cors")
 const bodyParser = require("body-parser")
+const userRouter = require("./controllers/user")
 
 const port = 3000 || process.env.PORT;
 
@@ -21,6 +22,9 @@ app.use(cors());
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+
+// Api call for the user registration and login
+app.use("/api", userRouter)
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
