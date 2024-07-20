@@ -79,11 +79,62 @@ async function verifyCode(body) {
     await user.save();
 
     // Log the user in (you might want to generate a session or token here)
-    return user; // Return user or token
+    const token = generateToken(process.env.JWT_SECRET);
+
+    return {
+        _id: user._id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        token,
+    };
+    // return user; // Return user or token
 }
 
+// Method to resend verification
+async function resendVerificationCode(body) {
+    const { email } = body;
+
+    const user = await userSchema.findOne({ email });
+    if (!user) {
+        throw new Error("User not found");
+    }
+
+    const newVerificationCode = generateVerificationCode();
+    user.verificationCode = newVerificationCode;
+    user.codeUsed = false; // Reset the codeUsed flag
+    await user.save();
+
+    await sendVerificationCode(email, newVerificationCode);
+
+    return { message: "Verification code resent" };
+}
+
+// Function for user login
 async function loginUser(body) {
     const { email, password } = body
+
+
+    const user = await userSchema.findOne({ email });
+    if (!user) {
+        throw new Error("Invalid email or password");
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+        throw new Error("Incorrect password");
+    }
+
+    // Generate a token
+    const token = generateToken(process.env.JWT_SECRET);
+
+    return {
+        _id: user._id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        token,
+    };
 }
 
-module.exports = { registerUser, loginUser, verifyCode }
+module.exports = { registerUser, loginUser, verifyCode, resendVerificationCode }

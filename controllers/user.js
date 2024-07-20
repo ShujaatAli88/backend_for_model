@@ -26,4 +26,26 @@ router.post("/verify-code", (req, res) => {
     }
 })
 
+router.post("/resend-code", (req, res) => {
+    const body = req.body
+    try {
+        const user = userService.resendVerificationCode(body)
+        res.status(200).json({ message: "Verification code resent successfully", user })
+    }
+    catch (err) {
+        res.status(500).json({ message: err.message })
+    }
+})
+
+router.post("/login", (req, res) => {
+    const body = req.body
+    try {
+        const user = userService.loginUser(body)
+        res.status(200).json({ message: "User logged in successfully", user })
+    }
+    catch (err) {
+        res.status(500).json({ message: err.message })
+    }
+})
+
 module.exports = router
