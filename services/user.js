@@ -10,7 +10,10 @@ function generateVerificationCode() {
 // function to send the verification code to the user's email
 async function sendVerificationCode(email, code) {
     let transporter = nodemailer.createTransport({
-        service: 'gmail',
+        // service: 'gmail',
+        host: 'smtp.gmail.com',
+        port: 465,
+        secure: true,
         auth: {
             user: process.env.USER_EMAIL,
             pass: process.env.PASSWORD
@@ -36,6 +39,7 @@ async function registerUser(body) {
 
     if (!emailRegex.test(email)) {
         throw new Error("Invalid email format")
+        // console.log("Invalid email format")
     }
 
     const emailExist = await userSchema.findOne({ email })
