@@ -12,13 +12,13 @@ async function sendVerificationCode(email, code) {
     let transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
-            user: 'your-email@gmail.com',
-            pass: 'your-email-password'
+            user: process.env.USER_EMAIL,
+            pass: process.env.PASSWORD
         }
     });
 
     let info = await transporter.sendMail({
-        from: '"Your Service" <your-email@gmail.com>',
+        from: `"Your Service" <${process.env.USER_EMAIL}>`,
         to: email,
         subject: 'Your Verification Code',
         text: `Your verification code is: ${code}`
@@ -32,7 +32,7 @@ const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 // Function to register a new user
 async function registerUser(body) {
-    const { firstName, lastname, email, password } = body
+    const { firstName, lastName, email, password } = body
 
     if (!emailRegex.test(email)) {
         throw new Error("Invalid email format")
@@ -49,12 +49,12 @@ async function registerUser(body) {
     const id = user.length === 0 ? "00001" : ("00000" + String(parseInt(user[0]._id) + 1)).slice(-4);
 
     const verificationCode = generateVerificationCode()
-    const newUser = new userSchema({ _id: id, firstName, lastname, email, password: hashedPassword, verificationCode })
+    const newUser = new userSchema({ _id: id, firstName, lastName, email, password: hashedPassword, verificationCode })
 
     await newUser.save()
 
     await sendVerificationCode(email, verificationCode)
-
+    console.log(newUser)
     return newUser
 }
 
@@ -125,8 +125,26 @@ async function loginUser(body) {
         throw new Error("Incorrect password");
     }
 
-    // Generate a token
     const token = generateToken(process.env.JWT_SECRET);
+    if (!user.codeUsed) {
+        const newVerificationCode = generateVerificationCode();
+        user.verificationCode = newVerificationCode;
+        user.codeUsed = false; // Reset the codeUsed flag
+        await user.save();
+
+        await sendVerificationCode(email, newVerificationCode);
+
+        return {
+            message: "Verification code resent",
+            _id: user._id,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email,
+            token,
+        };
+    }
+
+    // Generate a token
 
     return {
         _id: user._id,
