@@ -1,10 +1,18 @@
 const userSchema = require("../models/users.model.js")
 const bcrypt = require("bcrypt")
 const nodemailer = require('nodemailer');
+const jwt = require('jsonwebtoken')
 
 // function to generate the verification code
 function generateVerificationCode() {
     return Math.floor(100000000000 + Math.random() * 900000000000).toString();
+}
+
+// Method to generate token
+const generateToken = (id) => {
+    return jwt.sign({ id }, process.env.JWT_SECRET, {
+        expiresIn: '30d',
+    })
 }
 
 // function to send the verification code to the user's email
@@ -129,7 +137,9 @@ async function loginUser(body) {
         throw new Error("Incorrect password");
     }
 
+    // Generate a token
     const token = generateToken(process.env.JWT_SECRET);
+
     if (!user.codeUsed) {
         const newVerificationCode = generateVerificationCode();
         user.verificationCode = newVerificationCode;
@@ -148,7 +158,6 @@ async function loginUser(body) {
         };
     }
 
-    // Generate a token
 
     return {
         _id: user._id,
