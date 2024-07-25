@@ -24,7 +24,7 @@ async function sendVerificationCode(email, code) {
         secure: true,
         auth: {
             user: process.env.USER_EMAIL,
-            pass: process.env.PASSWORD
+            pass: process.env.PASSWORD_FOR_APP
         }
     });
 
@@ -91,7 +91,7 @@ async function verifyCode(body) {
     await user.save();
 
     // Log the user in (you might want to generate a session or token here)
-    const token = generateToken(process.env.JWT_SECRET);
+    const token = generateToken(user._id);
 
     return {
         _id: user._id,
@@ -138,7 +138,7 @@ async function loginUser(body) {
     }
 
     // Generate a token
-    const token = generateToken(process.env.JWT_SECRET);
+    const token = generateToken(user._id);
 
     if (!user.codeUsed) {
         const newVerificationCode = generateVerificationCode();
