@@ -61,6 +61,7 @@ async function registerUser(body) {
     const id = user.length === 0 ? "00001" : ("00000" + String(parseInt(user[0]._id) + 1)).slice(-4);
 
     const verificationCode = generateVerificationCode()
+    // trialStartDate: new Date()
     const newUser = new userSchema({ _id: id, firstName, lastName, email, password: hashedPassword, verificationCode })
 
     await newUser.save()
@@ -88,6 +89,13 @@ async function verifyCode(body) {
 
     // Mark the code as used
     user.codeUsed = true;
+
+    // Start the trial period after successful verification
+    if (!user.trialStartDate) {
+        user.trialStartDate = new Date();
+        user.isTrialActive = true;
+    }
+
     await user.save();
 
     // Log the user in (you might want to generate a session or token here)

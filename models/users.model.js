@@ -11,10 +11,11 @@ const userSchema = mongoose.Schema({
         match: [/^\S+@\S+\.\S+$/, 'Please provide a valid email address']
     },
     password: { type: String, required: true, minlength: 8 },
-    // trialStartDate: { type: Date, default: Date.now },
-    trialRemainingDays: { type: Number, default: 30 },
+    // trialRemainingDays: { type: Number, default: 30 },
     verificationCode: { type: String }, // Field to store the 12-digit code
-    codeUsed: { type: Boolean, default: false } // Flag to check if the code has been used
+    codeUsed: { type: Boolean, default: false },
+    trialStartDate: { type: Date, default: Date.now },
+    isTrialActive: { type: Boolean, default: true } // Flag to check if the trial ended or started has been used
 },
     {
         timestamps: true

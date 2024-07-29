@@ -1,6 +1,7 @@
 const express = require("express")
 const router = express.Router()
 const userService = require("../services/user")
+const checkTrialPeriod = require("../middleware/trialPeriodCheckMiddleware")
 
 router.post("/register", async (req, res) => {
     const body = req.body
@@ -37,7 +38,7 @@ router.post("/resend-code", async (req, res) => {
     }
 })
 
-router.post("/login", async (req, res) => {
+router.post("/login", checkTrialPeriod, async (req, res) => {
     const body = req.body
     try {
         const user = await userService.loginUser(body)
