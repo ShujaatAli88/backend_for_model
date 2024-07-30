@@ -157,7 +157,7 @@ async function loginUser(body) {
         await sendVerificationCode(email, newVerificationCode);
 
         return {
-            message: "Verification code resent",
+            message: "Login successful, Verification code resent",
             _id: user._id,
             firstName: user.firstName,
             lastName: user.lastName,
@@ -173,6 +173,7 @@ async function loginUser(body) {
         lastName: user.lastName,
         email: user.email,
         token,
+        message: "Login successful"
     };
 }
 
