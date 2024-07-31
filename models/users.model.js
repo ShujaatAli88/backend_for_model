@@ -14,8 +14,8 @@ const userSchema = mongoose.Schema({
     // trialRemainingDays: { type: Number, default: 30 },
     verificationCode: { type: String }, // Field to store the 12-digit code
     codeUsed: { type: Boolean, default: false },
-    trialStartDate: { type: Date, default: Date.now },
-    isTrialActive: { type: Boolean, default: true } // Flag to check if the trial ended or started has been used
+    trialStartDate: { type: Date },
+    isTrialActive: { type: Boolean, default: false } // Flag to check if the trial ended or started has been used
 },
     {
         timestamps: true

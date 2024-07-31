@@ -11,9 +11,11 @@ function generateVerificationCode() {
 // Method to generate token
 const generateToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET, {
-        expiresIn: '30d',
+        expiresIn: '20m',
     })
 }
+
+
 
 // function to send the verification code to the user's email
 async function sendVerificationCode(email, code) {
@@ -38,6 +40,9 @@ async function sendVerificationCode(email, code) {
     console.log('Message sent: %s', info.messageId);
 }
 
+
+
+
 // regex to check for the correct email format
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
@@ -55,6 +60,9 @@ async function registerUser(body) {
         throw new Error("Email already exists")
     }
 
+    if (password.length < 8) {
+        throw new Error("Password must be at least 8 characters long")
+    }
     const hashedPassword = await bcrypt.hash(password, 10)
 
     const user = await userSchema.find({}).sort({ '_id': -1 }).limit(1)
@@ -68,8 +76,13 @@ async function registerUser(body) {
 
     await sendVerificationCode(email, verificationCode)
     console.log(newUser)
-    return newUser
+    // const userLoggedIn = await loginUser({ email, password })
+    const token = generateToken(newUser._id)
+
+    return { token }
+
 }
+
 
 // function to varify the code send to user login
 async function verifyCode(body) {
@@ -91,25 +104,25 @@ async function verifyCode(body) {
     user.codeUsed = true;
 
     // Start the trial period after successful verification
-    if (!user.trialStartDate) {
-        user.trialStartDate = new Date();
-        user.isTrialActive = true;
-    }
+    // if (!user.trialStartDate) {
+    //     user.trialStartDate = new Date();
+    //     user.isTrialActive = true;
+    // }
 
-    await user.save();
+    // await user.save();
 
     // Log the user in (you might want to generate a session or token here)
     const token = generateToken(user._id);
 
     return {
         _id: user._id,
-        firstName: user.firstName,
-        lastName: user.lastName,
         email: user.email,
         token,
     };
     // return user; // Return user or token
 }
+
+
 
 // Method to resend verification
 async function resendVerificationCode(body) {
@@ -129,6 +142,8 @@ async function resendVerificationCode(body) {
 
     return { message: "Verification code resent" };
 }
+
+
 
 // Function for user login
 async function loginUser(body) {
@@ -158,10 +173,6 @@ async function loginUser(body) {
 
         return {
             message: "Login successful, Verification code resent",
-            _id: user._id,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            email: user.email,
             token,
         };
     }
@@ -169,12 +180,31 @@ async function loginUser(body) {
 
     return {
         _id: user._id,
-        firstName: user.firstName,
-        lastName: user.lastName,
         email: user.email,
         token,
         message: "Login successful"
     };
 }
 
-module.exports = { registerUser, loginUser, verifyCode, resendVerificationCode }
+
+// Function to activate the trial period
+async function activateTrialPeriod(body) {
+    const { email } = body;
+    const user = await userSchema.findOne({ email });
+    if (!user) {
+        throw new Error("User not found");
+    }
+    if (!user.codeUsed) {
+        throw new Error("Verification code not used");
+    }
+    if (user.isTrialActive) {
+        throw new Error("Trial period already activated");
+    }
+
+    user.isTrialActive = true;
+    await user.save();
+
+    return { message: "Trial period activated" };
+}
+
+module.exports = { registerUser, loginUser, verifyCode, resendVerificationCode, activateTrialPeriod }
