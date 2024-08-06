@@ -2,6 +2,7 @@ const userSchema = require("../models/users.model.js")
 const bcrypt = require("bcrypt")
 const nodemailer = require('nodemailer');
 const jwt = require('jsonwebtoken')
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY)
 
 // function to generate the verification code
 function generateVerificationCode() {
@@ -207,4 +208,45 @@ async function activateTrialPeriod(body) {
     return { message: "Trial period activated" };
 }
 
-module.exports = { registerUser, loginUser, verifyCode, resendVerificationCode, activateTrialPeriod }
+
+// Function for stripe payment
+async function checkoutSession(body) {
+    const { productInfo } = body;
+    const { productName, productPrice } = productInfo
+    const lineItem = {
+        price_data: {
+            currency: 'usd',
+            product_data: {
+                name: productName,
+            },
+            unit_amount: Math.round(productPrice * 100),
+        },
+        quantity: 1,
+    }
+
+    const session = await stripe.checkout.sessions.create({
+        payment_method_types: ['card'],
+        mode: 'payment',
+        line_items: [
+            lineItem
+            // {
+            //     price_data: {
+            //         currency: 'usd',
+            //         product_data: {
+            //             name: productInfo.name,
+            //         },
+            //         unit_amount: productInfo.price * 100,
+            //     },
+            //     quantity: 1,
+            // },
+        ],
+        success_url: `${process.env.CLIENT_URL}/success`,
+        cancel_url: `${process.env.CLIENT_URL}/cancel`,
+    });
+
+    return session;
+}
+
+
+module.exports =
+    { registerUser, loginUser, verifyCode, resendVerificationCode, activateTrialPeriod, checkoutSession }

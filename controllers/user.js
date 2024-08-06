@@ -64,4 +64,15 @@ router.patch("/activate-trial", protect, async (req, res) => {
     }
 })
 
+router.post("/payment-checkout", protect, async (req, res) => {
+    const body = req.body
+    try {
+        const session = await userService.checkoutSession(body)
+        res.status(200).json({ id: session.id })
+    }
+    catch (err) {
+        res.status(500).json({ message: err.message })
+    }
+})
+
 module.exports = router
