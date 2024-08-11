@@ -3,6 +3,7 @@ const bcrypt = require("bcrypt")
 const nodemailer = require('nodemailer');
 const jwt = require('jsonwebtoken')
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY)
+const sendgrid = require('@sendgrid/mail')
 
 // function to generate the verification code
 function generateVerificationCode() {
@@ -20,6 +21,22 @@ const generateToken = (id) => {
 
 // function to send the verification code to the user's email
 async function sendVerificationCode(email, code) {
+    // Code for sending email using sendgrid
+    // sendgrid.setApiKey(process.env.API_KEY);
+    // const msg = {
+    //     to: email,
+    //     from: {
+    //         name: 'Your Service',
+    //         email: process.env.USER_EMAIL
+    //     },
+    //     subject: 'Your Verification Code',
+    //     text: `Your verification code is: ${code}`,
+    //     html: `<strong>Your verification code is: ${code}</strong>`
+    // }
+    // sendgrid.send(msg).
+    //     then(res => console.log('Email sent successfully')).
+    //     catch(err => console.log(err.message))
+
     let transporter = nodemailer.createTransport({
         // service: 'gmail',
         host: 'smtp.gmail.com',
