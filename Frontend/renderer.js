@@ -8,9 +8,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (loginForm) {
         loginForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            const username = document.getElementById('username').value;
+            const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
-            ipcRenderer.send('login', { username, password });
+            ipcRenderer.send('login', { email, password });
         });
 
         ipcRenderer.on('login-response', (event, response) => {
