@@ -3,8 +3,8 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
 // const path = require('path');
 // import path from "path";
-const Store = require('electron-store');
-// import Store from "electron-store"
+// const Store = require('electron-store');
+import Store from "electron-store"
 import axios from 'axios';
 
 const store = new Store();
@@ -126,7 +126,7 @@ ipcMain.on('login', async (event, credentials) => {
         });
     } catch (error) {
         console.log(error)
-        event.reply('login-response', { success: false, message: error.response?.data || 'Login failed' });
+        event.reply('login-response', { success: false, message: error.response?.data.message || 'Login failed' });
     }
 });
 
