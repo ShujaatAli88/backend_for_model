@@ -14,7 +14,8 @@ const checkTrialPeriod = async (req, res, next) => {
     if (diffDays > 7) {
         userResult.isTrialActive = false;
         await userResult.save();
-        return userResult.status(403).send('Your trial period has expired.');
+        // return userResult.status(403).send('Your trial period has expired.');
+        return res.status(403).send('Your trial period has expired.');
     }
 
     next();
