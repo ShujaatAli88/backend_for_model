@@ -25,9 +25,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (registerForm) {
         registerForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            const username = document.getElementById('username').value;
+            const firstName = document.getElementById('firstName').value;
+            const lastName = document.getElementById('lastName').value;
+            const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
-            ipcRenderer.send('register', { username, password });
+            ipcRenderer.send('register', { firstName, lastName, email, password });
         });
 
         ipcRenderer.on('register-response', (event, response) => {
