@@ -97,7 +97,11 @@ async function registerUser(body) {
     // const userLoggedIn = await loginUser({ email, password })
     const token = generateToken(newUser._id)
 
-    return { token, email }
+    return {
+        token,
+        email,
+        message: "User registered successfully"
+    }
 
 }
 

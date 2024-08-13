@@ -99,9 +99,12 @@ ipcMain.on('register', async (event, userData) => {
     try {
         const response = await axios.post(`${API_URL}/register`, userData);
         const token = response.data.token;
-        store.set('authToken', token);
-        store.set('userEmail', userData.email);
-        event.reply('register-response', { success: true, message: response.message, userId: response.data.userId });
+        event.reply('register-response', {
+            success: true,
+            message: response.message,
+            email: response.data.email,
+            token: response.data.token
+        });
     } catch (error) {
         event.reply('register-response', { success: false, message: error.response?.data.message || error.response?.data || 'Registration failed' });
     }
