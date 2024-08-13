@@ -46,6 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
+            console
             ipcRenderer.send('login', { email, password });
         });
         ipcRenderer.on('login-response', (event, response) => {
