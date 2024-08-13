@@ -46,17 +46,24 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
-            console
+            localStorage.getItem('authToken')
             ipcRenderer.send('login', { email, password });
         });
         ipcRenderer.on('login-response', (event, response) => {
             message.textContent = response.message;
             if (response.success) {
                 if (!response.isVerified) {
+                    localStorage.setItem('authToken', response.token);
+                    localStorage.setItem('userEmail', response.email);
+                    console.log(response.email, response.token)
                     window.location.href = 'verify.html';
                 } else if (!response.hasSubscription) {
+                    localStorage.setItem('authToken', response.token);
+                    localStorage.setItem('userEmail', response.email);
                     window.location.href = 'subscription.html';
                 } else {
+                    localStorage.setItem('authToken', response.token);
+                    localStorage.setItem('userEmail', response.email);
                     window.location.href = 'dashboard.html';
                 }
             }
@@ -76,7 +83,8 @@ document.addEventListener('DOMContentLoaded', () => {
         ipcRenderer.on('register-response', (event, response) => {
             message.textContent = response.message;
             if (response.success) {
-                localStorage.setItem('userId', response.userId);
+                localStorage.setItem('authToken', response.token);
+                localStorage.setItem('userEmail', response.email);
                 window.location.href = 'verify.html';
             }
         });
@@ -86,16 +94,21 @@ document.addEventListener('DOMContentLoaded', () => {
         verifyForm.addEventListener('submit', (e) => {
             e.preventDefault();
             const code = document.getElementById('verificationCode').value;
-            const email = localStorage.getItem('email');
-            ipcRenderer.send('verify-code', { email, code });
+            const email = localStorage.getItem('userEmail');
+            const token = localStorage.getItem('authToken');
+            console.log(token, email)
+            ipcRenderer.send('verify-code', { email, code, token });
         });
 
         ipcRenderer.on('verify-code-response', (event, response) => {
             message.textContent = response.message;
             if (response.success) {
+                localStorage.setItem('authToken', response.token);
+                localStorage.setItem('userEmail', response.email);
                 window.location.href = 'subscription.html';
             }
         })
     }
 })
 
+document.getElementById("welcome-message").innerHTML = `Welcome ${localStorage.getItem('userEmail')}`

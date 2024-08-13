@@ -97,7 +97,7 @@ async function registerUser(body) {
     // const userLoggedIn = await loginUser({ email, password })
     const token = generateToken(newUser._id)
 
-    return { token }
+    return { token, email }
 
 }
 
@@ -105,6 +105,8 @@ async function registerUser(body) {
 // function to varify the code send to user login
 async function verifyCode(body) {
     const { email, code } = body
+    console.log(email)
+    console.log(code)
     const user = await userSchema.findOne({ email });
     if (!user) {
         throw new Error("User not found");
@@ -127,7 +129,7 @@ async function verifyCode(body) {
     //     user.isTrialActive = true;
     // }
 
-    // await user.save();
+    await user.save();
 
     // Log the user in (you might want to generate a session or token here)
     const token = generateToken(user._id);
@@ -136,6 +138,7 @@ async function verifyCode(body) {
         _id: user._id,
         email: user.email,
         token,
+        message: "User verified successfully"
     };
     // return user; // Return user or token
 }
@@ -191,6 +194,9 @@ async function loginUser(body) {
 
         return {
             message: "Login successful, Verification code resent",
+            email: user.email,
+            userId: user._id,
+            isVerified: user.codeUsed,
             token,
         };
     }
@@ -199,6 +205,8 @@ async function loginUser(body) {
     return {
         _id: user._id,
         email: user.email,
+        isVerified: user.codeUsed,
+        hasSubscription: user.isTrialActive,
         token,
         message: "Login successful"
     };

@@ -103,30 +103,145 @@ ipcMain.on('register', async (event, userData) => {
         store.set('userEmail', userData.email);
         event.reply('register-response', { success: true, message: response.message, userId: response.data.userId });
     } catch (error) {
-        event.reply('register-response', { success: false, message: error.response?.data || 'Registration failed' });
+        event.reply('register-response', { success: false, message: error.response?.data.message || error.response?.data || 'Registration failed' });
     }
 });
 
+// ipcMain.on('login', async (event, credentials) => {
+//     store.delete('authToken');
+//     store.delete('userEmail');
+//     try {
+//         console.log(credentials)
+//         const response = await axios.post(`${API_URL}/login`, {
+//             email: credentials.email,
+//             password: credentials.password
+//         });
+//         console.log(store.get('authToken'), store.get('userEmail'))
+//         // if (store.get('authToken') || store.get('userEmail')) {
+//         //     const token = response.data.token;
+//         //     store.set('authToken', token);
+//         //     store.set('userEmail', credentials.email);
+//         //     event.reply('login-response', {
+//         //         success: true,
+//         //         message: response.message,
+//         //         userId: response.data.userId,
+//         //         isVerified: response.data.isVerified,
+//         //         hasSubscription: response.data.hasSubscription
+//         //     });
+//         // }
+//         const token = response.data.token;
+//         store.set('authToken', token);
+//         store.set('userEmail', credentials.email);
+//         event.reply('login-response', {
+//             success: true,
+//             message: response.message,
+//             userId: response.data.userId,
+//             isVerified: response.data.isVerified,
+//             hasSubscription: response.data.hasSubscription
+//         });
+
+//     } catch (error) {
+//         console.log(error)
+//         event.reply('login-response', { success: false, message: error.response?.data.message || error.response?.data || 'Login failed' });
+//     }
+// });
+
+// ipcMain.on('login', async (event, credentials) => {
+//     // Check if the keys exist before deleting
+
+//     console.log('Old authToken:', store.get('authToken'));
+//     console.log('Old userEmail:', store.get('userEmail'));
+
+//     if (store.has('authToken')) {
+//         store.delete('authToken');
+//     }
+//     if (store.has('userEmail')) {
+//         store.delete('userEmail');
+//     }
+
+//     try {
+//         console.log(credentials);
+//         const response = await axios.post(`${API_URL}/login`, {
+//             email: credentials.email,
+//             password: credentials.password
+//         });
+
+//         const token = response.data.token;
+
+//         // Set new values
+//         store.set('authToken', token);
+//         store.set('userEmail', credentials.email);
+
+//         // Log the values to check if they're set correctly
+
+
+//         event.reply('login-response', {
+//             success: true,
+//             message: response.data.message, // Make sure this is correct
+//             userId: response.data.userId,
+//             isVerified: response.data.isVerified,
+//             hasSubscription: response.data.hasSubscription
+//         });
+
+//     } catch (error) {
+//         console.log(error);
+//         event.reply('login-response', {
+//             success: false,
+//             message: error.response?.data.message || error.response?.data || 'Login failed'
+//         });
+//     }
+// });
+
 ipcMain.on('login', async (event, credentials) => {
+    console.log('Login attempt for:', credentials.email);
+
     try {
-        console.log(credentials)
+        // Clear existing data
+        // store.clear();
+        // console.log('Store cleared');
+
         const response = await axios.post(`${API_URL}/login`, {
             email: credentials.email,
             password: credentials.password
         });
-        const token = response.data.token;
-        store.set('authToken', token);
-        store.set('userEmail', credentials.email);
         event.reply('login-response', {
             success: true,
-            message: response.message,
+            message: response.data.message,
             userId: response.data.userId,
             isVerified: response.data.isVerified,
-            hasSubscription: response.data.hasSubscription
+            hasSubscription: response.data.hasSubscription,
+            token: response.data.token,
+            email: response.data.email
         });
+
+        // const token = response.data.token;
+
+        // Set new values with error checking
+        // try {
+        //     store.set('authToken', token);
+        //     console.log('authToken set successfully');
+        // } catch (storeError) {
+        //     console.error('Error setting authToken:', storeError);
+        // }
+
+        // try {
+        //     store.set('userEmail', credentials.email);
+        //     console.log('userEmail set successfully');
+        // } catch (storeError) {
+        //     console.error('Error setting userEmail:', storeError);
+        // }
+
+        // Verify stored data
+        // console.log('Stored authToken:', store.get('authToken'));
+        // console.log('Stored userEmail:', store.get('userEmail'));
+
+
     } catch (error) {
-        console.log(error)
-        event.reply('login-response', { success: false, message: error.response?.data.message || 'Login failed' });
+        console.error('Login error:', error);
+        event.reply('login-response', {
+            success: false,
+            message: error.response?.data.message || error.response?.data || 'Login failed'
+        });
     }
 });
 
@@ -139,19 +254,26 @@ ipcMain.on('verify-code', async (event, data) => {
         //         'Authorization': `Bearer ${token}`
         //     }
         // });
-        const token = store.get('authToken');
-        const userEmail = store.get('userEmail');
+        // const token = store.get('authToken');
+        // const userEmail = store.get('userEmail');
+        console.log(data.token)
         const response = await axios.post(`${API_URL}/verify-code`,
-            { code: data.code, email: userEmail },
+            { code: data.code, email: data.email },
             {
                 headers: {
-                    'Authorization': `Bearer ${token}`
+                    'Authorization': `Bearer ${data.token}`
                 }
             }
         );
 
-        event.reply('verify-code-response', { success: true, message: response.message });
+
+        event.reply('verify-code-response', {
+            success: true,
+            message: response.data.message,
+            email: response.data.email,
+            token: response.data.token
+        });
     } catch (error) {
-        event.reply('verify-code-response', { success: false, message: error.response?.data || 'Verification failed' });
+        event.reply('verify-code-response', { success: false, message: error.response?.data.message || error.response?.data || 'Verification failed' });
     }
 });

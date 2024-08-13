@@ -23,7 +23,7 @@ router.post("/verify-code", protect, async (req, res) => {
     const body = req.body
     try {
         const user = await userService.verifyCode(body)
-        res.status(200).json({ message: "User verified successfully", user })
+        res.status(200).json(user)
     }
     catch (err) {
         // console.log(err.message)
@@ -31,6 +31,7 @@ router.post("/verify-code", protect, async (req, res) => {
     }
 })
 
+// I will come late to correct it
 router.post("/resend-code", protect, async (req, res) => {
     const body = req.body
     try {
@@ -47,7 +48,7 @@ router.post("/login", checkTrialPeriod, async (req, res) => {
     try {
         const user = await userService.loginUser(body)
         console.log(user)
-        res.status(200).json({ message: user.message, user })
+        res.status(200).json(user)
     }
     catch (err) {
         res.status(500).json({ message: err.message })
@@ -58,7 +59,7 @@ router.patch("/activate-trial", protect, async (req, res) => {
     const body = req.body
     try {
         const user = await userService.activateTrialPeriod(body)
-        res.status(200).json({ message: user.message, user })
+        res.status(200).json(user)
     }
     catch (err) {
         res.status(500).json({ message: err.message })
