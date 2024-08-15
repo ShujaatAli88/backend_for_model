@@ -29,22 +29,25 @@
         <p>Already have an account? <a href="login.html">Login</a></p>
         <p id="message"></p>
     </div> -->
-
-    <div class="row vh-100 g-0">
+    <!-- row vh-100 g-0 (previous css) -->
+    <div class="d-flex align-items-center justify-content-center vh-100 g-0">
         <!-- Left side -->
-        <div class="col-lg-6 position-relative d-none d-lg-block">
+        <!-- <div class="col-lg-6 position-relative d-none d-lg-block">
             <div class="bg-holder" style="background-image: url('images/frontImg.jpg');">
             </div>
-        </div>
+        </div> -->
         <!-- / Left side -->
 
         <!-- Right side -->
-        <div class="col-lg-6">
-            <div class="row align-items-center justify-content-center h-100 g-0 px-4 px-sm-0">
-                <div class="col col-sm-6 col-lg-7 col-xl-6">
+        <!-- col-lg-6 ( previous css ) -->
+        <div class=" row justify-content-between w-75 mt-6">
+            <!-- row align-items-center justify-content-center h-100 g-0 px-4 px-sm-0 ( previous css ) -->
+            <div class="row align-items-center justify-content-center h-100 g-0 px-4 px-sm-0 w-100 mt-5">
+                <!-- col col-sm-7 col-lg-6 col-xl-6 (previos css) -->
+                <div class="col col-sm-8 col-lg-7 col-xl-6">
 
                     <!-- Logo -->
-                    <a href="#" class="d-flex justify-content-center mb-4">
+                    <a href="#" class="d-flex justify-content-center mb-4 mt-5">
                         <img src="images/icon-512.png" alt="" width="60">
                     </a>
                     <!-- /Logo -->
@@ -91,7 +94,7 @@
                         </div>
                         <div class="input-group mb-3 d-flex justify-content-between">
                             <ul class="text-secondary">
-                                <li>Password should be 8 characters long.</li>
+                                <li>Password must be atleast 8 character long.</li>
                             </ul>
                             <div class="form-check">
                                 <input type="checkbox" class="form-check-input" id="formCheck">

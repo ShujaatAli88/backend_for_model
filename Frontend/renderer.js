@@ -109,6 +109,25 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         })
     }
+    if (resendVerifyForm) {
+        verifyForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('resendCode').value;
+            // const email = localStorage.getItem('userEmail');
+            const token = localStorage.getItem('authToken');
+            console.log(token, email)
+            ipcRenderer.send('verify-code', { email, token });
+        });
+
+        ipcRenderer.on('verify-code-response', (event, response) => {
+            message.textContent = response.message;
+            if (response.success) {
+                // localStorage.setItem('authToken', response.token);
+                // localStorage.setItem('userEmail', response.email);
+                window.location.href = 'verify.html';
+            }
+        })
+    }
 })
 
 document.getElementById("welcome-message").innerHTML = `Welcome ${localStorage.getItem('userEmail')}`

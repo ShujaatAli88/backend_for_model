@@ -44,6 +44,7 @@ let mainWindow;
 
 function createWindow() {
     mainWindow = new BrowserWindow({
+        autoHideMenuBar: true,
         width: 800,
         height: 600,
         webPreferences: {
@@ -278,5 +279,27 @@ ipcMain.on('verify-code', async (event, data) => {
         });
     } catch (error) {
         event.reply('verify-code-response', { success: false, message: error.response?.data.message || error.response?.data || 'Verification failed' });
+    }
+});
+
+ipcMain.on("resend-code", async (event, data) => {
+    try {
+        const response = await axios.post(`${API_URL}/resend-code`,
+            { email: data.email },
+            {
+                headers: {
+                    'Authorization': `Bearer ${data.token}`
+                }
+            }
+        )
+        event.reply('resend-verify-code-response', {
+            success: true,
+            message: response.data.message,
+            // email: response.data.email,
+            // token: response.data.token
+        });
+    }
+    catch (error) {
+        event.reply('resend-verify-code-response', { success: false, message: error.response?.data.message || error.response?.data || 'Error resending verification' });
     }
 });
