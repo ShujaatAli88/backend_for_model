@@ -110,7 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
         })
     }
     if (resendVerifyForm) {
-        verifyForm.addEventListener('submit', (e) => {
+        resendVerifyForm.addEventListener('submit', (e) => {
             e.preventDefault();
             const email = document.getElementById('resendCode').value;
             // const email = localStorage.getItem('userEmail');
@@ -131,3 +131,25 @@ document.addEventListener('DOMContentLoaded', () => {
 })
 
 document.getElementById("welcome-message").innerHTML = `Welcome ${localStorage.getItem('userEmail')}`
+
+
+    (function () {
+
+        'use strict';
+
+        var elToggle = document.querySelector('.js-password-show-toggle'),
+            passwordInput = document.getElementById('password');
+
+        elToggle.addEventListener('click', (e) => {
+            e.preventDefault();
+
+            if (elToggle.classList.contains('active')) {
+                passwordInput.setAttribute('type', 'password');
+                elToggle.classList.remove('active');
+            } else {
+                passwordInput.setAttribute('type', 'text');
+                elToggle.classList.add('active');
+            }
+        })
+
+    })()
