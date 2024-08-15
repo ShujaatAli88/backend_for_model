@@ -100,6 +100,7 @@ async function registerUser(body) {
     return {
         token,
         email,
+        firstName,
         message: "User registered successfully"
     }
 
@@ -202,6 +203,7 @@ async function loginUser(body) {
             userId: user._id,
             isVerified: user.codeUsed,
             token,
+            firstName: user.firstName
         };
     }
 
@@ -212,6 +214,7 @@ async function loginUser(body) {
         isVerified: user.codeUsed,
         hasSubscription: user.isTrialActive,
         token,
+        firstName: user.firstName,
         message: "Login successful"
     };
 }

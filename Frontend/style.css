@@ -27,6 +27,13 @@ a:hover {
 .btn {
     font-size: 0.8rem;
     font-weight: 700;
+    /* color: blueviolet; */
+    background-color: rgb(63, 3, 119) !important;
+}
+
+.btn:hover {
+    background-color: aliceblue !important;
+    color: black !important;
 }
 
 .btn i {
@@ -38,6 +45,29 @@ a:hover {
 }
 
 
+/* Css to generate the popup messages */
+/* .pop-up { */
+/* display: none; */
+/* position: fixed;
+    left: 0;
+    top: 0;
+    width: auto;
+    height: 80px;
+    background-color: rgba(0, 0, 0, 0.4); */
+/* z-index: 1;
+    overflow: auto;
+    position: fixed;
+    top: 0;
+    left: 0; */
+/* display: flex; */
+/* justify-content: center;
+    width: 50%; */
+/* background-color: #333; */
+/* color: #fff;
+    padding: 10px;
+    text-align: center;
+    margin: 1.5% 25% 0 25%;
+} */
 
 /* body {
     display: flex;

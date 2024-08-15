@@ -55,16 +55,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (!response.isVerified) {
                     localStorage.setItem('authToken', response.token);
                     localStorage.setItem('userEmail', response.email);
+                    localStorage.setItem('firstName', response.firstName);
                     console.log(response.email, response.token)
-                    window.location.href = 'verify.html';
+                    // window.location.href = 'verify.html';
+                    setTimeout("window.location.href = 'verify.html';", 5000);
                 } else if (!response.hasSubscription) {
                     localStorage.setItem('authToken', response.token);
                     localStorage.setItem('userEmail', response.email);
-                    window.location.href = 'subscription.html';
+                    localStorage.setItem('firstName', response.firstName);
+                    // window.location.href = 'subscription.html';
+                    setTimeout("window.location.href = 'subscription.html';", 5000);
                 } else {
                     localStorage.setItem('authToken', response.token);
                     localStorage.setItem('userEmail', response.email);
-                    window.location.href = 'dashboard.html';
+                    localStorage.setItem('firstName', response.firstName);
+                    // window.location.href = 'dashboard.html';
+                    setTimeout("window.location.href = 'dashboard.html';", 5000);
                 }
             }
         });
@@ -85,7 +91,10 @@ document.addEventListener('DOMContentLoaded', () => {
             if (response.success) {
                 localStorage.setItem('authToken', response.token);
                 localStorage.setItem('userEmail', response.email);
-                window.location.href = 'verify.html';
+                localStorage.setItem('firstName', response.firstName);
+                // window.location.href = 'verify.html';
+                setTimeout("window.location.href = 'verify.html';", 5000);
+
             }
         });
     }
@@ -105,7 +114,11 @@ document.addEventListener('DOMContentLoaded', () => {
             if (response.success) {
                 localStorage.setItem('authToken', response.token);
                 localStorage.setItem('userEmail', response.email);
-                window.location.href = 'subscription.html';
+                // window.location.href = 'subscription.html';
+                setTimeout("window.location.href = 'subscription.html';", 5000);
+            }
+            else if (!response.success || response.message === 'Not Authorized' || 'Not Authorized, No Token') {
+                setTimeout("window.location.href = 'login.html';", 5000);
             }
         })
     }
@@ -124,32 +137,47 @@ document.addEventListener('DOMContentLoaded', () => {
             if (response.success) {
                 // localStorage.setItem('authToken', response.token);
                 // localStorage.setItem('userEmail', response.email);
-                window.location.href = 'verify.html';
+                // window.location.href = 'verify.html';
+                setTimeout("window.location.href = 'verify.html';", 5000);
+            }
+            else if (!response.success || response.message === 'Not Authorized' || 'Not Authorized, No Token') {
+                setTimeout("window.location.href = 'login.html';", 5000);
             }
         })
     }
 })
 
-document.getElementById("welcome-message").innerHTML = `Welcome ${localStorage.getItem('userEmail')}`
+document.getElementById("welcome-message").innerHTML = `Welcome ${localStorage.getItem('firstName')}`
 
 
-    (function () {
+// (function () {
 
-        'use strict';
+//     'use strict';
 
-        var elToggle = document.querySelector('.js-password-show-toggle'),
-            passwordInput = document.getElementById('password');
+//     var elToggle = document.querySelector('#formCheck'),
+//         passwordInput = document.getElementById('password');
 
-        elToggle.addEventListener('click', (e) => {
-            e.preventDefault();
+//     elToggle.addEventListener('click', (e) => {
+//         e.preventDefault();
 
-            if (elToggle.classList.contains('active')) {
-                passwordInput.setAttribute('type', 'password');
-                elToggle.classList.remove('active');
-            } else {
-                passwordInput.setAttribute('type', 'text');
-                elToggle.classList.add('active');
-            }
-        })
+//         if (elToggle.classList.contains('active')) {
+//             passwordInput.setAttribute('type', 'password');
+//             elToggle.classList.remove('active');
+//         } else {
+//             passwordInput.setAttribute('type', 'text');
+//             elToggle.classList.add('active');
+//         }
+//     })
 
-    })()
+// })()
+
+function showPassword() {
+    var x = document.getElementById("password");
+    if (x.type === "password") {
+        x.type = "text";
+    } else {
+        x.type = "password";
+    }
+}
+
+// document.addEventListener()

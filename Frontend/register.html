@@ -92,12 +92,12 @@
                             <input type="password" id="password" class="form-control form-control-lg fs-6"
                                 placeholder="Password" required>
                         </div>
-                        <div class="input-group mb-3 d-flex justify-content-between">
-                            <ul class="text-secondary">
-                                <li>Password must be atleast 8 character long.</li>
-                            </ul>
-                            <div class="form-check">
-                                <input type="checkbox" class="form-check-input" id="formCheck">
+                        <div class="input-group mb-3 d-flex justify-content-between flex-column">
+                            <!-- <ul class="text-secondary"> -->
+                            <li class="text-secondary mb-2">Password must be atleast 8 character long.</li>
+                            <!-- </ul> -->
+                            <div class="form-check ">
+                                <input type="checkbox" onclick="showPassword()" class="form-check-input" id="formCheck">
                                 <label for="formCheck" class="form-check-label text-secondary"><small> Show Password
                                     </small></label>
                             </div>

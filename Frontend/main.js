@@ -104,7 +104,8 @@ ipcMain.on('register', async (event, userData) => {
             success: true,
             message: response.message,
             email: response.data.email,
-            token: response.data.token
+            token: response.data.token,
+            firstName: response.data.firstName
         });
     } catch (error) {
         event.reply('register-response', { success: false, message: error.response?.data.message || error.response?.data || 'Registration failed' });
@@ -215,7 +216,8 @@ ipcMain.on('login', async (event, credentials) => {
             isVerified: response.data.isVerified,
             hasSubscription: response.data.hasSubscription,
             token: response.data.token,
-            email: response.data.email
+            email: response.data.email,
+            firstName: response.data.firstName
         });
 
         // const token = response.data.token;
