@@ -79,6 +79,12 @@ document.addEventListener('DOMContentLoaded', () => {
             else if (!response.success) {
                 message.classList.add('pop-up', 'alert', 'alert-danger');
                 message.textContent = response.message;
+                setTimeout(() => {
+                    message.classList.add('hide');
+                }, 2000);
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 1000)
             }
         });
     }
@@ -102,14 +108,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 localStorage.setItem('userEmail', response.email);
                 localStorage.setItem('firstName', response.firstName);
                 // window.location.href = 'verify.html';
-                setTimeout("window.location.href = 'verify.html';", 5000);
+                setTimeout("window.location.href = 'verify.html';", 3000);
 
             }
             else if (!response.success) {
                 message.classList.add('pop-up', 'alert', 'alert-danger');
                 message.textContent = response.message;
+                setTimeout(() => {
+                    message.classList.add('hide');
+                }, 2000);
+                setTimeout(() => {
+                    window.location.href = 'register.html';
+                }, 1000)
             }
-        });
+        })
     }
 
     if (verifyForm) {
@@ -130,15 +142,27 @@ document.addEventListener('DOMContentLoaded', () => {
                 localStorage.setItem('authToken', response.token);
                 localStorage.setItem('userEmail', response.email);
                 // window.location.href = 'subscription.html';
-                setTimeout("window.location.href = 'subscription.html';", 5000);
+                setTimeout("window.location.href = 'subscription.html';", 3000);
             }
-            else if (!response.success || response.message === 'Not Authorized' || 'Not Authorized, No Token') {
+            else if (!response.success && response.message === 'Not Authorized' || 'Not Authorized, No Token') {
                 message.classList.add('pop-up', 'alert', 'alert-danger');
                 message.textContent = response.message;
-                setTimeout("window.location.href = 'login.html';", 5000);
+                setTimeout("window.location.href = 'login.html';", 3000);
+            }
+            else if (response.succes) {
+                message.classList.add('pop-up', 'alert', 'alert-danger');
+                message.textContent = response.message;
+                setTimeout(() => {
+                    message.classList.add('hide');
+                }, 2000);
+                setTimeout(() => {
+                    window.location.href = 'verify.html';
+                }, 1000)
             }
         })
     }
+
+
     if (resendVerifyForm) {
         resendVerifyForm.addEventListener('submit', (e) => {
             e.preventDefault();
@@ -159,12 +183,25 @@ document.addEventListener('DOMContentLoaded', () => {
                 // localStorage.setItem('authToken', response.token);
                 // localStorage.setItem('userEmail', response.email);
                 // window.location.href = 'verify.html';
-                setTimeout("window.location.href = 'verify.html';", 5000);
+                setTimeout("window.location.href = 'verify.html';", 3000);
             }
-            else if (!response.success || response.message === 'Not Authorized' || 'Not Authorized, No Token') {
+            else if (!response.success && response.message === 'Not Authorized' || 'Not Authorized, No Token') {
                 message.classList.add('pop-up', 'alert', 'alert-danger');
                 message.textContent = response.message;
-                setTimeout("window.location.href = 'login.html';", 5000);
+                setTimeout("window.location.href = 'login.html';", 3000);
+            }
+            else if (!response.success) {
+                // message.classList.add('pop-up', 'alert', 'alert-danger');
+                // message.textContent = response.message;
+                // setTimeout("window.location.href = 'login.html';", 3000);
+                message.classList.add('pop-up', 'alert', 'alert-danger');
+                message.textContent = response.message;
+                setTimeout(() => {
+                    message.classList.add('hide');
+                }, 2000);
+                setTimeout(() => {
+                    window.location.href = 'resendverify.html';
+                }, 1000)
             }
         })
     }
