@@ -5,6 +5,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const registerForm = document.getElementById('registerForm');
     // const message = document.getElementById('message');
     const verifyForm = document.getElementById('verifyForm');
+    const resendVerifyForm = document.getElementById('resendVerifyForm');
+    const logout = document.getElementById('logout')
     const message = document.getElementById('message');
 
     // if (loginForm) {
@@ -170,7 +172,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // const email = localStorage.getItem('userEmail');
             const token = localStorage.getItem('authToken');
             console.log(token, email)
-            ipcRenderer.send('verify-code', { email, token });
+            ipcRenderer.send('resend-code', { email, token });
         });
 
         ipcRenderer.on('verify-code-response', (event, response) => {
@@ -203,6 +205,20 @@ document.addEventListener('DOMContentLoaded', () => {
                     window.location.href = 'resendverify.html';
                 }, 1000)
             }
+        })
+    }
+    if (logout) {
+        logout.addEventListener('submit', (e) => {
+            e.preventDefault();
+            localStorage.clear();
+            message.classList.add('pop-up', 'alert', 'alert-danger');
+            message.textContent = "Logout SuccessFul";
+            setTimeout(() => {
+                message.classList.add('hide');
+            }, 2000);
+            setTimeout(() => {
+                window.location.href = 'login.html';
+            }, 1000)
         })
     }
 })

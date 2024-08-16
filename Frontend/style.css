@@ -72,6 +72,15 @@ a:hover {
     /* color: #fff; */
 }
 
+.card {
+    background-color: rgb(214, 214, 215) !important;
+}
+
+.card:hover {
+    background-color: rgb(205, 164, 244) !important;
+    color: white !important;
+}
+
 /* body {
     display: flex;
     justify-content: center;
