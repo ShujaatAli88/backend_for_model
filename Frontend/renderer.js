@@ -50,28 +50,35 @@ document.addEventListener('DOMContentLoaded', () => {
             ipcRenderer.send('login', { email, password });
         });
         ipcRenderer.on('login-response', (event, response) => {
-            message.textContent = response.message;
+            // setTimeout("message.textContent = response.message; message.classList.add('pop-up', 'alert', 'alert-primary');", 2000)
             if (response.success) {
+                message.classList.add('pop-up', 'alert', 'alert-primary');
+                message.textContent = response.message;
                 if (!response.isVerified) {
                     localStorage.setItem('authToken', response.token);
                     localStorage.setItem('userEmail', response.email);
                     localStorage.setItem('firstName', response.firstName);
                     console.log(response.email, response.token)
                     // window.location.href = 'verify.html';
-                    setTimeout("window.location.href = 'verify.html';", 5000);
+                    setTimeout("window.location.href = 'verify.html';", 3000);
                 } else if (!response.hasSubscription) {
+
                     localStorage.setItem('authToken', response.token);
                     localStorage.setItem('userEmail', response.email);
                     localStorage.setItem('firstName', response.firstName);
                     // window.location.href = 'subscription.html';
-                    setTimeout("window.location.href = 'subscription.html';", 5000);
+                    setTimeout("window.location.href = 'subscription.html';", 3000);
                 } else {
                     localStorage.setItem('authToken', response.token);
                     localStorage.setItem('userEmail', response.email);
                     localStorage.setItem('firstName', response.firstName);
                     // window.location.href = 'dashboard.html';
-                    setTimeout("window.location.href = 'dashboard.html';", 5000);
+                    setTimeout("window.location.href = 'dashboard.html';", 3000);
                 }
+            }
+            else if (!response.success) {
+                message.classList.add('pop-up', 'alert', 'alert-danger');
+                message.textContent = response.message;
             }
         });
     }
@@ -87,14 +94,20 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         ipcRenderer.on('register-response', (event, response) => {
-            message.textContent = response.message;
+            // message.textContent = response.message;
             if (response.success) {
+                message.classList.add('pop-up', 'alert', 'alert-primary');
+                message.textContent = response.message;
                 localStorage.setItem('authToken', response.token);
                 localStorage.setItem('userEmail', response.email);
                 localStorage.setItem('firstName', response.firstName);
                 // window.location.href = 'verify.html';
                 setTimeout("window.location.href = 'verify.html';", 5000);
 
+            }
+            else if (!response.success) {
+                message.classList.add('pop-up', 'alert', 'alert-danger');
+                message.textContent = response.message;
             }
         });
     }
@@ -110,14 +123,18 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         ipcRenderer.on('verify-code-response', (event, response) => {
-            message.textContent = response.message;
+            // message.textContent = response.message;
             if (response.success) {
+                message.classList.add('pop-up', 'alert', 'alert-primary');
+                message.textContent = response.message;
                 localStorage.setItem('authToken', response.token);
                 localStorage.setItem('userEmail', response.email);
                 // window.location.href = 'subscription.html';
                 setTimeout("window.location.href = 'subscription.html';", 5000);
             }
             else if (!response.success || response.message === 'Not Authorized' || 'Not Authorized, No Token') {
+                message.classList.add('pop-up', 'alert', 'alert-danger');
+                message.textContent = response.message;
                 setTimeout("window.location.href = 'login.html';", 5000);
             }
         })
@@ -133,14 +150,20 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         ipcRenderer.on('verify-code-response', (event, response) => {
-            message.textContent = response.message;
+            // setTimeout("message.textContent = response.message; message.classList.add('pop-up', 'alert', 'alert-primary');", 2000)
+            // message.textContent = response.message;
+
             if (response.success) {
+                message.classList.add('pop-up', 'alert', 'alert-primary');
+                message.textContent = response.message;
                 // localStorage.setItem('authToken', response.token);
                 // localStorage.setItem('userEmail', response.email);
                 // window.location.href = 'verify.html';
                 setTimeout("window.location.href = 'verify.html';", 5000);
             }
             else if (!response.success || response.message === 'Not Authorized' || 'Not Authorized, No Token') {
+                message.classList.add('pop-up', 'alert', 'alert-danger');
+                message.textContent = response.message;
                 setTimeout("window.location.href = 'login.html';", 5000);
             }
         })

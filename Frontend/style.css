@@ -46,28 +46,28 @@ a:hover {
 
 
 /* Css to generate the popup messages */
-/* .pop-up { */
-/* display: none; */
-/* position: fixed;
+.pop-up {
+    /* display: none; */
+    /* /* position: fixed; */
     left: 0;
     top: 0;
-    width: auto;
-    height: 80px;
-    background-color: rgba(0, 0, 0, 0.4); */
-/* z-index: 1;
-    overflow: auto;
-    position: fixed;
-    top: 0;
-    left: 0; */
-/* display: flex; */
-/* justify-content: center;
-    width: 50%; */
-/* background-color: #333; */
-/* color: #fff;
+    /* width: auto; */
+    height: 50px;
+    background-color: rgba(0, 0, 0, 0.4);
     padding: 10px;
     text-align: center;
-    margin: 1.5% 25% 0 25%;
-} */
+    width: 50%;
+    /* margin: 1.5% 25% 0 25%; */
+    top: 0 !important;
+    left: 0;
+    /* z-index: 1;
+    overflow: auto;
+    position: fixed; */
+    /* display: flex; */
+    /* justify-content: center;
+    /* background-color: #333; */
+    /* color: #fff; */
+}
 
 /* body {
     display: flex;
