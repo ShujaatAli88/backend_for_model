@@ -43,7 +43,8 @@ router.post("/resend-code", protect, async (req, res) => {
     }
 })
 
-router.post("/login", checkTrialPeriod, async (req, res) => {
+// checkTrialPeriod,
+router.post("/login", async (req, res) => {
     const body = req.body
     try {
         const user = await userService.loginUser(body)
@@ -55,7 +56,7 @@ router.post("/login", checkTrialPeriod, async (req, res) => {
     }
 })
 
-router.patch("/activate-trial", protect, async (req, res) => {
+router.patch("/activate-trial", protect, checkTrialPeriod, async (req, res) => {
     const body = req.body
     try {
         const user = await userService.activateTrialPeriod(body)

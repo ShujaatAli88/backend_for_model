@@ -305,3 +305,77 @@ ipcMain.on("resend-code", async (event, data) => {
         event.reply('resend-verify-code-response', { success: false, message: error.response?.data.message || error.response?.data || 'Error resending verification' });
     }
 });
+
+ipcMain.on("activate-trial", async (event, data) => {
+    try {
+        const response = await axios.post(`${API_URL}/activate-trial`,
+            { email: data.email },
+            {
+                headers: {
+                    'Authorization': `Bearer ${data.token}`
+                }
+            }
+        )
+        event.reply('activate-trial', {
+            success: true,
+            message: response.data.message,
+            // email: response.data.email,
+            // token: response.data.token
+        });
+    }
+    catch (error) {
+        event.reply('activate-trial', { success: false, message: error.response?.data.message || error.response?.data || 'Error starting the free trial' });
+    }
+});
+
+ipcMain.on("yearly-subscription", async (event, data) => {
+    try {
+        const response = await axios.post(`${API_URL}/payment-checkout`,
+            {
+                email: data.email,
+                productName: data.productName,
+                productPrice: data.productPrice
+            },
+            {
+                headers: {
+                    'Authorization': `Bearer ${data.token}`
+                }
+            }
+        )
+        event.reply('yearly-subscription', {
+            success: true,
+            message: response.data.message,
+            // email: response.data.email,
+            // token: response.data.token
+        });
+    }
+    catch (error) {
+        event.reply('yearly-subscription', { success: false, message: error.response?.data.message || error.response?.data || 'Error in the payment checkout' });
+    }
+});
+
+ipcMain.on("monthly-subscription", async (event, data) => {
+    try {
+        const response = await axios.post(`${API_URL}/payment-checkout`,
+            {
+                email: data.email,
+                productName: data.productName,
+                productPrice: data.productPrice
+            },
+            {
+                headers: {
+                    'Authorization': `Bearer ${data.token}`
+                }
+            }
+        )
+        event.reply('monthly-subscription', {
+            success: true,
+            message: response.data.message,
+            // email: response.data.email,
+            // token: response.data.token
+        });
+    }
+    catch (error) {
+        event.reply('monthly-subscription', { success: false, message: error.response?.data.message || error.response?.data || 'Error in the payment checkout' });
+    }
+});

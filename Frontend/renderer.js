@@ -8,6 +8,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const resendVerifyForm = document.getElementById('resendVerifyForm');
     const logout = document.getElementById('logout')
     const message = document.getElementById('message');
+    const freeTrial = document.getElementById('freeTrial');
+    const yearlySub = document.getElementById('yearlySub');
+    const monthlySub = document.getElementById('monthlySub');
 
     // if (loginForm) {
     //     loginForm.addEventListener('submit', (e) => {
@@ -219,6 +222,108 @@ document.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
                 window.location.href = 'login.html';
             }, 1000)
+        })
+    }
+
+    if (freeTrial) {
+        freeTrial.addEventListener('click', (e) => {
+            e.preventDefault();
+
+            const email = localStorage.getItem('userEmail');
+            const token = localStorage.getItem('authToken');
+            console.log(token, email)
+            ipcRenderer.send('activate-trial', { email, token });
+        });
+        ipcRenderer.on('activate-trial', (event, response) => {
+            // message.textContent = response.message;
+            if (response.success) {
+                message.classList.add('pop-up', 'alert', 'alert-primary');
+                message.textContent = response.message;
+                // localStorage.setItem('authToken', response.token);
+                // localStorage.setItem('userEmail', response.email);
+                // localStorage.setItem('firstName', response.firstName);
+                // window.location.href = 'verify.html';
+                setTimeout("window.location.href = 'dashboard.html';", 3000);
+
+            }
+            else if (!response.success) {
+                message.classList.add('pop-up', 'alert', 'alert-danger');
+                message.textContent = response.message;
+                setTimeout(() => {
+                    message.classList.add('hide');
+                }, 2000);
+                setTimeout(() => {
+                    window.location.href = 'subscription.html';
+                }, 1000)
+            }
+        })
+    }
+    if (yearlySub) {
+        yearlySub.addEventListener('click', (e) => {
+            e.preventDefault();
+            const email = localStorage.getItem('userEmail');
+            const token = localStorage.getItem('authToken');
+            console.log(token, email)
+            const productName = 'Yearly Subsciption';
+            const productPrice = 4444.8 + 755.616
+            ipcRenderer.send('yearly-subscription', { email, token, productName, productPrice });
+        });
+        ipcRenderer.on('yearly-subscription', (event, response) => {
+            // message.textContent = response.message;
+            if (response.success) {
+                message.classList.add('pop-up', 'alert', 'alert-primary');
+                message.textContent = response.message;
+                // localStorage.setItem('authToken', response.token);
+                // localStorage.setItem('userEmail', response.email);
+                // localStorage.setItem('firstName', response.firstName);
+                // window.location.href = 'verify.html';
+                setTimeout("window.location.href = 'dashboard.html';", 3000);
+
+            }
+            else if (!response.success) {
+                message.classList.add('pop-up', 'alert', 'alert-danger');
+                message.textContent = response.message;
+                setTimeout(() => {
+                    message.classList.add('hide');
+                }, 2000);
+                setTimeout(() => {
+                    window.location.href = 'subscription.html';
+                }, 1000)
+            }
+        })
+    }
+    if (monthlySub) {
+        monthlySub.addEventListener('click', (e) => {
+            e.preventDefault();
+            const email = localStorage.getItem('userEmail');
+            const token = localStorage.getItem('authToken');
+            console.log(token, email)
+            const productName = 'Monthly Subsciption';
+            const productPrice = 463 + 78.71
+            ipcRenderer.send('monthly-subscription', { email, token, productName, productPrice });
+        });
+        ipcRenderer.on('monthly-subscription', (event, response) => {
+            // message.textContent = response.message;
+            if (response.success) {
+                message.classList.add('pop-up', 'alert', 'alert-primary');
+                message.textContent = response.message;
+                // localStorage.setItem('authToken', response.token);
+                // localStorage.setItem('userEmail', response.email);
+                // localStorage.setItem('firstName', response.firstName);
+                // window.location.href = 'verify.html';
+                setTimeout("window.location.href = 'dashboard.html';", 3000);
+
+            }
+            else if (!response.success) {
+                message.classList.add('pop-up', 'alert', 'alert-danger');
+                message.textContent = response.message;
+                setTimeout(() => {
+                    message.classList.add('hide');
+                }, 2000);
+                setTimeout(() => {
+                    window.location.href = 'subscription.html';
+                }, 1000)
+            }
         })
     }
 })

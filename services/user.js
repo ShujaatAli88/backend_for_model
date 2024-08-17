@@ -4,6 +4,7 @@ const nodemailer = require('nodemailer');
 const jwt = require('jsonwebtoken')
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY)
 const sendgrid = require('@sendgrid/mail')
+// const dashboard = require('../Frontend/')
 
 // function to generate the verification code
 function generateVerificationCode() {
@@ -243,11 +244,12 @@ async function activateTrialPeriod(body) {
 
 // Function for stripe payment
 async function checkoutSession(body) {
-    const { productInfo } = body;
-    const { productName, productPrice } = productInfo
+    // const { productInfo } = body;
+    const { productName, productPrice } = body
+    console.log(productName, productPrice)
     const lineItem = {
         price_data: {
-            currency: 'usd',
+            currency: 'eur',
             product_data: {
                 name: productName,
             },
@@ -272,11 +274,12 @@ async function checkoutSession(body) {
             //     quantity: 1,
             // },
         ],
-        success_url: `${process.env.CLIENT_URL}/success`,
+        // success_url: `${process.env.CLIENT_URL}/dashboard.html`,
+        success_url: "../Frontend/dashboard.html",
         cancel_url: `${process.env.CLIENT_URL}/cancel`,
     });
 
-    return session;
+    return { session, message: "Subscription Successful" };
 }
 
 
