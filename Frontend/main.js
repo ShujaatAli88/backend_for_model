@@ -308,7 +308,7 @@ ipcMain.on("resend-code", async (event, data) => {
 
 ipcMain.on("activate-trial", async (event, data) => {
     try {
-        const response = await axios.post(`${API_URL}/activate-trial`,
+        const response = await axios.patch(`${API_URL}/activate-trial`,
             { email: data.email },
             {
                 headers: {
