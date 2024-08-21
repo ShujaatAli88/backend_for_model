@@ -4,7 +4,10 @@ const nodemailer = require('nodemailer');
 const jwt = require('jsonwebtoken')
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY)
 const sendgrid = require('@sendgrid/mail')
+const dotenv = require('dotenv');
 // const dashboard = require('../Frontend/')
+
+dotenv.config();
 
 // function to generate the verification code
 function generateVerificationCode() {
@@ -257,10 +260,10 @@ async function checkoutSession(body) {
         },
         quantity: 1,
     }
-
+    console.log(process.env.STRIPE_SECRET_KEY)
     const session = await stripe.checkout.sessions.create({
         payment_method_types: ['card'],
-        mode: 'payment',
+        mode: 'subscription',
         line_items: [
             lineItem
             // {
@@ -281,6 +284,45 @@ async function checkoutSession(body) {
 
     return { session, message: "Subscription Successful" };
 }
+
+// async createSubscription(createSubscriptionRequest) {
+
+//     // create a stripe customer
+//     const customer = await this.stripe.customers.create({
+//       name: createSubscriptionRequest.name,
+//       email: createSubscriptionRequest.email,
+//       payment_method: createSubscriptionRequest.paymentMethod,
+//       invoice_settings: {
+//         default_payment_method: createSubscriptionRequest.paymentMethod,
+//       },
+//     });
+
+
+//     // get the price id from the front-end
+//     const priceId = createSubscriptionRequest.priceId;
+
+//     // create a stripe subscription
+//     const subscription = await this.stripe.subscriptions.create({
+//       customer: customer.id,
+//       items: [{ price: priceId }],
+//       payment_settings: {
+//         payment_method_options: {
+//           card: {
+//             request_three_d_secure: 'any',
+//           },
+//         },
+//         payment_method_types: ['card'],
+//         save_default_payment_method: 'on_subscription',
+//       },
+//       expand: ['latest_invoice.payment_intent'],
+//     });
+
+//     // return the client secret and subscription id
+//     return {
+//       clientSecret: subscription.latest_invoice.payment_intent.client_secret,
+//       subscriptionId: subscription.id,
+//     };
+//   }
 
 
 module.exports =
