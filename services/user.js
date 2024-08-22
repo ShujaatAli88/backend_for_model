@@ -282,7 +282,7 @@ async function checkoutSession(body) {
         cancel_url: `${process.env.CLIENT_URL}/cancel`,
     });
 
-    return { session, message: "Subscription Successful" };
+    return { id: session.id, message: "Subscription Successful" };
 }
 
 // async createSubscription(createSubscriptionRequest) {

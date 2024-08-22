@@ -1,6 +1,8 @@
 const { ipcRenderer } = require('electron');
-const loadStripe = require("@stripe/stripe-js")
+const stripe = require("@stripe/stripe-js")
+// const dotenv = require('dotenv');
 
+// dotenv.config();
 
 document.addEventListener('DOMContentLoaded', () => {
     const loginForm = document.getElementById('loginForm');
@@ -13,6 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const freeTrial = document.getElementById('freeTrial');
     const yearlySub = document.getElementById('yearlySub');
     const monthlySub = document.getElementById('monthlySub');
+
 
     // if (loginForm) {
     //     loginForm.addEventListener('submit', (e) => {
@@ -261,9 +264,12 @@ document.addEventListener('DOMContentLoaded', () => {
         })
     }
     if (yearlySub) {
-        yearlySub.addEventListener('click', async (e) => {
+        const Stripe = async () => {
+            const stripe = await stripe(process.env.STRIPE_PUBLIC_KEY)
+            return stripe
+        }
+        yearlySub.addEventListener('click', (e) => {
             e.preventDefault();
-            const stripe = await loadStripe('Put public strip key here')
             const email = localStorage.getItem('userEmail');
             const token = localStorage.getItem('authToken');
             console.log(token, email)
@@ -275,7 +281,7 @@ document.addEventListener('DOMContentLoaded', () => {
             //     "Content-Type": "application/json"
             // }
 
-            const productName = 'Yearly Subsciption';
+            const productName = 'Yearly Plan';
             const productPrice = 4444.8
             ipcRenderer.send('yearly-subscription', { email, token, productName, productPrice });
         });
@@ -289,7 +295,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // localStorage.setItem('firstName', response.firstName);
                 // window.location.href = 'verify.html';
                 // setTimeout
-                const result = stripe.redirectToCheckout({
+                const result = Stripe().redirectToCheckout({
                     sessionId: response.session.id
                 })
                 if (result.error) {
@@ -298,8 +304,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 else {
                     setTimeout("window.location.href = 'dashboard.html';", 3000);
                 }
-
-
             }
             else if (!response.success) {
                 message.classList.add('pop-up', 'alert', 'alert-danger');
