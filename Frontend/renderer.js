@@ -1,4 +1,6 @@
 const { ipcRenderer } = require('electron');
+const loadStripe = require("@stripe/stripe-js")
+
 
 document.addEventListener('DOMContentLoaded', () => {
     const loginForm = document.getElementById('loginForm');
@@ -259,13 +261,22 @@ document.addEventListener('DOMContentLoaded', () => {
         })
     }
     if (yearlySub) {
-        yearlySub.addEventListener('click', (e) => {
+        yearlySub.addEventListener('click', async (e) => {
             e.preventDefault();
+            const stripe = await loadStripe('Put public strip key here')
             const email = localStorage.getItem('userEmail');
             const token = localStorage.getItem('authToken');
             console.log(token, email)
+            // const body = {
+            //     productName: 'Yearly Subsciption',
+            //     productPrice: 4444.8
+            // }
+            // const headers = {
+            //     "Content-Type": "application/json"
+            // }
+
             const productName = 'Yearly Subsciption';
-            const productPrice = 4444.8 + 755.616
+            const productPrice = 4444.8
             ipcRenderer.send('yearly-subscription', { email, token, productName, productPrice });
         });
         ipcRenderer.on('yearly-subscription', (event, response) => {
@@ -277,7 +288,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 // localStorage.setItem('userEmail', response.email);
                 // localStorage.setItem('firstName', response.firstName);
                 // window.location.href = 'verify.html';
-                setTimeout("window.location.href = 'dashboard.html';", 3000);
+                // setTimeout
+                const result = stripe.redirectToCheckout({
+                    sessionId: response.session.id
+                })
+                if (result.error) {
+                    console.log(result.error)
+                }
+                else {
+                    setTimeout("window.location.href = 'dashboard.html';", 3000);
+                }
+
 
             }
             else if (!response.success) {
