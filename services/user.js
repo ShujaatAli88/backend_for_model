@@ -182,7 +182,7 @@ async function loginUser(body) {
 
     const user = await userSchema.findOne({ email });
     if (!user) {
-        throw new Error("Invalid email or password");
+        throw new Error("User Not found. Please register an account.");
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
@@ -238,6 +238,7 @@ async function activateTrialPeriod(body) {
         throw new Error("Trial period already activated");
     }
 
+    user.trialStartDate = new Date()
     user.isTrialActive = true;
     await user.save();
 
@@ -279,7 +280,7 @@ async function checkoutSession(body) {
         ],
         // success_url: `${process.env.CLIENT_URL}/dashboard.html`,
         success_url: "../Frontend/dashboard.html",
-        cancel_url: `${process.env.CLIENT_URL}/cancel`,
+        cancel_url: "../Frontend/subError.html",
     });
 
     return { id: session.id, message: "Subscription Successful" };

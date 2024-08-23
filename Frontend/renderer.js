@@ -244,6 +244,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (response.success) {
                 message.classList.add('pop-up', 'alert', 'alert-primary');
                 message.textContent = response.message;
+
                 // localStorage.setItem('authToken', response.token);
                 // localStorage.setItem('userEmail', response.email);
                 // localStorage.setItem('firstName', response.firstName);

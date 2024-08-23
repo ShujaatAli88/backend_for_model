@@ -345,7 +345,7 @@ ipcMain.on("yearly-subscription", async (event, data) => {
         event.reply('yearly-subscription', {
             success: true,
             message: response.data.message,
-            session: response.data.session
+            sessionId: response.data.id
             // email: response.data.email,
             // token: response.data.token
         });

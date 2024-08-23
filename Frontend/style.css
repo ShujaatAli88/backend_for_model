@@ -95,6 +95,12 @@ a:hover {
 
 .navbar {
     background: linear-gradient(to right, #3a7bd5, #3a6073);
+    border-radius: 5px;
+    position: fixed;
+    top: 0;
+    /* height: auto; */
+    /* width: 100%; */
+    z-index: 1000;
 }
 
 #welcome-message {
