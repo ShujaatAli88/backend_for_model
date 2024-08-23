@@ -328,13 +328,14 @@ ipcMain.on("activate-trial", async (event, data) => {
     }
 });
 
-ipcMain.on("yearly-subscription", async (event, data) => {
+ipcMain.on("create-subscription", async (event, data) => {
     try {
         const response = await axios.post(`${API_URL}/payment-checkout`,
             {
+                paymentMethod: data.paymentMethod,
+                name: data.name,
                 email: data.email,
-                productName: data.productName,
-                productPrice: data.productPrice
+                priceId: data.priceId,
             },
             {
                 headers: {
@@ -342,16 +343,17 @@ ipcMain.on("yearly-subscription", async (event, data) => {
                 }
             }
         )
-        event.reply('yearly-subscription', {
+        event.reply('subscription-result', {
             success: true,
             message: response.data.message,
-            sessionId: response.data.id
+            clientSecret: response.data.clientSecret,
+            subscriptionId: response.data.subscriptionId
             // email: response.data.email,
             // token: response.data.token
         });
     }
     catch (error) {
-        event.reply('yearly-subscription', { success: false, message: error.response?.data.message || error.response?.data || 'Error in the payment checkout' });
+        event.reply('subscription-result', { success: false, message: error.response?.data.message || error.response?.data || 'Error in the payment checkout' });
     }
 });
 

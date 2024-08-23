@@ -1,5 +1,5 @@
 const { ipcRenderer } = require('electron');
-const stripe = require("@stripe/stripe-js")
+const stripe = require("@stripe/stripe-js").loadStripe(process.env.STRIPE_PUBLIC_KEY)
 // const dotenv = require('dotenv');
 
 // dotenv.config();
@@ -13,8 +13,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const logout = document.getElementById('logout');
     const message = document.getElementById('message');
     const freeTrial = document.getElementById('freeTrial');
-    const yearlySub = document.getElementById('yearlySub');
-    const monthlySub = document.getElementById('monthlySub');
+    // const yearlySub = document.getElementById('yearlySub');
+    // const monthlySub = document.getElementById('monthlySub');
+    // const stripeInstance = stripe(process.env.STRIPE_PUBLIC_KEY);
+    // const elements = stripe.elements();
+    // const cardElement = elements.create('card');
+    // cardElement.mount('#card-element');
+
+    const form = document.getElementById('payment-form');
+    const submitButton = document.getElementById('submit-button');
+    const paymentType = document.getElementById('price-select').value
+
 
 
     // if (loginForm) {
@@ -264,94 +273,169 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         })
     }
-    if (yearlySub) {
-        const Stripe = async () => {
-            const stripe = await stripe(process.env.STRIPE_PUBLIC_KEY)
-            return stripe
-        }
-        yearlySub.addEventListener('click', (e) => {
-            e.preventDefault();
-            const email = localStorage.getItem('userEmail');
-            const token = localStorage.getItem('authToken');
-            console.log(token, email)
-            // const body = {
-            //     productName: 'Yearly Subsciption',
-            //     productPrice: 4444.8
-            // }
-            // const headers = {
-            //     "Content-Type": "application/json"
-            // }
+    // if (yearlySub) {
+    //     // const Stripe = async () => {
+    //     //     const stripe = await stripe(process.env.STRIPE_PUBLIC_KEY)
+    //     //     return stripe
+    //     // }
+    //     yearlySub.addEventListener('click', (e) => {
+    //         e.preventDefault();
+    //         const email = localStorage.getItem('userEmail');
+    //         const token = localStorage.getItem('authToken');
+    //         console.log(token, email)
+    //         // const body = {
+    //         //     productName: 'Yearly Subsciption',
+    //         //     productPrice: 4444.8
+    //         // }
+    //         // const headers = {
+    //         //     "Content-Type": "application/json"
+    //         // }
 
-            const productName = 'Yearly Plan';
-            const productPrice = 4444.8
-            ipcRenderer.send('yearly-subscription', { email, token, productName, productPrice });
-        });
-        ipcRenderer.on('yearly-subscription', (event, response) => {
-            // message.textContent = response.message;
-            if (response.success) {
-                message.classList.add('pop-up', 'alert', 'alert-primary');
-                message.textContent = response.message;
-                // localStorage.setItem('authToken', response.token);
-                // localStorage.setItem('userEmail', response.email);
-                // localStorage.setItem('firstName', response.firstName);
-                // window.location.href = 'verify.html';
-                // setTimeout
-                const result = Stripe().redirectToCheckout({
-                    sessionId: response.session.id
-                })
-                if (result.error) {
-                    console.log(result.error)
-                }
-                else {
-                    setTimeout("window.location.href = 'dashboard.html';", 3000);
-                }
-            }
-            else if (!response.success) {
-                message.classList.add('pop-up', 'alert', 'alert-danger');
-                message.textContent = response.message;
-                setTimeout(() => {
-                    message.classList.add('hide');
-                }, 2000);
-                setTimeout(() => {
-                    window.location.href = 'subscription.html';
-                }, 1000)
-            }
-        })
-    }
-    if (monthlySub) {
-        monthlySub.addEventListener('click', (e) => {
-            e.preventDefault();
-            const email = localStorage.getItem('userEmail');
-            const token = localStorage.getItem('authToken');
-            console.log(token, email)
-            const productName = 'Monthly Subsciption';
-            const productPrice = 463 + 78.71
-            ipcRenderer.send('monthly-subscription', { email, token, productName, productPrice });
-        });
-        ipcRenderer.on('monthly-subscription', (event, response) => {
-            // message.textContent = response.message;
-            if (response.success) {
-                message.classList.add('pop-up', 'alert', 'alert-primary');
-                message.textContent = response.message;
-                // localStorage.setItem('authToken', response.token);
-                // localStorage.setItem('userEmail', response.email);
-                // localStorage.setItem('firstName', response.firstName);
-                // window.location.href = 'verify.html';
-                setTimeout("window.location.href = 'dashboard.html';", 3000);
+    //         const productName = 'Yearly Plan';
+    //         const productPrice = 4444.8
+    //         ipcRenderer.send('yearly-subscription', { email, token, productName, productPrice });
+    //     });
+    //     ipcRenderer.on('yearly-subscription', (event, response) => {
+    //         // message.textContent = response.message;
+    //         if (response.success) {
+    //             message.classList.add('pop-up', 'alert', 'alert-primary');
+    //             message.textContent = response.message;
+    //             // localStorage.setItem('authToken', response.token);
+    //             // localStorage.setItem('userEmail', response.email);
+    //             // localStorage.setItem('firstName', response.firstName);
+    //             // window.location.href = 'verify.html';
+    //             // setTimeout
+    //             const result = stripe.redirectToCheckout({
+    //                 sessionId: response.session.id
+    //             })
+    //             if (result.error) {
+    //                 console.log(result.error)
+    //             }
+    //             else {
+    //                 setTimeout("window.location.href = 'dashboard.html';", 3000);
+    //             }
+    //         }
+    //         else if (!response.success) {
+    //             message.classList.add('pop-up', 'alert', 'alert-danger');
+    //             message.textContent = response.message;
+    //             setTimeout(() => {
+    //                 message.classList.add('hide');
+    //             }, 2000);
+    //             setTimeout(() => {
+    //                 window.location.href = 'subscription.html';
+    //             }, 1000)
+    //         }
+    //     })
+    // }
+    // if (monthlySub) {
+    //     monthlySub.addEventListener('click', (e) => {
+    //         e.preventDefault();
+    //         const email = localStorage.getItem('userEmail');
+    //         const token = localStorage.getItem('authToken');
+    //         console.log(token, email)
+    //         const productName = 'Monthly Subsciption';
+    //         const productPrice = 463 + 78.71
+    //         ipcRenderer.send('monthly-subscription', { email, token, productName, productPrice });
+    //     });
+    //     ipcRenderer.on('monthly-subscription', (event, response) => {
+    //         // message.textContent = response.message;
+    //         if (response.success) {
+    //             message.classList.add('pop-up', 'alert', 'alert-primary');
+    //             message.textContent = response.message;
+    //             setTimeout("window.location.href = 'dashboard.html';", 3000);
 
-            }
-            else if (!response.success) {
-                message.classList.add('pop-up', 'alert', 'alert-danger');
-                message.textContent = response.message;
-                setTimeout(() => {
-                    message.classList.add('hide');
-                }, 2000);
-                setTimeout(() => {
-                    window.location.href = 'subscription.html';
-                }, 1000)
-            }
-        })
+    //         }
+    //         else if (!response.success) {
+    //             message.classList.add('pop-up', 'alert', 'alert-danger');
+    //             message.textContent = response.message;
+    //             setTimeout(() => {
+    //                 message.classList.add('hide');
+    //             }, 2000);
+    //             setTimeout(() => {
+    //                 window.location.href = 'subscription.html';
+    //             }, 1000)
+    //         }
+    //     })
+    // }
+    if (form) {
+        (async function () {
+            const stripeInstance = await stripe;
+
+            const elements = stripeInstance.elements();
+            const cardElement = elements.create('card');
+            cardElement.mount('#card-element');
+            form.addEventListener('submit', async (event) => {
+                event.preventDefault();
+                submitButton.disabled = true;
+                const { paymentMethod, error } = await stripeInstance.createPaymentMethod({
+                    type: 'card',
+                    card: cardElement,
+                    billing_details: {
+                        name: document.getElementById('name').value,
+                        email: document.getElementById('email').value,
+                    },
+                });
+
+                if (error) {
+                    alert(error.message);
+                    submitButton.disabled = false;
+                    return;
+                }
+                const email = localStorage.getItem('userEmail');
+                const token = localStorage.getItem('authToken');
+                const productName = '';
+                const productPrice = 0;
+                const priceId = '';
+                if (paymentType === "Monthly Plan - €463/month") {
+                    productName = 'Monthly plan';
+                    productPrice = 463;
+                    priceId = 'price_1PqK5dGQqr36Qs46jCT3Kamr'
+                }
+                else if (paymentType === "Yearly Plan - €4444.8/year") {
+                    productName = 'Yearly plan';
+                    productPrice = 4444.8;
+                    priceId = 'price_1PqK7JGQqr36Qs46An76ntuG'
+                }
+
+                ipcRenderer.send('create-subscription', {
+                    paymentMethodId: paymentMethod.id,
+                    name: document.getElementById('name').value,
+                    email: email,
+                    token: token,
+                    productName: productName,
+                    productPrice: productPrice,
+                    priceId: priceId
+                });
+            });
+
+            ipcRenderer.on('subscription-result', (event, response) => {
+                if (response.success) {
+                    if (response.clientSecret) {
+                        stripe.confirmCardPayment(response.clientSecret)
+                            .then(result => {
+                                if (result.error) {
+                                    alert(result.error.message);
+                                } else {
+                                    alert('Success! Check your email for the invoice.');
+                                    setTimeout(() => {
+                                        window.location.href = 'dashboard.html';
+                                    }, 3000);
+                                }
+                            });
+                    } else {
+                        alert('Success! Check your email for the invoice.');
+                        setTimeout(() => {
+                            window.location.href = 'dashboard.html';
+                        }, 3000);
+                    }
+                } else {
+                    alert(response.message || 'An error occurred. Please try again.');
+                }
+                submitButton.disabled = false;
+            });
+        })()
     }
+
 })
 
 document.getElementById("welcome-message").innerHTML = `Welcome ${localStorage.getItem('firstName')}`
