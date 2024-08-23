@@ -247,84 +247,112 @@ async function activateTrialPeriod(body) {
 
 
 // Function for stripe payment
-async function checkoutSession(body) {
-    // const { productInfo } = body;
-    const { productName, productPrice } = body
-    console.log(productName, productPrice)
-    const lineItem = {
-        price_data: {
-            currency: 'eur',
-            product_data: {
-                name: productName,
-            },
-            unit_amount: Math.round(productPrice * 100),
-        },
-        quantity: 1,
-    }
-    console.log(process.env.STRIPE_SECRET_KEY)
-    const session = await stripe.checkout.sessions.create({
-        payment_method_types: ['card'],
-        mode: 'subscription',
-        line_items: [
-            lineItem
-            // {
-            //     price_data: {
-            //         currency: 'usd',
-            //         product_data: {
-            //             name: productInfo.name,
-            //         },
-            //         unit_amount: productInfo.price * 100,
-            //     },
-            //     quantity: 1,
-            // },
-        ],
-        // success_url: `${process.env.CLIENT_URL}/dashboard.html`,
-        success_url: "../Frontend/dashboard.html",
-        cancel_url: "../Frontend/subError.html",
-    });
-
-    return { id: session.id, message: "Subscription Successful" };
-}
-
-// async createSubscription(createSubscriptionRequest) {
-
-//     // create a stripe customer
+// async function checkoutSession(body) {
+//     // const { productInfo } = body;
+//     const { productName, productPrice, email, name } = body
 //     const customer = await this.stripe.customers.create({
-//       name: createSubscriptionRequest.name,
-//       email: createSubscriptionRequest.email,
-//       payment_method: createSubscriptionRequest.paymentMethod,
-//       invoice_settings: {
-//         default_payment_method: createSubscriptionRequest.paymentMethod,
-//       },
+//         name: name,
+//         email: email,
+//         payment_method: 'card',
+//         invoice_settings: {
+//             default_payment_method: 'card',
+//         },
 //     });
 
 
 //     // get the price id from the front-end
-//     const priceId = createSubscriptionRequest.priceId;
+//     const priceId = productPrice;
 
 //     // create a stripe subscription
 //     const subscription = await this.stripe.subscriptions.create({
-//       customer: customer.id,
-//       items: [{ price: priceId }],
-//       payment_settings: {
-//         payment_method_options: {
-//           card: {
-//             request_three_d_secure: 'any',
-//           },
+//         customer: customer.id,
+//         items: [{ price: priceId }],
+//         payment_settings: {
+//             payment_method_options: {
+//                 card: {
+//                     request_three_d_secure: 'any',
+//                 },
+//             },
+//             payment_method_types: ['card'],
+//             save_default_payment_method: 'on_subscription',
 //         },
-//         payment_method_types: ['card'],
-//         save_default_payment_method: 'on_subscription',
-//       },
-//       expand: ['latest_invoice.payment_intent'],
+//         expand: ['latest_invoice.payment_intent'],
 //     });
 
 //     // return the client secret and subscription id
 //     return {
-//       clientSecret: subscription.latest_invoice.payment_intent.client_secret,
-//       subscriptionId: subscription.id,
-//     };
-//   }
+//         clientSecret: subscription.latest_invoice.payment_intent.client_secret,
+//         subscriptionId: subscription.id,
+//     }
 
+// console.log(productName, productPrice)
+// const lineItem = {
+//     price_data: {
+//         currency: 'eur',
+//         product_data: {
+//             name: productName,
+//         },
+//         unit_amount: Math.round(productPrice * 100),
+//     },
+//     quantity: 1,
+// }
+// console.log(process.env.STRIPE_SECRET_KEY)
+// const session = await stripe.checkout.sessions.create({
+//     payment_method_types: ['card'],
+//     mode: 'subscription',
+//     line_items: [
+//         lineItem
+//         // {
+//         //     price_data: {
+//         //         currency: 'usd',
+//         //         product_data: {
+//         //             name: productInfo.name,
+//         //         },
+//         //         unit_amount: productInfo.price * 100,
+//         //     },
+//         //     quantity: 1,
+//         // },
+//     ],
+//     // success_url: `${process.env.CLIENT_URL}/dashboard.html`,
+//     success_url: "../Frontend/dashboard.html",
+//     cancel_url: "../Frontend/subError.html",
+// });
+
+// return { id: session.id, message: "Subscription Successful" };
+// create a stripe customer
+// }
+
+async function checkoutSession(body) {
+    const { paymentMethod, name, email, priceId } = body;
+
+    const customer = await stripe.customers.create({
+        name,
+        email,
+        payment_method: paymentMethod,
+        invoice_settings: {
+            default_payment_method: paymentMethod,
+        },
+    });
+
+    const subscription = await stripe.subscriptions.create({
+        customer: customer.id,
+        items: [{ price: priceId }],
+        payment_settings: {
+            payment_method_options: {
+                card: {
+                    request_three_d_secure: 'any',
+                },
+            },
+            payment_method_types: ['card'],
+            save_default_payment_method: 'on_subscription',
+        },
+        expand: ['latest_invoice.payment_intent'],
+    });
+    return {
+        clientSecret: subscription.latest_invoice.payment_intent.client_secret,
+        subscriptionId: subscription.id,
+    }
+}
 
 module.exports =
     { registerUser, loginUser, verifyCode, resendVerificationCode, activateTrialPeriod, checkoutSession }

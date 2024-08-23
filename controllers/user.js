@@ -71,11 +71,51 @@ router.post("/payment-checkout", protect, async (req, res) => {
     const body = req.body
     try {
         const session = await userService.checkoutSession(body)
-        res.status(200).json({ id: session.id })
+        res.status(200).json({ message: "Subscription successful", session })
     }
     catch (err) {
-        res.status(500).json({ message: err.message })
+        // res.status(500).json({ message: err.message })
+        console.error(err.message);
+        res.status(500).json({ error: 'An error occurred while creating the subscription.' });
     }
 })
+
+// app.post('/create-subscription', async (req, res) => {
+//     try {
+//         const { paymentMethod, name, email, priceId } = req.body;
+
+//         const customer = await stripe.customers.create({
+//             name,
+//             email,
+//             payment_method: paymentMethod,
+//             invoice_settings: {
+//                 default_payment_method: paymentMethod,
+//             },
+//         });
+
+//         const subscription = await stripe.subscriptions.create({
+//             customer: customer.id,
+//             items: [{ price: priceId }],
+//             payment_settings: {
+//                 payment_method_options: {
+//                     card: {
+//                         request_three_d_secure: 'any',
+//                     },
+//                 },
+//                 payment_method_types: ['card'],
+//                 save_default_payment_method: 'on_subscription',
+//             },
+//             expand: ['latest_invoice.payment_intent'],
+//         });
+
+//         res.json({
+//             clientSecret: subscription.latest_invoice.payment_intent.client_secret,
+//             subscriptionId: subscription.id,
+//         });
+//     } catch (error) {
+//         console.error(error);
+//         res.status(500).json({ error: 'An error occurred while creating the subscription.' });
+//     }
+// });
 
 module.exports = router
