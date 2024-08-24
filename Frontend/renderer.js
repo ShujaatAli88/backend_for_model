@@ -1,8 +1,8 @@
 const { ipcRenderer } = require('electron');
+const dotenv = require('dotenv');
 const stripe = require("@stripe/stripe-js").loadStripe(process.env.STRIPE_PUBLIC_KEY)
-// const dotenv = require('dotenv');
 
-// dotenv.config();
+dotenv.config();
 
 document.addEventListener('DOMContentLoaded', () => {
     const loginForm = document.getElementById('loginForm');
@@ -22,26 +22,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const form = document.getElementById('payment-form');
     const submitButton = document.getElementById('submit-button');
-    const paymentType = document.getElementById('price-select').value
+    const paymentType = document.getElementById('price-select');
 
-
-
-    // if (loginForm) {
-    //     loginForm.addEventListener('submit', (e) => {
-    //         e.preventDefault();
-    //         const username = document.getElementById('username').value;
-    //         const password = document.getElementById('password').value;
-    //         ipcRenderer.send('login', { username, password });
-    //     });
-
-    //     ipcRenderer.on('login-response', (event, response) => {
-    //         message.textContent = response.message;
-    //         if (response.success) {
-    //             // Redirect to a dashboard or home page
-    //             alert('Login successful!');
-    //         }
-    //     });
-    // }
 
     // if (registerForm) {
     //     registerForm.addEventListener('submit', (e) => {
@@ -63,13 +45,14 @@ document.addEventListener('DOMContentLoaded', () => {
     if (loginForm) {
         loginForm.addEventListener('submit', (e) => {
             e.preventDefault();
+            console.log("login function")
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
             localStorage.getItem('authToken')
             ipcRenderer.send('login', { email, password });
         });
         ipcRenderer.on('login-response', (event, response) => {
-            // setTimeout("message.textContent = response.message; message.classList.add('pop-up', 'alert', 'alert-primary');", 2000)
+
             if (response.success) {
                 message.classList.add('pop-up', 'alert', 'alert-primary');
                 message.textContent = response.message;
@@ -273,6 +256,101 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         })
     }
+    if (form) {
+        (async function () {
+            const stripeInstance = await stripe;
+
+            // const elements = stripeInstance.elements();
+            console.log(elements)
+            // const cardElement = elements.create('card');
+            // cardElement.mount('#card-element');
+            form.addEventListener('submit', async (event) => {
+                event.preventDefault();
+                submitButton.disabled = true;
+                const { paymentMethod, error } = await stripeInstance.createPaymentMethod({
+                    type: 'card',
+                    card: cardElement,
+                    billing_details: {
+                        name: document.getElementById('name').value,
+                        email: document.getElementById('email').value,
+                    },
+                });
+
+                if (error) {
+                    alert(error.message);
+                    submitButton.disabled = false;
+                    return;
+                }
+
+                const email = localStorage.getItem('userEmail');
+                const token = localStorage.getItem('authToken');
+                const productName = '';
+                const productPrice = 0;
+                const priceId = '';
+                const payment = paymentType
+
+                for (let i = 0; i < payment.length; i++) {
+                    let option = a.options[i];
+                    if (option.value == "Monthly Plan - €463/month") {
+                        productName = 'Monthly plan';
+                        productPrice = 463;
+                        priceId = 'price_1PqK5dGQqr36Qs46jCT3Kamr'
+                    }
+                    else if (option.value == "Yearly Plan - €4444.8/year") {
+                        productName = 'Yearly plan';
+                        productPrice = 4444.8;
+                        priceId = 'price_1PqK7JGQqr36Qs46An76ntuG'
+                    }
+                }
+                // if (paymentType === "Monthly Plan - €463/month") {
+                //     productName = 'Monthly plan';
+                //     productPrice = 463;
+                //     priceId = 'price_1PqK5dGQqr36Qs46jCT3Kamr'
+                // }
+                // else if (paymentType === "Yearly Plan - €4444.8/year") {
+                //     productName = 'Yearly plan';
+                //     productPrice = 4444.8;
+                //     priceId = 'price_1PqK7JGQqr36Qs46An76ntuG'
+                // }
+
+                ipcRenderer.send('create-subscription', {
+                    paymentMethodId: paymentMethod.id,
+                    name: document.getElementById('name').value,
+                    email: email,
+                    token: token,
+                    productName: productName,
+                    productPrice: productPrice,
+                    priceId: priceId
+                });
+            });
+
+            ipcRenderer.on('subscription-result', (event, response) => {
+                if (response.success) {
+                    if (response.clientSecret) {
+                        stripe.confirmCardPayment(response.clientSecret)
+                            .then(result => {
+                                if (result.error) {
+                                    alert(result.error.message);
+                                } else {
+                                    alert('Success! Check your email for the invoice.');
+                                    setTimeout(() => {
+                                        window.location.href = 'dashboard.html';
+                                    }, 3000);
+                                }
+                            });
+                    } else {
+                        alert('Success! Check your email for the invoice.');
+                        setTimeout(() => {
+                            window.location.href = 'dashboard.html';
+                        }, 3000);
+                    }
+                } else {
+                    alert(response.message || 'An error occurred. Please try again.');
+                }
+                submitButton.disabled = false;
+            });
+        })()
+    }
     // if (yearlySub) {
     //     // const Stripe = async () => {
     //     //     const stripe = await stripe(process.env.STRIPE_PUBLIC_KEY)
@@ -357,84 +435,6 @@ document.addEventListener('DOMContentLoaded', () => {
     //         }
     //     })
     // }
-    if (form) {
-        (async function () {
-            const stripeInstance = await stripe;
-
-            const elements = stripeInstance.elements();
-            const cardElement = elements.create('card');
-            cardElement.mount('#card-element');
-            form.addEventListener('submit', async (event) => {
-                event.preventDefault();
-                submitButton.disabled = true;
-                const { paymentMethod, error } = await stripeInstance.createPaymentMethod({
-                    type: 'card',
-                    card: cardElement,
-                    billing_details: {
-                        name: document.getElementById('name').value,
-                        email: document.getElementById('email').value,
-                    },
-                });
-
-                if (error) {
-                    alert(error.message);
-                    submitButton.disabled = false;
-                    return;
-                }
-                const email = localStorage.getItem('userEmail');
-                const token = localStorage.getItem('authToken');
-                const productName = '';
-                const productPrice = 0;
-                const priceId = '';
-                if (paymentType === "Monthly Plan - €463/month") {
-                    productName = 'Monthly plan';
-                    productPrice = 463;
-                    priceId = 'price_1PqK5dGQqr36Qs46jCT3Kamr'
-                }
-                else if (paymentType === "Yearly Plan - €4444.8/year") {
-                    productName = 'Yearly plan';
-                    productPrice = 4444.8;
-                    priceId = 'price_1PqK7JGQqr36Qs46An76ntuG'
-                }
-
-                ipcRenderer.send('create-subscription', {
-                    paymentMethodId: paymentMethod.id,
-                    name: document.getElementById('name').value,
-                    email: email,
-                    token: token,
-                    productName: productName,
-                    productPrice: productPrice,
-                    priceId: priceId
-                });
-            });
-
-            ipcRenderer.on('subscription-result', (event, response) => {
-                if (response.success) {
-                    if (response.clientSecret) {
-                        stripe.confirmCardPayment(response.clientSecret)
-                            .then(result => {
-                                if (result.error) {
-                                    alert(result.error.message);
-                                } else {
-                                    alert('Success! Check your email for the invoice.');
-                                    setTimeout(() => {
-                                        window.location.href = 'dashboard.html';
-                                    }, 3000);
-                                }
-                            });
-                    } else {
-                        alert('Success! Check your email for the invoice.');
-                        setTimeout(() => {
-                            window.location.href = 'dashboard.html';
-                        }, 3000);
-                    }
-                } else {
-                    alert(response.message || 'An error occurred. Please try again.');
-                }
-                submitButton.disabled = false;
-            });
-        })()
-    }
 
 })
 
@@ -470,5 +470,3 @@ function showPassword() {
         x.type = "password";
     }
 }
-
-// document.addEventListener()

@@ -80,6 +80,13 @@
     </form>
 
     <script src="renderer.js"></script>
+    <script>
+        const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY)
+            (async)
+        const elements = stripeInstance.elements();
+        const cardElement = elements.create('card');
+        cardElement.mount('#card-element');
+    </script>
 </body>
 
 </html>
