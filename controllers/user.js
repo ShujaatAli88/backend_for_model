@@ -5,7 +5,6 @@ const checkTrialPeriod = require("../middleware/trialPeriodCheckMiddleware")
 const { protect } = require("../middleware/authMiddleware")
 
 
-
 router.post("/register", async (req, res) => {
     const body = req.body
     try {
@@ -49,6 +48,8 @@ router.post("/login", async (req, res) => {
     try {
         const user = await userService.loginUser(body)
         console.log(user)
+        console.log(process.env.STRIPE_SECRET_KEY)
+        console.log(process.env.STRIPE_PUBLIC_KEY)
         res.status(200).json(user)
     }
     catch (err) {

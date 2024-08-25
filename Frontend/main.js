@@ -4,10 +4,11 @@ import { app, BrowserWindow, ipcMain } from 'electron';
 // const path = require('path');
 // import path from "path";
 // const Store = require('electron-store');
-import Store from "electron-store"
+// import Store from "electron-store"
 import axios from 'axios';
 
-const store = new Store();
+// const stripe = require('stripe')('YOUR_SECRET_KEY');
+
 
 // function createWindow() {
 //     const mainWindow = new BrowserWindow({
@@ -328,57 +329,88 @@ ipcMain.on("activate-trial", async (event, data) => {
     }
 });
 
-ipcMain.on("create-subscription", async (event, data) => {
+ipcMain.on('create-subscription', async (event, data) => {
     try {
-        const response = await axios.post(`${API_URL}/payment-checkout`,
-            {
-                paymentMethod: data.paymentMethod,
-                name: data.name,
-                email: data.email,
-                priceId: data.priceId,
-            },
-            {
-                headers: {
-                    'Authorization': `Bearer ${data.token}`
-                }
+        // Make an API call to your backend server
+        const response = await axios.post(`${API_URL}/payment-checkout`, {
+            paymentMethodId: data.paymentMethodId,
+            email: data.email,
+            name: data.name,
+            priceId: data.priceId,
+            token: data.token // Assuming you need to pass the auth token
+        }, {
+            headers: {
+                'Authorization': `Bearer ${data.token}`,
+                'Content-Type': 'application/json'
             }
-        )
-        event.reply('subscription-result', {
-            success: true,
-            message: response.data.message,
-            clientSecret: response.data.clientSecret,
-            subscriptionId: response.data.subscriptionId
-            // email: response.data.email,
-            // token: response.data.token
         });
+
+        if (response.data.success) {
+            event.reply('subscription-result', {
+                success: true,
+                clientSecret: response.data.clientSecret // If your API returns this
+            });
+        } else {
+            throw new Error(response.data.message || 'Subscription creation failed');
+        }
     }
     catch (error) {
         event.reply('subscription-result', { success: false, message: error.response?.data.message || error.response?.data || 'Error in the payment checkout' });
     }
 });
 
-ipcMain.on("monthly-subscription", async (event, data) => {
-    try {
-        const response = await axios.post(`${API_URL}/payment-checkout`,
-            {
-                email: data.email,
-                productName: data.productName,
-                productPrice: data.productPrice
-            },
-            {
-                headers: {
-                    'Authorization': `Bearer ${data.token}`
-                }
-            }
-        )
-        event.reply('monthly-subscription', {
-            success: true,
-            message: response.data.message,
-            // email: response.data.email,
-            // token: response.data.token
-        });
-    }
-    catch (error) {
-        event.reply('monthly-subscription', { success: false, message: error.response?.data.message || error.response?.data || 'Error in the payment checkout' });
-    }
-});
+// ipcMain.on("create-subscription", async (event, data) => {
+//     try {
+//         const response = await axios.post(`${API_URL}/payment-checkout`,
+//             {
+//                 paymentMethod: data.paymentMethod,
+//                 name: data.name,
+//                 email: data.email,
+//                 priceId: data.priceId,
+//             },
+//             {
+//                 headers: {
+//                     'Authorization': `Bearer ${data.token}`
+//                 }
+//             }
+//         )
+//         event.reply('subscription-result', {
+//             success: true,
+//             message: response.data.message,
+//             clientSecret: response.data.clientSecret,
+//             subscriptionId: response.data.subscriptionId
+//             // email: response.data.email,
+//             // token: response.data.token
+//         });
+//     }
+//     catch (error) {
+//         event.reply('subscription-result', { success: false, message: error.response?.data.message || error.response?.data || 'Error in the payment checkout' });
+//     }
+// });
+
+// ipcMain.on("monthly-subscription", async (event, data) => {
+//     try {
+//         const response = await axios.post(`${API_URL}/payment-checkout`,
+//             {
+//                 email: data.email,
+//                 productName: data.productName,
+//                 productPrice: data.productPrice
+//             },
+//             {
+//                 headers: {
+//                     'Authorization': `Bearer ${data.token}`
+//                 }
+//             }
+//         )
+//         event.reply('monthly-subscription', {
+//             success: true,
+//             message: response.data.message,
+//             // email: response.data.email,
+//             // token: response.data.token
+//         });
+//     }
+//     catch (error) {
+//         event.reply('monthly-subscription', { success: false, message: error.response?.data.message || error.response?.data || 'Error in the payment checkout' });
+//     }
+// });
+
