@@ -1,9 +1,13 @@
 const express = require("express")
+const app = express()
 const router = express.Router()
 const userService = require("../services/user")
 const checkTrialPeriod = require("../middleware/trialPeriodCheckMiddleware")
 const { protect } = require("../middleware/authMiddleware")
+const path = require("path")
 
+app.use(express.static(path.join(__dirname, "../Frontend")))
+// const filename = path.dirname("../Frontend")
 
 router.post("/register", async (req, res) => {
     const body = req.body
@@ -48,8 +52,6 @@ router.post("/login", async (req, res) => {
     try {
         const user = await userService.loginUser(body)
         console.log(user)
-        console.log(process.env.STRIPE_SECRET_KEY)
-        console.log(process.env.STRIPE_PUBLIC_KEY)
         res.status(200).json(user)
     }
     catch (err) {
@@ -68,8 +70,9 @@ router.patch("/activate-trial", protect, checkTrialPeriod, async (req, res) => {
     }
 })
 
-router.post("/payment-checkout", protect, async (req, res) => {
+router.post("/payment-checkout", async (req, res) => {
     const body = req.body
+    // console.log(body)
     try {
         const session = await userService.checkoutSession(body)
         res.status(200).json({ message: "Subscription successful", session })
@@ -79,6 +82,16 @@ router.post("/payment-checkout", protect, async (req, res) => {
         console.error(err.message);
         res.status(500).json({ error: 'An error occurred while creating the subscription.' });
     }
+})
+
+// Test api
+
+router.get("/cancel", (req, res) => {
+    res.status(200).sendFile('../Frontend/subError.html')
+})
+
+router.get("/success", (req, res) => {
+    res.status(200).sendFile(path.resolve(__dirname, "../Frontend", "dashboard.html"))
 })
 
 // app.post('/create-subscription', async (req, res) => {

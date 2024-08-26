@@ -7,17 +7,17 @@ let stripe = Stripe(process.env.STRIPE_PUBLIC_KEY)
 dotenv.config();
 
 
-async function loadStripe(key) {
-    return new Promise((resolve, reject) => {
-        if (window.Stripe) {
-            resolve(window.Stripe(key));
-        } else {
-            document.querySelector('script[src="https://js.stripe.com/v3/"]').addEventListener('load', () => {
-                resolve(window.Stripe(key));
-            });
-        }
-    });
-}
+// async function loadStripe(key) {
+//     return new Promise((resolve, reject) => {
+//         if (window.Stripe) {
+//             resolve(window.Stripe(key));
+//         } else {
+//             document.querySelector('script[src="https://js.stripe.com/v3/"]').addEventListener('load', () => {
+//                 resolve(window.Stripe(key));
+//             });
+//         }
+//     });
+// }
 
 document.addEventListener('DOMContentLoaded', () => {
     const loginForm = document.getElementById('loginForm');
@@ -43,57 +43,133 @@ document.addEventListener('DOMContentLoaded', () => {
     const submitButton = document.getElementById('submit-button');
     // const paymentType = document.getElementById('price-select');
 
-    if (form) {
-        let elements, cardElement;
+    // if (form) {
+    //     let elements, cardElement;
 
-        (async function () {
-            // stripe = await loadStripe(process.env.STRIPE_PUBLIC_KEY);
-            elements = stripe.elements();
-            cardElement = elements.create('card');
-            cardElement.mount('#card-element');
-        })();
+    //     (async function () {
+    //         // stripe = await loadStripe(process.env.STRIPE_PUBLIC_KEY);
+    //         elements = stripe.elements();
+    //         cardElement = elements.create('card');
+    //         cardElement.mount('#card-element');
+    //     })();
+    //     form.addEventListener('submit', async (event) => {
+    //         event.preventDefault();
+    //         submitButton.disabled = true;
+
+    //         if (!stripe) {
+    //             try {
+    //                 stripe = await loadStripe(process.env.STRIPE_PUBLIC_KEY);
+    //                 elements = stripe.elements();
+    //                 cardElement = elements.create('card');
+    //                 cardElement.mount('#card-element');
+    //             } catch (error) {
+    //                 console.error('Error loading Stripe:', error);
+    //                 alert('Failed to load payment system. Please try again later.');
+    //                 submitButton.disabled = false;
+    //                 return;
+    //             }
+    //         }
+    //         // const { paymentMethod, error } = await stripe.createPaymentMethod({
+    //         //     type: 'card',
+    //         //     card: cardElement,
+    //         //     billing_details: {
+    //         //         name: document.getElementById('name').value,
+    //         //         email: document.getElementById('email').value,
+    //         //     },
+    //         // });
+
+    //         try {
+    //             const { paymentMethod, error } = await stripe.createPaymentMethod({
+    //                 type: 'card',
+    //                 card: cardElement,
+    //                 billing_details: {
+    //                     name: document.getElementById('name').value,
+    //                     email: document.getElementById('email').value,
+    //                 },
+    //             });
+
+    //             if (error) {
+    //                 alert(error.message);
+    //                 submitButton.disabled = false;
+    //                 return;
+    //             }
+
+    //             const email = localStorage.getItem('userEmail');
+    //             const token = localStorage.getItem('authToken');
+    //             const priceSelect = document.getElementById('price-select');
+    //             const selectedOption = priceSelect.options[priceSelect.selectedIndex];
+    //             const priceId = selectedOption.value;
+    //             const productName = selectedOption.textContent;
+
+    //             ipcRenderer.send('create-subscription', {
+    //                 paymentMethodId: paymentMethod.id,
+    //                 name: document.getElementById('name').value,
+    //                 email: email,
+    //                 token: token,
+    //                 productName: productName,
+    //                 priceId: priceId
+    //             });
+    //         } catch (error) {
+    //             console.error('Error processing payment:', error);
+    //             alert('An error occurred while processing your payment. Please try again.');
+    //             submitButton.disabled = false;
+    //         }
+    //     });
+
+    //     //     if (error) {
+    //     //         alert(error.message);
+    //     //         submitButton.disabled = false;
+    //     //         return;
+    //     //     }
+
+    //     //     const email = localStorage.getItem('userEmail');
+    //     //     const token = localStorage.getItem('authToken');
+    //     //     const priceSelect = document.getElementById('price-select');
+    //     //     const selectedOption = priceSelect.options[priceSelect.selectedIndex];
+    //     //     const priceId = selectedOption.value;
+    //     //     const productName = selectedOption.textContent;
+
+    //     //     ipcRenderer.send('create-subscription', {
+    //     //         paymentMethodId: paymentMethod.id,
+    //     //         name: document.getElementById('name').value,
+    //     //         email: email,
+    //     //         token: token,
+    //     //         productName: productName,
+    //     //         priceId: priceId
+    //     //     });
+    //     // });
+
+    //     ipcRenderer.on('subscription-result', async (event, response) => {
+    //         if (response.success) {
+    //             if (response.clientSecret) {
+    //                 const { error } = await stripe.confirmCardPayment(response.clientSecret);
+    //                 if (error) {
+    //                     alert(error.message);
+    //                 } else {
+    //                     alert('Success! Check your email for the invoice.');
+    //                     setTimeout(() => {
+    //                         window.location.href = 'dashboard.html';
+    //                     }, 3000);
+    //                 }
+    //             } else {
+    //                 alert('Success! Check your email for the invoice.');
+    //                 setTimeout(() => {
+    //                     window.location.href = 'dashboard.html';
+    //                 }, 3000);
+    //             }
+    //         } else {
+    //             alert(response.message || 'An error occurred. Please try again.');
+    //         }
+    //         submitButton.disabled = false;
+    //     });
+    // }
+
+    if (form) {
         form.addEventListener('submit', async (event) => {
             event.preventDefault();
             submitButton.disabled = true;
 
-            if (!stripe) {
-                try {
-                    stripe = await loadStripe(process.env.STRIPE_PUBLIC_KEY);
-                    elements = stripe.elements();
-                    cardElement = elements.create('card');
-                    cardElement.mount('#card-element');
-                } catch (error) {
-                    console.error('Error loading Stripe:', error);
-                    alert('Failed to load payment system. Please try again later.');
-                    submitButton.disabled = false;
-                    return;
-                }
-            }
-            // const { paymentMethod, error } = await stripe.createPaymentMethod({
-            //     type: 'card',
-            //     card: cardElement,
-            //     billing_details: {
-            //         name: document.getElementById('name').value,
-            //         email: document.getElementById('email').value,
-            //     },
-            // });
-
             try {
-                const { paymentMethod, error } = await stripe.createPaymentMethod({
-                    type: 'card',
-                    card: cardElement,
-                    billing_details: {
-                        name: document.getElementById('name').value,
-                        email: document.getElementById('email').value,
-                    },
-                });
-
-                if (error) {
-                    alert(error.message);
-                    submitButton.disabled = false;
-                    return;
-                }
-
                 const email = localStorage.getItem('userEmail');
                 const token = localStorage.getItem('authToken');
                 const priceSelect = document.getElementById('price-select');
@@ -101,68 +177,33 @@ document.addEventListener('DOMContentLoaded', () => {
                 const priceId = selectedOption.value;
                 const productName = selectedOption.textContent;
 
-                ipcRenderer.send('create-subscription', {
-                    paymentMethodId: paymentMethod.id,
-                    name: document.getElementById('name').value,
+                ipcRenderer.send('create-checkout-session', {
                     email: email,
                     token: token,
-                    productName: productName,
+                    // productName: productName,
                     priceId: priceId
                 });
             } catch (error) {
-                console.error('Error processing payment:', error);
-                alert('An error occurred while processing your payment. Please try again.');
+                console.error('Error creating checkout session:', error);
+                alert('An error occurred while setting up the payment. Please try again.');
                 submitButton.disabled = false;
             }
         });
 
-        //     if (error) {
-        //         alert(error.message);
-        //         submitButton.disabled = false;
-        //         return;
-        //     }
-
-        //     const email = localStorage.getItem('userEmail');
-        //     const token = localStorage.getItem('authToken');
-        //     const priceSelect = document.getElementById('price-select');
-        //     const selectedOption = priceSelect.options[priceSelect.selectedIndex];
-        //     const priceId = selectedOption.value;
-        //     const productName = selectedOption.textContent;
-
-        //     ipcRenderer.send('create-subscription', {
-        //         paymentMethodId: paymentMethod.id,
-        //         name: document.getElementById('name').value,
-        //         email: email,
-        //         token: token,
-        //         productName: productName,
-        //         priceId: priceId
-        //     });
-        // });
-
-        ipcRenderer.on('subscription-result', async (event, response) => {
-            if (response.success) {
-                if (response.clientSecret) {
-                    const { error } = await stripe.confirmCardPayment(response.clientSecret);
-                    if (error) {
-                        alert(error.message);
-                    } else {
-                        alert('Success! Check your email for the invoice.');
-                        setTimeout(() => {
-                            window.location.href = 'dashboard.html';
-                        }, 3000);
-                    }
-                } else {
-                    alert('Success! Check your email for the invoice.');
-                    setTimeout(() => {
-                        window.location.href = 'dashboard.html';
-                    }, 3000);
-                }
+        ipcRenderer.on('checkout-session-created', (event, response) => {
+            if (response.success && response.sessionUrl) {
+                window.location = response.sessionUrl;
             } else {
                 alert(response.message || 'An error occurred. Please try again.');
+                submitButton.disabled = false;
             }
-            submitButton.disabled = false;
         });
     }
+
+    // ... (keep your existing code for other functionalities)
+
+
+    // ... (keep your existing helper functions)
     // async function loadStripe(key) {
     //     return new Promise((resolve, reject) => {
     //         if (window.Stripe) {
@@ -405,6 +446,60 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         })
     }
+    //     if (yearlySub) {
+    //     // const Stripe = async () => {
+    //     //     const stripe = await stripe(process.env.STRIPE_PUBLIC_KEY)
+    //     //     return stripe
+    //     // }
+    //     yearlySub.addEventListener('click', (e) => {
+    //         e.preventDefault();
+    //         const email = localStorage.getItem('userEmail');
+    //         const token = localStorage.getItem('authToken');
+    //         console.log(token, email)
+    //         // const body = {
+    //         //     productName: 'Yearly Subsciption',
+    //         //     productPrice: 4444.8
+    //         // }
+    //         // const headers = {
+    //         //     "Content-Type": "application/json"
+    //         // }
+
+    //         const productName = 'Yearly Plan';
+    //         const productPrice = 4444.8
+    //         ipcRenderer.send('yearly-subscription', { email, token, productName, productPrice });
+    //     });
+    //     ipcRenderer.on('yearly-subscription', (event, response) => {
+    //         // message.textContent = response.message;
+    //         if (response.success) {
+    //             message.classList.add('pop-up', 'alert', 'alert-primary');
+    //             message.textContent = response.message;
+    //             // localStorage.setItem('authToken', response.token);
+    //             // localStorage.setItem('userEmail', response.email);
+    //             // localStorage.setItem('firstName', response.firstName);
+    //             // window.location.href = 'verify.html';
+    //             // setTimeout
+    //             const result = stripe.redirectToCheckout({
+    //                 sessionId: response.session.id
+    //             })
+    //             if (result.error) {
+    //                 console.log(result.error)
+    //             }
+    //             else {
+    //                 setTimeout("window.location.href = 'dashboard.html';", 3000);
+    //             }
+    //         }
+    //         else if (!response.success) {
+    //             message.classList.add('pop-up', 'alert', 'alert-danger');
+    //             message.textContent = response.message;
+    //             setTimeout(() => {
+    //                 message.classList.add('hide');
+    //             }, 2000);
+    //             setTimeout(() => {
+    //                 window.location.href = 'subscription.html';
+    //             }, 1000)
+    //         }
+    //     })
+    // }
     // if (form) {
     //     (async function () {
     //         const stripeInstance = await stripe;

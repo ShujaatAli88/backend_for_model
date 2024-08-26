@@ -5,7 +5,16 @@ import { app, BrowserWindow, ipcMain } from 'electron';
 // import path from "path";
 // const Store = require('electron-store');
 // import Store from "electron-store"
+// const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+// import { stripe } from 'stripe';
+import dotenv from 'dotenv'
+import Stripe from 'stripe';
+// const stripe = new Stripe('sk_test_51PeLrvGQqr36Qs46EcrQ0J77N8AIWm88mdsRc324EL5gN7pUVyEEZ542LdFVZJUoNNw7wdQWcpouY3tl6QkXtGIf00hddn6P1K')
 import axios from 'axios';
+
+dotenv.config()
+
+// stripe(process.env.STRIPE_SECRET_KEY);
 
 // const stripe = require('stripe')('YOUR_SECRET_KEY');
 
@@ -329,33 +338,77 @@ ipcMain.on("activate-trial", async (event, data) => {
     }
 });
 
-ipcMain.on('create-subscription', async (event, data) => {
-    try {
-        // Make an API call to your backend server
-        const response = await axios.post(`${API_URL}/payment-checkout`, {
-            paymentMethodId: data.paymentMethodId,
-            email: data.email,
-            name: data.name,
-            priceId: data.priceId,
-            token: data.token // Assuming you need to pass the auth token
-        }, {
-            headers: {
-                'Authorization': `Bearer ${data.token}`,
-                'Content-Type': 'application/json'
-            }
-        });
+// ipcMain.on('create-subscription', async (event, data) => {
+//     try {
+//         // Make an API call to your backend server
+//         const response = await axios.post(`${API_URL}/payment-checkout`, {
+//             // paymentMethodId: data.paymentMethodId,
+//             // email: data.email,
+//             // name: data.name,
+//             priceId: data.priceId,
+//             // token: data.token // Assuming you need to pass the auth token
+//         }, {
+//             headers: {
+//                 'Authorization': `Bearer ${data.token}`,
+//                 'Content-Type': 'application/json'
+//             }
+//         });
 
-        if (response.data.success) {
-            event.reply('subscription-result', {
-                success: true,
-                clientSecret: response.data.clientSecret // If your API returns this
-            });
-        } else {
-            throw new Error(response.data.message || 'Subscription creation failed');
-        }
-    }
-    catch (error) {
-        event.reply('subscription-result', { success: false, message: error.response?.data.message || error.response?.data || 'Error in the payment checkout' });
+//         if (response.data.success) {
+//             event.reply('subscription-result', {
+//                 success: true,
+//                 clientSecret: response.data.session // If your API returns this
+//             });
+//         } else {
+//             throw new Error(response.data.message || 'Subscription creation failed');
+//         }
+//     }
+//     catch (error) {
+//         event.reply('subscription-result', { success: false, message: error.response?.data.message || error.response?.data || 'Error in the payment checkout' });
+//     }
+// });
+
+
+
+ipcMain.on('create-checkout-session', async (event, data) => {
+    console.log('Stripe Key:', process.env.STRIPE_SECRET_KEY);
+    try {
+        const response = await axios.post(`${API_URL}/payment-checkout`,
+            {
+                email: data.email,
+                priceId: data.priceId
+            },
+            {
+                headers: {
+                    'Authorization': `Bearer ${data.token}`
+                }
+            }
+        )
+        // const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
+        // const session = await stripe.checkout.sessions.create({
+        //     payment_method_types: ['card'],
+        //     line_items: [
+        //         {
+        //             price: data.priceId,
+        //             quantity: 1,
+        //         },
+        //     ],
+        //     mode: 'subscription',
+        //     success_url: `http://localhost:3000/api/success`,
+        //     cancel_url: `http://localhost:3000/api/cancel`,
+        //     client_reference_id: data.email,
+        // });
+
+        event.reply('checkout-session-created', {
+            success: true,
+            sessionUrl: response.data.session.url
+        });
+    } catch (error) {
+        console.error('Error creating checkout session:', error);
+        event.reply('checkout-session-created', {
+            success: false,
+            message: 'Failed to create checkout session'
+        });
     }
 });
 

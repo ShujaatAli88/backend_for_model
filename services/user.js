@@ -2,7 +2,8 @@ const userSchema = require("../models/users.model.js")
 const bcrypt = require("bcrypt")
 const nodemailer = require('nodemailer');
 const jwt = require('jsonwebtoken')
-const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY)
+const Stripe = require("stripe")
+// const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
 const sendgrid = require('@sendgrid/mail')
 const dotenv = require('dotenv');
 // const dashboard = require('../Frontend/')
@@ -245,7 +246,27 @@ async function activateTrialPeriod(body) {
     return { message: "Trial period activated" };
 }
 
-
+async function checkoutSession(body) {
+    const { priceId, email } = body
+    console.log(priceId, email)
+    console.log(process.env.STRIPE_SECRET_KEY)
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
+    const session = await stripe.checkout.sessions.create({
+        payment_method_types: ['card'],
+        line_items: [
+            {
+                price: priceId,
+                quantity: 1,
+            },
+        ],
+        mode: 'subscription',
+        success_url: `http://localhost:3000/api/success`,
+        cancel_url: `http://localhost:3000/api/cancel`,
+        client_reference_id: email,
+    });
+    // console.log(session)
+    return { url: session.url }
+}
 // Function for stripe payment
 // async function checkoutSession(body) {
 //     // const { productInfo } = body;
@@ -322,37 +343,37 @@ async function activateTrialPeriod(body) {
 // create a stripe customer
 // }
 
-async function checkoutSession(body) {
-    const { paymentMethod, name, email, priceId } = body;
+// async function checkoutSession(body) {
+//     const { paymentMethod, name, email, priceId } = body;
 
-    const customer = await stripe.customers.create({
-        name,
-        email,
-        payment_method: paymentMethod,
-        invoice_settings: {
-            default_payment_method: paymentMethod,
-        },
-    });
+//     const customer = await stripe.customers.create({
+//         name,
+//         email,
+//         payment_method: paymentMethod,
+//         invoice_settings: {
+//             default_payment_method: paymentMethod,
+//         },
+//     });
 
-    const subscription = await stripe.subscriptions.create({
-        customer: customer.id,
-        items: [{ price: priceId }],
-        payment_settings: {
-            payment_method_options: {
-                card: {
-                    request_three_d_secure: 'any',
-                },
-            },
-            payment_method_types: ['card'],
-            save_default_payment_method: 'on_subscription',
-        },
-        expand: ['latest_invoice.payment_intent'],
-    });
-    return {
-        clientSecret: subscription.latest_invoice.payment_intent.client_secret,
-        subscriptionId: subscription.id,
-    }
-}
+//     const subscription = await stripe.subscriptions.create({
+//         customer: customer.id,
+//         items: [{ price: priceId }],
+//         payment_settings: {
+//             payment_method_options: {
+//                 card: {
+//                     request_three_d_secure: 'any',
+//                 },
+//             },
+//             payment_method_types: ['card'],
+//             save_default_payment_method: 'on_subscription',
+//         },
+//         expand: ['latest_invoice.payment_intent'],
+//     });
+//     return {
+//         clientSecret: subscription.latest_invoice.payment_intent.client_secret,
+//         subscriptionId: subscription.id,
+//     }
+// }
 
 module.exports =
     { registerUser, loginUser, verifyCode, resendVerificationCode, activateTrialPeriod, checkoutSession }

@@ -50,14 +50,14 @@
         }
     </style>
     <script>
-        const stripe = require("stripe")('pk_test_51PeLrvGQqr36Qs46HEU1SLOkkajz5x6p2OgrxZHnA7xuoqGuEbjKPLW6soYEBHLJ0oCc5ECKvOtwHZ8VsW7mjejd00WkLPe8YY')
-        let stripeInstance;
-        (async function () {
-            stripeInstance = await stripe
-        })()
-        const elements = stripeInstance.elements();
-        const cardElement = elements.create('card');
-        cardElement.mount('#card-element');
+        // const stripe = require("stripe")('pk_test_51PeLrvGQqr36Qs46HEU1SLOkkajz5x6p2OgrxZHnA7xuoqGuEbjKPLW6soYEBHLJ0oCc5ECKvOtwHZ8VsW7mjejd00WkLPe8YY')
+        // let stripeInstance;
+        // (async function () {
+        //     stripeInstance = await stripe
+        // })()
+        // const elements = stripeInstance.elements();
+        // const cardElement = elements.create('card');
+        // cardElement.mount('#card-element');
     </script>
 </head>
 
