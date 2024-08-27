@@ -47,7 +47,7 @@ router.post("/resend-code", protect, async (req, res) => {
 })
 
 // checkTrialPeriod,
-router.post("/login", async (req, res) => {
+router.post("/login", checkTrialPeriod, async (req, res) => {
     const body = req.body
     try {
         const user = await userService.loginUser(body)
@@ -87,7 +87,7 @@ router.post("/payment-checkout", async (req, res) => {
 // Test api
 
 router.get("/cancel", (req, res) => {
-    res.status(200).sendFile('../Frontend/subError.html')
+    res.status(200).sendFile(path.resolve(__dirname, "../Frontend", "subError.html"))
 })
 
 router.get("/success", (req, res) => {

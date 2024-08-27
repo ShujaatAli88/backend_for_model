@@ -111,9 +111,9 @@
                 </div>
                 <div class="button">
                     <form id="yearlySub">
-                        <a href="checkout.html" onclick="delayedRedirect(event, this.href, 2000)">
-                            <button type="button">Buy</button>
-                        </a>
+                        <!-- <a href="checkout.html" onclick="delayedRedirect(event, this.href, 2000)"> -->
+                        <button type="submit">Buy</button>
+                        <!-- </a> -->
 
                     </form>
                 </div>
@@ -124,15 +124,15 @@
     </div>
 
     <!-- Add subscription options here -->
-    <script>
-        function delayedRedirect(e, url, delay) {
-            e.preventDefault();
-            setTimeout(function () {
-                window.location.href = 'checkout.html';
-            }, delay);
-        }
-    </script>
     <script src="renderer.js"></script>
+    <script>
+        // function delayedRedirect(e, url, delay) {
+        //     e.preventDefault();
+        //     setTimeout(function () {
+        //         window.location.href = 'checkout.html';
+        //     }, delay);
+        // }
+    </script>
 </body>
 
 </html>

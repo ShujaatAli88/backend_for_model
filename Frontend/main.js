@@ -1,8 +1,7 @@
 // const { app, BrowserWindow } = require('electron');
 // const path = require('path');
 import { app, BrowserWindow, ipcMain } from 'electron';
-// const path = require('path');
-// import path from "path";
+
 // const Store = require('electron-store');
 // import Store from "electron-store"
 // const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
@@ -371,7 +370,7 @@ ipcMain.on("activate-trial", async (event, data) => {
 
 
 ipcMain.on('create-checkout-session', async (event, data) => {
-    console.log('Stripe Key:', process.env.STRIPE_SECRET_KEY);
+    // console.log('Stripe Key:', process.env.STRIPE_SECRET_KEY);
     try {
         const response = await axios.post(`${API_URL}/payment-checkout`,
             {
@@ -412,6 +411,55 @@ ipcMain.on('create-checkout-session', async (event, data) => {
     }
 });
 
+ipcMain.on("monthly-subscription", async (event, data) => {
+    try {
+        const response = await axios.post(`${API_URL}/payment-checkout`,
+            {
+                email: data.email,
+                priceId: data.priceId
+            },
+            {
+                headers: {
+                    'Authorization': `Bearer ${data.token}`
+                }
+            }
+        )
+        event.reply('monthly-subscription-result', {
+            success: true,
+            sessionUrl: response.data.session.url
+            // email: response.data.email,
+            // token: response.data.token
+        });
+    }
+    catch (error) {
+        event.reply('monthly-subscription-result', { success: false, message: error.response?.data.message || error.response?.data || 'Error in the payment checkout' });
+    }
+});
+
+ipcMain.on("yearly-subscription", async (event, data) => {
+    try {
+        const response = await axios.post(`${API_URL}/payment-checkout`,
+            {
+                email: data.email,
+                priceId: data.priceId
+            },
+            {
+                headers: {
+                    'Authorization': `Bearer ${data.token}`
+                }
+            }
+        )
+        event.reply('yearly-subscription-result', {
+            success: true,
+            sessionUrl: response.data.session.url
+            // email: response.data.email,
+            // token: response.data.token
+        });
+    }
+    catch (error) {
+        event.reply('yearly-subscription-result', { success: false, message: error.response?.data.message || error.response?.data || 'Error in the payment checkout' });
+    }
+});
 // ipcMain.on("create-subscription", async (event, data) => {
 //     try {
 //         const response = await axios.post(`${API_URL}/payment-checkout`,
@@ -441,29 +489,5 @@ ipcMain.on('create-checkout-session', async (event, data) => {
 //     }
 // });
 
-// ipcMain.on("monthly-subscription", async (event, data) => {
-//     try {
-//         const response = await axios.post(`${API_URL}/payment-checkout`,
-//             {
-//                 email: data.email,
-//                 productName: data.productName,
-//                 productPrice: data.productPrice
-//             },
-//             {
-//                 headers: {
-//                     'Authorization': `Bearer ${data.token}`
-//                 }
-//             }
-//         )
-//         event.reply('monthly-subscription', {
-//             success: true,
-//             message: response.data.message,
-//             // email: response.data.email,
-//             // token: response.data.token
-//         });
-//     }
-//     catch (error) {
-//         event.reply('monthly-subscription', { success: false, message: error.response?.data.message || error.response?.data || 'Error in the payment checkout' });
-//     }
-// });
+
 

@@ -28,12 +28,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const logout = document.getElementById('logout');
     const message = document.getElementById('message');
     const freeTrial = document.getElementById('freeTrial');
-    const monthlySub = document.getElementById('monthlySub')
+    const monthlySub = document.getElementById('monthlySub');
     // const stripe = loadStripe(process.env.STRIPE_PUBLIC_KEY);
     // const elements = stripe.elements();
     // const cardElement = elements.create('card');
     // cardElement.mount('#card-element');
-    // const yearlySub = document.getElementById('yearlySub');
+    const yearlySub = document.getElementById('yearlySub');
     // const monthlySub = document.getElementById('monthlySub');
     // const stripeInstance = stripe(process.env.STRIPE_PUBLIC_KEY);
     // const elements = stripe.elements();
@@ -164,35 +164,35 @@ document.addEventListener('DOMContentLoaded', () => {
     //         submitButton.disabled = false;
     //     });
     // }
-
     if (monthlySub) {
-        monthlySub.addEventListener('submit', async (event) => {
+        monthlySub.addEventListener("submit", (event) => {
             event.preventDefault();
-            submitButton.disabled = true;
-
+            // submitButton.disabled = true;
+            // console.log("entering try block")
             try {
                 const email = localStorage.getItem('userEmail');
                 const token = localStorage.getItem('authToken');
-                const priceSelect = document.getElementById('price-select');
-                const selectedOption = priceSelect.options[priceSelect.selectedIndex];
-                const priceId = price_1PqK5dGQqr36Qs46jCT3Kamr
-                // selectedOption.value;
-                const productName = selectedOption.textContent;
+                // const priceSelect = document.getElementById('price-select');
+                // const selectedOption = priceSelect.options[priceSelect.selectedIndex];
+                const priceId = "price_1PqK5dGQqr36Qs46jCT3Kamr";
+                console.log(priceId)
+                // 'price_1PqK5dGQqr36Qs46jCT3Kamr'
 
-                ipcRenderer.send('create-checkout-session', {
+                ipcRenderer.send('monthly-subscription', {
                     email: email,
                     token: token,
                     // productName: productName,
                     priceId: priceId
                 });
             } catch (error) {
+                // console.log(error)
                 console.error('Error creating checkout session:', error);
-                alert('An error occurred while setting up the payment. Please try again.');
+                alert('An error occurred while setting up the payment. Please try again.', error);
                 submitButton.disabled = false;
             }
         });
 
-        ipcRenderer.on('checkout-session-created', (event, response) => {
+        ipcRenderer.on('monthly-subscription-result', (event, response) => {
             if (response.success && response.sessionUrl) {
                 window.location = response.sessionUrl;
             } else {
@@ -201,6 +201,82 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+    if (yearlySub) {
+        yearlySub.addEventListener("submit", (event) => {
+            event.preventDefault();
+            // submitButton.disabled = true;
+            // console.log("entering try block")
+            try {
+                const email = localStorage.getItem('userEmail');
+                const token = localStorage.getItem('authToken');
+                // const priceSelect = document.getElementById('price-select');
+                // const selectedOption = priceSelect.options[priceSelect.selectedIndex];
+                const priceId = "price_1PqK7JGQqr36Qs46An76ntuG";
+                console.log(priceId)
+                // 'price_1PqK5dGQqr36Qs46jCT3Kamr'
+
+                ipcRenderer.send('yearly-subscription', {
+                    email: email,
+                    token: token,
+                    priceId: priceId
+                });
+            } catch (error) {
+                // console.log(error)
+                console.error('Error creating checkout session:', error);
+                alert('An error occurred while setting up the payment. Please try again.', error);
+                submitButton.disabled = false;
+            }
+        });
+
+        ipcRenderer.on('yearly-subscription-result', (event, response) => {
+            if (response.success && response.sessionUrl) {
+                window.location = response.sessionUrl;
+            } else {
+                alert(response.message || 'An error occurred. Please try again.');
+                submitButton.disabled = false;
+            }
+        });
+    }
+
+    // if (form) {
+    //     form.addEventListener('submit', async (event) => {
+    //         event.preventDefault();
+    //         submitButton.disabled = true;
+
+    //         try {
+    //             const email = localStorage.getItem('userEmail');
+    //             const token = localStorage.getItem('authToken');
+    //             const priceSelect = document.getElementById('price-select');
+    //             const selectedOption = priceSelect.options[priceSelect.selectedIndex];
+    //             const priceId = selectedOption.value;
+
+    //             // 'price_1PqK5dGQqr36Qs46jCT3Kamr'
+    //             const productName = selectedOption.textContent;
+
+    //             ipcRenderer.send('create-checkout-session', {
+    //                 email: email,
+    //                 token: token,
+    //                 // productName: productName,
+    //                 priceId: priceId
+    //             });
+    //         } catch (error) {
+    //             console.log(error)
+    //             console.error('Error creating checkout session:', error);
+    //             alert('An error occurred while setting up the payment. Please try again.', error);
+    //             submitButton.disabled = false;
+    //         }
+    //     });
+
+    //     ipcRenderer.on('checkout-session-created', (event, response) => {
+    //         if (response.success && response.sessionUrl) {
+    //             window.location = response.sessionUrl;
+    //         } else {
+    //             alert(response.message || 'An error occurred. Please try again.');
+    //             submitButton.disabled = false;
+    //         }
+    //     });
+    // }
 
     // ... (keep your existing code for other functionalities)
 
@@ -255,7 +331,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     console.log(response.email, response.token)
                     // window.location.href = 'verify.html';
                     setTimeout("window.location.href = 'verify.html';", 3000);
-                } else if (!response.hasSubscription) {
+                } else if (!response.hasSubscription || response.message === 'Your trial period has expired.') {
 
                     localStorage.setItem('authToken', response.token);
                     localStorage.setItem('userEmail', response.email);

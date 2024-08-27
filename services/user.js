@@ -248,7 +248,7 @@ async function activateTrialPeriod(body) {
 
 async function checkoutSession(body) {
     const { priceId, email } = body
-    console.log(priceId, email)
+    console.log(typeof (priceId), email)
     // console.log(process.env.STRIPE_SECRET_KEY)
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
     const session = await stripe.checkout.sessions.create({
