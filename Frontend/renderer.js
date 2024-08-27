@@ -28,6 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const logout = document.getElementById('logout');
     const message = document.getElementById('message');
     const freeTrial = document.getElementById('freeTrial');
+    const monthlySub = document.getElementById('monthlySub')
     // const stripe = loadStripe(process.env.STRIPE_PUBLIC_KEY);
     // const elements = stripe.elements();
     // const cardElement = elements.create('card');
@@ -164,8 +165,8 @@ document.addEventListener('DOMContentLoaded', () => {
     //     });
     // }
 
-    if (form) {
-        form.addEventListener('submit', async (event) => {
+    if (monthlySub) {
+        monthlySub.addEventListener('submit', async (event) => {
             event.preventDefault();
             submitButton.disabled = true;
 
@@ -174,7 +175,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 const token = localStorage.getItem('authToken');
                 const priceSelect = document.getElementById('price-select');
                 const selectedOption = priceSelect.options[priceSelect.selectedIndex];
-                const priceId = selectedOption.value;
+                const priceId = price_1PqK5dGQqr36Qs46jCT3Kamr
+                // selectedOption.value;
                 const productName = selectedOption.textContent;
 
                 ipcRenderer.send('create-checkout-session', {
