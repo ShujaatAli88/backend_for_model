@@ -10,10 +10,10 @@ const subscriptionDetailCheck = async (req, res, next) => {
     if (!subDetail) {
         res.status().send("401").send("User has not subscribed to any plan.")
     }
-    if (req.body.priceId == "") {
+    if (subDetail.subscriptionType == "Monthly plan") {
 
     }
-    else if (req.body.priceId == "") {
+    else if (subDetail.subscriptionType == "Yearly plan") {
 
     }
 }
