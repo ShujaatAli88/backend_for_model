@@ -56,8 +56,15 @@ async function sendVerificationCode(email, code) {
     let info = await transporter.sendMail({
         from: `"Your Service" <${process.env.USER_EMAIL}>`,
         to: email,
-        subject: 'Your Verification Code',
-        text: `Your verification code is: ${code}`
+        subject: 'Your Validation Code',
+        text: `Dear Customer,
+               Thank you for using the Genzō program!
+               Your validation code is: ${code}
+               This is for a 7-day test phase of the program.
+               If you have any questions or need further assistance, feel free to contact our support team.
+               Best regards,
+               Mitsuki SARL-S
+               info@mitsukigroup.com`
     });
 
     console.log('Message sent: %s', info.messageId);
