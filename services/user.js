@@ -139,11 +139,11 @@ async function verifyCode(body) {
 
     // Mark the code as used
     user.codeUsed = true;
+    user.trialStartDate = new Date();
+    user.isTrialActive = true;
 
     // Start the trial period after successful verification
     // if (!user.trialStartDate) {
-    //     user.trialStartDate = new Date();
-    //     user.isTrialActive = true;
     // }
 
     await user.save();

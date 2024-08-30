@@ -109,7 +109,8 @@ a:hover {
 
 .pricing-table {
     background-color: #f8f8f8;
-    padding: 40px 0px;
+    padding: 0px 0px;
+    /* changed top-bottom padding from 20px to 0px*/
 }
 
 .pricing-table .details {
@@ -184,7 +185,8 @@ a:hover {
 }
 
 .pricing-table .grid .box.yearly {
-    transform: scale(1.1);
+    /* transform: scale(1.1); */
+    /*Did this to remove the pop-up effect from the card*/
     background: linear-gradient(to right, #3a7bd5, #3a6073);
 }
 
