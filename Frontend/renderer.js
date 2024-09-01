@@ -174,7 +174,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 const token = localStorage.getItem('authToken');
                 // const priceSelect = document.getElementById('price-select');
                 // const selectedOption = priceSelect.options[priceSelect.selectedIndex];
-                const priceId = "price_1PqK5dGQqr36Qs46jCT3Kamr";
+                const priceId = "price_1PuHu3GQqr36Qs460fS9Pvc0";
+                // price_1PuHq2GQqr36Qs46jpbkwAaR
+                // price_1PqK5dGQqr36Qs46jCT3Kamr
                 console.log(priceId)
                 // 'price_1PqK5dGQqr36Qs46jCT3Kamr'
 
@@ -212,8 +214,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 const token = localStorage.getItem('authToken');
                 // const priceSelect = document.getElementById('price-select');
                 // const selectedOption = priceSelect.options[priceSelect.selectedIndex];
-                const priceId = "price_1PqK7JGQqr36Qs46An76ntuG";
-                console.log(priceId)
+                const priceId = "price_1PuHucGQqr36Qs46UXec6dUw";
+                // price_1PqK7JGQqr36Qs46An76ntuG
+                // console.log(priceId)
                 // 'price_1PqK5dGQqr36Qs46jCT3Kamr'
 
                 ipcRenderer.send('yearly-subscription', {
