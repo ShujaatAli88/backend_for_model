@@ -7,8 +7,7 @@ import { app, BrowserWindow, ipcMain } from 'electron';
 // const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 // import { stripe } from 'stripe';
 import dotenv from 'dotenv'
-import Stripe from 'stripe';
-// const stripe = new Stripe('sk_test_51PeLrvGQqr36Qs46EcrQ0J77N8AIWm88mdsRc324EL5gN7pUVyEEZ542LdFVZJUoNNw7wdQWcpouY3tl6QkXtGIf00hddn6P1K')
+// import Stripe from 'stripe';
 import axios from 'axios';
 
 dotenv.config()
