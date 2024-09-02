@@ -253,6 +253,11 @@ async function activateTrialPeriod(body) {
     return { message: "Trial period activated" };
 }
 
+// Function to check the status of subscription
+async function subscriptionInfo(body) {
+    const { email } = body
+}
+
 async function checkoutSession(body) {
     const { priceId, email } = body
     console.log(typeof (priceId), email)
