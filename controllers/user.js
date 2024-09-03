@@ -94,6 +94,15 @@ router.get("/success", (req, res) => {
     res.status(200).sendFile(path.resolve(__dirname, "../Frontend", "dashboard.html"))
 })
 
+router.get("/subscription", (req, res) => {
+    res.status(200).sendFile(path.resolve(__dirname, "../Frontend", "subscription.html"))
+})
+
+router.get("/style", (req, res) => {
+    res.status(200).sendFile(path.resolve(__dirname, "../Frontend", "style.css"))
+})
+
+
 // app.post('/create-subscription', async (req, res) => {
 //     try {
 //         const { paymentMethod, name, email, priceId } = req.body;
