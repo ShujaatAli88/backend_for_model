@@ -90,7 +90,8 @@ router.get("/cancel", (req, res) => {
     res.status(200).sendFile(path.resolve(__dirname, "../Frontend", "subError.html"))
 })
 
-router.get("/success", (req, res) => {
+router.get("/success/:email", (req, res) => {
+    console.log(req.params.email)
     res.status(200).sendFile(path.resolve(__dirname, "../Frontend", "dashboard.html"))
 })
 

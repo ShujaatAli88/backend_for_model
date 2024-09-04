@@ -1,4 +1,5 @@
 const userSchema = require("../models/users.model.js")
+const subsciptionSchema = require("../models/subscriptionDetail.model.js")
 const bcrypt = require("bcrypt")
 const nodemailer = require('nodemailer');
 const jwt = require('jsonwebtoken')
@@ -255,7 +256,18 @@ async function activateTrialPeriod(body) {
 
 // Function to check the status of subscription
 async function subscriptionInfo(body) {
-    const { email } = body
+    const { email, priceId } = body
+    const user = 'mn'
+    const subscription = await subsciptionSchema.find({}).sort({ '_id': -1 }).limit(1)
+    const id = subscription.length === 0 ? "00001" : ("00000" + String(parseInt(subscription[0]._id) + 1)).slice(-4);
+    if (priceId == 'price_1PuHu3GQqr36Qs460fS9Pvc0') {
+        const newSubscription = new subsciptionSchema({
+            _id: id,
+            email: email,
+            priceId: priceId,
+            subscriptionType: ''
+        })
+    }
 }
 
 async function checkoutSession(body) {
@@ -272,7 +284,7 @@ async function checkoutSession(body) {
             },
         ],
         mode: 'subscription',
-        success_url: `http://localhost:3000/api/success`,
+        success_url: `http://localhost:3000/api/success/${email}`,
         cancel_url: `http://localhost:3000/api/cancel`,
         client_reference_id: email,
     });
