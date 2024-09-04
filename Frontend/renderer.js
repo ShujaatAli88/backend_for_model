@@ -341,7 +341,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     localStorage.setItem('firstName', response.firstName);
                     // window.location.href = 'subscription.html';
                     setTimeout("window.location.href = 'subscription.html';", 3000);
-                } else {
+                }
+                else if (!response.hasSubscription && !response.subStatus || response.message === 'Your trial period has expired.') {
+
+                    localStorage.setItem('authToken', response.token);
+                    localStorage.setItem('userEmail', response.email);
+                    localStorage.setItem('firstName', response.firstName);
+                    // window.location.href = 'subscription.html';
+                    setTimeout("window.location.href = 'subscription.html';", 3000);
+                }
+                else {
                     localStorage.setItem('authToken', response.token);
                     localStorage.setItem('userEmail', response.email);
                     localStorage.setItem('firstName', response.firstName);

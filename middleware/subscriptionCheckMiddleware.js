@@ -21,19 +21,32 @@ const subscriptionDetailCheck = async (req, res, next) => {
     const year = subStartDate.getFullYear()
     const days = getDaysInMonth(year, monthNumber)
 
-    if (subDetail.subscriptionType == "Monthly plan") {
+    if (subDetail.subscriptionType == "Monthly Plan") {
         const diffDays = Math.floor((currentDate - subStartDate) / (1000 * 60 * 60 * 24));
-        if (days == 29 || 28) {
-
+        if (days == 28 || diffDays > 28) {
+            subDetail.subscriptionStatus = false
+            subDetail.save()
+            return res.status(403).send('Your subscription period has expired.')
         }
-        else if (days == 30) {
-
+        else if (days == 29 || diffDays > 29) {
+            subDetail.subscriptionStatus = false
+            subDetail.save()
+            return res.status(403).send('Your subscription period has expired.')
         }
-        else if (days == 31) {
-
+        else if (days == 30 || diffDays > 30) {
+            subDetail.subscriptionStatus = false
+            subDetail.save()
+            return res.status(403).send('Your subscription period has expired.')
+        }
+        else if (days == 31 || diffDays > 31) {
+            subDetail.subscriptionStatus = false
+            subDetail.save()
+            return res.status(403).send('Your subscription period has expired.')
         }
     }
-    else if (subDetail.subscriptionType == "Yearly plan") {
+    else if (subDetail.subscriptionType == "Yearly Plan") {
 
     }
 }
+
+module.exports = subscriptionDetailCheck

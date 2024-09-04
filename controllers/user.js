@@ -4,6 +4,7 @@ const router = express.Router()
 const userService = require("../services/user")
 const checkTrialPeriod = require("../middleware/trialPeriodCheckMiddleware")
 const { protect } = require("../middleware/authMiddleware")
+const checkSubscriptionPeriod = require("../middleware/subscriptionCheckMiddleware")
 const path = require("path")
 
 app.use(express.static(path.join(__dirname, "../Frontend")))
@@ -47,7 +48,7 @@ router.post("/resend-code", protect, async (req, res) => {
 })
 
 // checkTrialPeriod,
-router.post("/login", checkTrialPeriod, async (req, res) => {
+router.post("/login", checkTrialPeriod, checkSubscriptionPeriod, async (req, res) => {
     const body = req.body
     try {
         const user = await userService.loginUser(body)
@@ -70,7 +71,7 @@ router.patch("/activate-trial", protect, checkTrialPeriod, async (req, res) => {
     }
 })
 
-router.post("/payment-checkout", async (req, res) => {
+router.post("/payment-checkout", protect, async (req, res) => {
     const body = req.body
     // console.log(body)
     try {
@@ -90,9 +91,17 @@ router.get("/cancel", (req, res) => {
     res.status(200).sendFile(path.resolve(__dirname, "../Frontend", "subError.html"))
 })
 
-router.get("/success/:email", (req, res) => {
-    console.log(req.params.email)
-    res.status(200).sendFile(path.resolve(__dirname, "../Frontend", "dashboard.html"))
+router.post("/success/:email/:priceId", async (req, res) => {
+    try {
+        const body = req.params
+        const subscription = await userService.createSubscription(body)
+        console.log(req.params.email)
+        res.status(200).sendFile(path.resolve(__dirname, "../Frontend", "dashboard.html"))
+    }
+    catch (err) {
+        console.error(err.message);
+        res.status(500).json({ error: 'Your payment failed. Please try again!.' });
+    }
 })
 
 router.get("/subscription", (req, res) => {

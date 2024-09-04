@@ -190,6 +190,7 @@ async function loginUser(body) {
 
 
     const user = await userSchema.findOne({ email });
+
     if (!user) {
         throw new Error("User Not found. Please register an account.");
     }
@@ -198,6 +199,8 @@ async function loginUser(body) {
     if (!isMatch) {
         throw new Error("Incorrect password");
     }
+
+
 
     // Generate a token
     const token = generateToken(user._id);
@@ -221,15 +224,31 @@ async function loginUser(body) {
     }
 
 
-    return {
-        _id: user._id,
-        email: user.email,
-        isVerified: user.codeUsed,
-        hasSubscription: user.isTrialActive,
-        token,
-        firstName: user.firstName,
-        message: "Login successful"
-    };
+    const subscription = await subsciptionSchema.findOne({ userId: user.userId }).populate('userId')
+    if (!subscription) {
+        return {
+            _id: user._id,
+            email: user.email,
+            isVerified: user.codeUsed,
+            hasSubscription: user.isTrialActive,
+            token,
+            firstName: user.firstName,
+            // subStatus: subscription.subscriptionStatus,
+            message: "Login successful"
+        };
+    }
+    else if (subscription) {
+        return {
+            _id: user._id,
+            email: user.email,
+            isVerified: user.codeUsed,
+            hasSubscription: user.isTrialActive,
+            token,
+            firstName: user.firstName,
+            subStatus: subscription.subscriptionStatus,
+            message: "Login successful"
+        };
+    }
 }
 
 
@@ -254,19 +273,40 @@ async function activateTrialPeriod(body) {
     return { message: "Trial period activated" };
 }
 
-// Function to check the status of subscription
-async function subscriptionInfo(body) {
+// Function to create a subscription detail for the user in database
+async function createSubscription(body) {
     const { email, priceId } = body
-    const user = 'mn'
+    const user = userSchema.findOne({ email })
+
+    if (!user) {
+        throw new Error("User Not found. Please register an account.")
+    }
+
     const subscription = await subsciptionSchema.find({}).sort({ '_id': -1 }).limit(1)
     const id = subscription.length === 0 ? "00001" : ("00000" + String(parseInt(subscription[0]._id) + 1)).slice(-4);
+
     if (priceId == 'price_1PuHu3GQqr36Qs460fS9Pvc0') {
         const newSubscription = new subsciptionSchema({
             _id: id,
-            email: email,
-            priceId: priceId,
-            subscriptionType: ''
+            userId: user._id,
+            purchaseDate: new Date(),
+            subscriptionType: 'Monthly Plan',
+            subscriptionStatus: true
         })
+        await newSubscription.save()
+        return "You have successfully subscribed for Monthly Plan."
+    }
+
+    else if (priceId == 'price_1PuHucGQqr36Qs46UXec6dUw') {
+        const newSubscription = new subsciptionSchema({
+            _id: id,
+            userId: user._id,
+            purchaseDate: new Date(),
+            subscriptionType: 'Yearly Plan',
+            subscriptionStatus: true
+        })
+        await newSubscription.save()
+        return "You have successfully subscribed for Yearly Plan."
     }
 }
 
@@ -400,4 +440,4 @@ async function checkoutSession(body) {
 // }
 
 module.exports =
-    { registerUser, loginUser, verifyCode, resendVerificationCode, activateTrialPeriod, checkoutSession }
+    { registerUser, loginUser, verifyCode, resendVerificationCode, activateTrialPeriod, checkoutSession, createSubscription }

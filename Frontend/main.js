@@ -225,7 +225,8 @@ ipcMain.on('login', async (event, credentials) => {
             hasSubscription: response.data.hasSubscription,
             token: response.data.token,
             email: response.data.email,
-            firstName: response.data.firstName
+            firstName: response.data.firstName,
+            subStatus: response.data.subStatus
         });
 
         // const token = response.data.token;
