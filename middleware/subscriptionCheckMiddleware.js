@@ -47,6 +47,7 @@ const subscriptionDetailCheck = async (req, res, next) => {
     else if (subDetail.subscriptionType == "Yearly Plan") {
 
     }
+    next()
 }
 
 module.exports = subscriptionDetailCheck

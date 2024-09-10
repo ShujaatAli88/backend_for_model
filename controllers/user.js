@@ -48,7 +48,7 @@ router.post("/resend-code", protect, async (req, res) => {
 })
 
 // checkTrialPeriod,
-router.post("/login", checkTrialPeriod, checkSubscriptionPeriod, async (req, res) => {
+router.post("/login", checkSubscriptionPeriod, checkTrialPeriod, async (req, res) => {
     const body = req.body
     try {
         const user = await userService.loginUser(body)

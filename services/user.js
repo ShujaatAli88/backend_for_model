@@ -324,7 +324,7 @@ async function checkoutSession(body) {
             },
         ],
         mode: 'subscription',
-        success_url: `http://localhost:3000/api/success/${email}`,
+        success_url: `http://localhost:3000/api/success/${email}/${priceId}`,
         cancel_url: `http://localhost:3000/api/cancel`,
         client_reference_id: email,
     });
