@@ -91,7 +91,8 @@ router.get("/cancel", (req, res) => {
     res.status(200).sendFile(path.resolve(__dirname, "../Frontend", "subError.html"))
 })
 
-router.post("/success/:email/:priceId", async (req, res) => {
+// Changed 'push' to 'get' for testing
+router.get("/success/:email/:priceId", async (req, res) => {
     try {
         const body = req.params
         const subscription = await userService.createSubscription(body)

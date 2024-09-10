@@ -276,8 +276,8 @@ async function activateTrialPeriod(body) {
 // Function to create a subscription detail for the user in database
 async function createSubscription(body) {
     const { email, priceId } = body
-    const user = userSchema.findOne({ email })
-
+    const user = await userSchema.findOne({ email })
+    console.log(user, user._id)
     if (!user) {
         throw new Error("User Not found. Please register an account.")
     }
