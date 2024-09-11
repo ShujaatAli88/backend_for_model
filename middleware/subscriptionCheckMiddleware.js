@@ -43,6 +43,10 @@ const subscriptionDetailCheck = async (req, res, next) => {
             subDetail.save()
             return res.status(403).send('Your subscription period has expired.')
         }
+        else {
+            console.log("Hello, i just got executed")
+            return res.status(200).send('Your are currently subscribed to our Monthly Plan.')
+        }
     }
     else if (subDetail.subscriptionType == "Yearly Plan") {
 

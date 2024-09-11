@@ -224,7 +224,8 @@ async function loginUser(body) {
     }
 
 
-    const subscription = await subsciptionSchema.findOne({ userId: user.userId }).populate('userId')
+    const subscription = await subsciptionSchema.findOne({ userId: user._id }).populate('userId')
+    console.log(subscription, "Subscription")
     if (!subscription) {
         return {
             _id: user._id,
@@ -277,7 +278,7 @@ async function activateTrialPeriod(body) {
 async function createSubscription(body) {
     const { email, priceId } = body
     const user = await userSchema.findOne({ email })
-    console.log(user, user._id)
+    console.log(user, user._id, "mango")
     if (!user) {
         throw new Error("User Not found. Please register an account.")
     }
