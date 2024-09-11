@@ -342,7 +342,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     // window.location.href = 'subscription.html';
                     setTimeout("window.location.href = 'subscription.html';", 3000);
                 }
-                else if (!response.hasSubscription && !response.subStatus || response.message === 'Your trial period has expired.') {
+                else if (!response.subStatus || response.message === 'Your subscription period has expired.') {
 
                     localStorage.setItem('authToken', response.token);
                     localStorage.setItem('userEmail', response.email);

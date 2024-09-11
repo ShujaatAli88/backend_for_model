@@ -49,7 +49,15 @@ const subscriptionDetailCheck = async (req, res, next) => {
         }
     }
     else if (subDetail.subscriptionType == "Yearly Plan") {
-
+        const diffDays = Math.floor((currentDate - subStartDate) / (1000 * 60 * 60 * 24));
+        if (days == 365 || diffDays > 365) {
+            subDetail.subscriptionStatus = false
+            subDetail.save()
+            return res.status(403).send('Your subscription period has expired.')
+        }
+        else {
+            return res.status(200).send('Your are currently subscribed to our Yearly Plan.')
+        }
     }
     next()
 }
