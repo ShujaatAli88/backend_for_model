@@ -222,7 +222,7 @@ ipcMain.on('login', async (event, credentials) => {
             message: response.data.message,
             userId: response.data.userId,
             isVerified: response.data.isVerified,
-            hasSubscription: response.data.hasSubscription,
+            trial: response.data.trial,
             token: response.data.token,
             email: response.data.email,
             firstName: response.data.firstName,

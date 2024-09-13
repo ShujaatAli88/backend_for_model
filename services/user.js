@@ -201,7 +201,6 @@ async function loginUser(body) {
     }
 
 
-
     // Generate a token
     const token = generateToken(user._id);
 
@@ -231,7 +230,7 @@ async function loginUser(body) {
             _id: user._id,
             email: user.email,
             isVerified: user.codeUsed,
-            hasSubscription: user.isTrialActive,
+            trial: user.isTrialActive,
             token,
             firstName: user.firstName,
             // subStatus: subscription.subscriptionStatus,
@@ -243,7 +242,7 @@ async function loginUser(body) {
             _id: user._id,
             email: user.email,
             isVerified: user.codeUsed,
-            hasSubscription: user.isTrialActive,
+            trial: user.isTrialActive,
             token,
             firstName: user.firstName,
             subStatus: subscription.subscriptionStatus,
@@ -282,7 +281,10 @@ async function createSubscription(body) {
     if (!user) {
         throw new Error("User Not found. Please register an account.")
     }
-    const alreadySub = await subsciptionSchema.find({ email })
+    const alreadySub = await subsciptionSchema.find({ userId: user._id })
+    if (alreadySub) {
+        throw new Error("You have already subscribed")
+    }
     // Add the check if user have already subscribed 
     const subscription = await subsciptionSchema.find({}).sort({ '_id': -1 }).limit(1)
     const id = subscription.length === 0 ? "00001" : ("00000" + String(parseInt(subscription[0]._id) + 1)).slice(-4);

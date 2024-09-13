@@ -334,7 +334,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     console.log(response.email, response.token)
                     // window.location.href = 'verify.html';
                     setTimeout("window.location.href = 'verify.html';", 3000);
-                } else if (!response.hasSubscription || response.message === 'Your trial period has expired.') {
+
+                }
+                // response.message === 'Your trial period has expired.'
+                else if (!response.trial && !response.subStatus) {
 
                     localStorage.setItem('authToken', response.token);
                     localStorage.setItem('userEmail', response.email);
@@ -342,15 +345,15 @@ document.addEventListener('DOMContentLoaded', () => {
                     // window.location.href = 'subscription.html';
                     setTimeout("window.location.href = 'subscription.html';", 3000);
                 }
-                else if (!response.subStatus || response.message === 'Your subscription period has expired.') {
-
-                    localStorage.setItem('authToken', response.token);
-                    localStorage.setItem('userEmail', response.email);
-                    localStorage.setItem('firstName', response.firstName);
-                    // window.location.href = 'subscription.html';
-                    setTimeout("window.location.href = 'subscription.html';", 3000);
-                }
-                else if (response.subStatus || response.hasSubscription) {
+                // else if (!response.subStatus || response.message === 'Your subscription period has expired.') {
+                //     localStorage.setItem('authToken', response.token);
+                //     localStorage.setItem('userEmail', response.email);
+                //     localStorage.setItem('firstName', response.firstName);
+                //     // window.location.href = 'subscription.html';
+                //     setTimeout("window.location.href = 'subscription.html';", 3000);
+                // }
+                // if (response.subStatus || response.hasSubscription)
+                else {
                     localStorage.setItem('authToken', response.token);
                     localStorage.setItem('userEmail', response.email);
                     localStorage.setItem('firstName', response.firstName);
@@ -361,12 +364,21 @@ document.addEventListener('DOMContentLoaded', () => {
             else if (!response.success) {
                 message.classList.add('pop-up', 'alert', 'alert-danger');
                 message.textContent = response.message;
-                setTimeout(() => {
-                    message.classList.add('hide');
-                }, 2000);
-                setTimeout(() => {
-                    window.location.href = 'login.html';
-                }, 1000)
+                if (response.message === 'Your trial period has expired.' || response.message === 'Your subscription period has expired.') {
+                    localStorage.setItem('authToken', response.token);
+                    localStorage.setItem('userEmail', response.email);
+                    localStorage.setItem('firstName', response.firstName);
+                    // window.location.href = 'subscription.html';
+                    setTimeout("window.location.href = 'subscription.html';", 3000);
+                }
+                else {
+                    setTimeout(() => {
+                        message.classList.add('hide');
+                    }, 2000);
+                    setTimeout(() => {
+                        window.location.href = 'login.html';
+                    }, 1000)
+                }
             }
         });
     }

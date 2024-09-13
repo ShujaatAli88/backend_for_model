@@ -101,7 +101,7 @@ router.get("/success/:email/:priceId", async (req, res) => {
     }
     catch (err) {
         console.error(err.message);
-        res.status(500).json({ error: 'Your payment failed. Please try again!.' });
+        res.status(500).json({ error: err.message });
     }
 })
 
