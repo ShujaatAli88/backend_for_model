@@ -457,6 +457,7 @@ ipcMain.on("yearly-subscription", async (event, data) => {
         });
     }
     catch (error) {
+        // console.log("error", error.response?.data.message)
         event.reply('yearly-subscription-result', { success: false, message: error.response?.data.message || error.response?.data || 'Error in the payment checkout' });
     }
 });

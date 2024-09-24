@@ -281,15 +281,34 @@ async function createSubscription(body) {
     if (!user) {
         throw new Error("User Not found. Please register an account.")
     }
-    const alreadySub = await subsciptionSchema.find({ userId: user._id })
-    console.log(alreadySub.length, "alreadySub")
-    if (alreadySub.length > 0) {
-        throw new Error("You have already subscribed")
+    const alreadySub = await subsciptionSchema.findOne({ userId: user._id })
+    // console.log(alreadySub.length, "alreadySub")
+    if (alreadySub) {
+        if (alreadySub.subscriptionStatus) {
+            throw new Error("You have already subscribed")
+        }
+        else {
+            if (priceId == 'price_1PuHu3GQqr36Qs460fS9Pvc0') {
+                alreadySub.subscriptionStatus = true
+                alreadySub.purchaseDate = new Date()
+                alreadySub.subscriptionType = 'Monthly Plan'
+                await alreadySub.save()
+                return "You have successfully subscribed for Monthly Plan."
+            }
+            else if (priceId == 'price_1PuHucGQqr36Qs46UXec6dUw') {
+                alreadySub.subscriptionStatus = true
+                alreadySub.purchaseDate = new Date()
+                alreadySub.subscriptionType = 'Yearly Plan'
+                await alreadySub.save()
+                return "You have successfully subscribed for Yearly Plan."
+            }
+        }
     }
     // Add the check if user have already subscribed 
     const subscription = await subsciptionSchema.find({}).sort({ '_id': -1 }).limit(1)
     const id = subscription.length === 0 ? "00001" : ("00000" + String(parseInt(subscription[0]._id) + 1)).slice(-4);
 
+    // Monthly Plan
     if (priceId == 'price_1PuHu3GQqr36Qs460fS9Pvc0') {
         const newSubscription = new subsciptionSchema({
             _id: id,
@@ -302,6 +321,7 @@ async function createSubscription(body) {
         return "You have successfully subscribed for Monthly Plan."
     }
 
+    // Yearly Plan
     else if (priceId == 'price_1PuHucGQqr36Qs46UXec6dUw') {
         const newSubscription = new subsciptionSchema({
             _id: id,
