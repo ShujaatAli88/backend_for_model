@@ -118,12 +118,12 @@ a:hover {
     max-width: 500px;
     text-align: center;
     margin: 0 auto;
-    padding: 40px 20px;
+    padding: 0px 20px;
 }
 
 .pricing-table .details h2 {
     font-size: 30px;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 
 .pricing-table .details p {
