@@ -113,6 +113,9 @@ router.get("/style", (req, res) => {
     res.status(200).sendFile(path.resolve(__dirname, "../Frontend", "style.css"))
 })
 
+router.get("/script", (req, res) => {
+    res.status(200).sendFile(path.resolve(__dirname, "../Frontend", "renderer.js"))
+})
 
 // app.post('/create-subscription', async (req, res) => {
 //     try {
