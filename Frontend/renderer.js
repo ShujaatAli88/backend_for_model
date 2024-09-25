@@ -29,6 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const message = document.getElementById('message');
     const freeTrial = document.getElementById('freeTrial');
     const monthlySub = document.getElementById('monthlySub');
+    const upgrade = document.getElementById('upgrade');
     // const stripe = loadStripe(process.env.STRIPE_PUBLIC_KEY);
     // const elements = stripe.elements();
     // const cardElement = elements.create('card');
@@ -357,8 +358,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     localStorage.setItem('authToken', response.token);
                     localStorage.setItem('userEmail', response.email);
                     localStorage.setItem('firstName', response.firstName);
-                    // window.location.href = 'dashboard.html';
+                    // if (response.trial) {
+                    //     upgrade.classList.remove('hidden');
+                    // }
+                    // else {
+                    //     upgrade.style.display = 'none';
+                    // }
                     setTimeout("window.location.href = 'dashboard.html';", 3000);
+                    // window.location.href = 'dashboard.html';
                 }
             }
             else if (!response.success) {
