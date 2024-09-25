@@ -113,8 +113,9 @@ router.get("/style", (req, res) => {
     res.status(200).sendFile(path.resolve(__dirname, "../Frontend", "style.css"))
 })
 
+// res.setHeader('Content-Type', 'application/javascript')
 router.get("/script", (req, res) => {
-    res.status(200).sendFile(path.resolve(__dirname, "../Frontend", "renderer.js"))
+    res.status(200).setHeader('Content-Type', 'application/javascript').sendFile(path.resolve(__dirname, "../Frontend", "renderer.js"))
 })
 
 // app.post('/create-subscription', async (req, res) => {
