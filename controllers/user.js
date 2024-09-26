@@ -113,6 +113,10 @@ router.get("/style", (req, res) => {
     res.status(200).sendFile(path.resolve(__dirname, "../Frontend", "style.css"))
 })
 
+router.get("/login", (req, res) => {
+    res.status(200).sendFile(path.resolve(__dirname, "../Frontend", "login.html"))
+})
+
 // res.setHeader('Content-Type', 'application/javascript')
 router.get("/script", (req, res) => {
     res.status(200).setHeader('Content-Type', 'application/javascript').sendFile(path.resolve(__dirname, "../Frontend", "renderer.js"))

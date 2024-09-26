@@ -30,6 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const freeTrial = document.getElementById('freeTrial');
     const monthlySub = document.getElementById('monthlySub');
     const upgrade = document.getElementById('upgrade');
+    const data = {}
     // const stripe = loadStripe(process.env.STRIPE_PUBLIC_KEY);
     // const elements = stripe.elements();
     // const cardElement = elements.create('card');
@@ -317,7 +318,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (loginForm) {
         loginForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            console.log("login function")
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
             localStorage.getItem('authToken')
@@ -358,6 +358,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     localStorage.setItem('authToken', response.token);
                     localStorage.setItem('userEmail', response.email);
                     localStorage.setItem('firstName', response.firstName);
+                    // sessionStorage.setItem('authToken', response.token);
+                    // sessionStorage.setItem('userEmail', response.email);
+                    // sessionStorage.setItem('firstName', response.firstName);
                     // if (response.trial) {
                     //     upgrade.classList.remove('hidden');
                     // }
@@ -516,7 +519,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 message.classList.add('hide');
             }, 2000);
             setTimeout(() => {
-                window.location.href = 'login.html';
+                window.location.href = 'http://localhost:3000/api/login';
             }, 1000)
         })
     }

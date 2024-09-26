@@ -40,21 +40,21 @@
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <title>Dashboard</title>
-    <script src="renderer.js">
-        let logout = document.getElementById('logout')
-        // if (logout) {
-        logout.addEventListener('submit', (e) => {
-            e.preventDefault();
-            localStorage.clear();
-            message.classList.add('pop-up', 'alert', 'alert-danger');
-            message.textContent = "Logout SuccessFul";
-            setTimeout(() => {
-                message.classList.add('hide');
-            }, 2000);
-            setTimeout(() => {
-                window.location.href = 'login.html';
-            }, 1000)
-        })
+    <script src="http://localhost:3000/api/script">
+        // let logout = document.getElementById('logout')
+        // // if (logout) {
+        // logout.addEventListener('submit', (e) => {
+        //     e.preventDefault();
+        //     localStorage.clear();
+        //     message.classList.add('pop-up', 'alert', 'alert-danger');
+        //     message.textContent = "Logout SuccessFul";
+        //     setTimeout(() => {
+        //         message.classList.add('hide');
+        //     }, 2000);
+        //     setTimeout(() => {
+        //         window.location.href = 'http://localhost:3000/api/login';
+        //     }, 1000)
+        // })
         // }
     </script>
 </head>
