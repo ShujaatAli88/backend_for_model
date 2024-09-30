@@ -5,6 +5,7 @@ const dotenv = require('dotenv');
 const cors = require("cors")
 const bodyParser = require("body-parser")
 const userRouter = require("./controllers/user")
+const path = require("path")
 
 const port = 3000 || process.env.PORT;
 
@@ -20,6 +21,7 @@ mongoose.connect(process.env.MONGODB_URI, {
 
 app.use(cors());
 
+app.use(express.static(path.join(__dirname, "../Frontend")))
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 

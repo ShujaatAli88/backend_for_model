@@ -88,7 +88,8 @@ router.post("/payment-checkout", protect, async (req, res) => {
 // Test api
 
 router.get("/cancel", (req, res) => {
-    res.status(200).sendFile(path.resolve(__dirname, "../Frontend", "subError.html"))
+    res.status(200).sendFile(path.resolve(__dirname, "../Frontend", "subscription.html"))
+    // res.status(200).sendFile(path.resolve(__dirname, "../Frontend", "subError.html"))
 })
 
 // Changed 'push' to 'get' for testing

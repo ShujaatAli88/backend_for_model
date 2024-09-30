@@ -30,7 +30,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const freeTrial = document.getElementById('freeTrial');
     const monthlySub = document.getElementById('monthlySub');
     const upgrade = document.getElementById('upgrade');
-    const data = {}
+    // const data = {}
+    let authCredentials = {}
     // const stripe = loadStripe(process.env.STRIPE_PUBLIC_KEY);
     // const elements = stripe.elements();
     // const cardElement = elements.create('card');
@@ -222,8 +223,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 // 'price_1PqK5dGQqr36Qs46jCT3Kamr'
 
                 ipcRenderer.send('yearly-subscription', {
-                    email: email,
-                    token: token,
+                    email: email || authCredentials["email"],
+                    token: token || authCredentials["token"],
                     priceId: priceId
                 });
             } catch (error) {
@@ -315,6 +316,7 @@ document.addEventListener('DOMContentLoaded', () => {
     //         }
     //     });
     // }
+
     if (loginForm) {
         loginForm.addEventListener('submit', (e) => {
             e.preventDefault();
@@ -332,6 +334,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     localStorage.setItem('authToken', response.token);
                     localStorage.setItem('userEmail', response.email);
                     localStorage.setItem('firstName', response.firstName);
+                    authCredentials.authToken = response.token
+                    authCredentials.userEmail = response.email
+                    authCredentials.firstName = response.firstName
                     console.log(response.email, response.token)
                     // window.location.href = 'verify.html';
                     setTimeout("window.location.href = 'verify.html';", 3000);
@@ -343,6 +348,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     localStorage.setItem('authToken', response.token);
                     localStorage.setItem('userEmail', response.email);
                     localStorage.setItem('firstName', response.firstName);
+                    authCredentials.authToken = response.token
+                    authCredentials.userEmail = response.email
+                    authCredentials.firstName = response.firstName
                     // window.location.href = 'subscription.html';
                     setTimeout("window.location.href = 'subscription.html';", 3000);
                 }
@@ -358,6 +366,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     localStorage.setItem('authToken', response.token);
                     localStorage.setItem('userEmail', response.email);
                     localStorage.setItem('firstName', response.firstName);
+                    authCredentials.authToken = response.token
+                    authCredentials.userEmail = response.email
+                    authCredentials.firstName = response.firstName
                     // sessionStorage.setItem('authToken', response.token);
                     // sessionStorage.setItem('userEmail', response.email);
                     // sessionStorage.setItem('firstName', response.firstName);

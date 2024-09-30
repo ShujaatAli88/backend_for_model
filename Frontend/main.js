@@ -438,6 +438,7 @@ ipcMain.on("monthly-subscription", async (event, data) => {
 
 ipcMain.on("yearly-subscription", async (event, data) => {
     try {
+        console.log("Date", data.email, data.token)
         const response = await axios.post(`${API_URL}/payment-checkout`,
             {
                 email: data.email,
