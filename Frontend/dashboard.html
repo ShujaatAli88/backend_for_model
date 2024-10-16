@@ -57,7 +57,7 @@
             border-radius: 8px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             padding: 24px;
-            width: auto;
+            /* width: 400px; */
             height: auto;
         }
 
@@ -74,6 +74,7 @@
             display: block;
         }
 
+        /* 
         .toggle-btn {
             background-color: #3b82f6;
             color: white;
@@ -86,7 +87,7 @@
 
         .toggle-btn:hover {
             background-color: #2563eb;
-        }
+        } */
 
         .upload-area {
             border: 2px dashed #d1d5db;
@@ -101,9 +102,9 @@
             border-color: #3b82f6;
         }
 
-        #image-upload {
+        /* #image-upload {
             display: none;
-        }
+        } */
 
         img {
             max-width: 100%;
@@ -150,91 +151,7 @@
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <title>Dashboard</title>
     <!-- http://localhost:3000/api/script -->
-    <script src="renderer.js">
-        // let logout = document.getElementById('logout')
-        // // if (logout) {
-        // logout.addEventListener('submit', (e) => {
-        //     e.preventDefault();
-        //     localStorage.clear();
-        //     message.classList.add('pop-up', 'alert', 'alert-danger');
-        //     message.textContent = "Logout SuccessFul";
-        //     setTimeout(() => {
-        //         message.classList.add('hide');
-        //     }, 2000);
-        //     setTimeout(() => {
-        //         window.location.href = 'http://localhost:3000/api/login';
-        //     }, 1000)
-        // })
-        // }
-        const toggleBtn = document.getElementById('toggle-btn');
-        const processScreen = document.getElementById('process-screen');
-        const optionsScreen = document.getElementById('options-screen');
-        const effectsScreen = document.getElementById('effects-screen');
-        const uploadArea = document.getElementById('upload-area');
-        const imageUpload = document.getElementById('image-upload');
-        const uploadedImageContainer = document.getElementById('uploaded-image-container');
-        const processBtn = document.getElementById('process-btn');
-        const processedImageContainer = document.getElementById('processed-image-container');
 
-        let currentScreen = 'process';
-
-        toggleBtn.addEventListener('click', () => {
-            if (currentScreen === 'process') {
-                processScreen.classList.remove('active');
-                optionsScreen.classList.add('active');
-                toggleBtn.textContent = 'Switch to Process';
-                currentScreen = 'options';
-            } else {
-                optionsScreen.classList.remove('active');
-                effectsScreen.classList.remove('active');
-                processScreen.classList.add('active');
-                toggleBtn.textContent = 'Switch to Settings';
-                currentScreen = 'process';
-            }
-        });
-
-        uploadArea.addEventListener('click', () => {
-            imageUpload.click();
-        });
-
-        imageUpload.addEventListener('change', (event) => {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    uploadedImageContainer.innerHTML = `<img src="${e.target.result}" alt="Uploaded Image">`;
-                    processBtn.disabled = false;
-                };
-                reader.readAsDataURL(file);
-            }
-        });
-
-        processBtn.addEventListener('click', () => {
-            // Simulating image processing
-            setTimeout(() => {
-                const uploadedImage = uploadedImageContainer.querySelector('img');
-                if (uploadedImage) {
-                    processedImageContainer.innerHTML = `
-                        <h3>Processed Image:</h3>
-                        <img src="${uploadedImage.src}" alt="Processed Image">
-                    `;
-                }
-            }, 1000);
-        });
-
-        // Add event listeners for options and effects screens
-        document.getElementById('quality').addEventListener('change', updateImage);
-        document.getElementById('format').addEventListener('change', updateImage);
-        document.getElementById('preserve-transparency').addEventListener('change', updateImage);
-        document.getElementById('filter').addEventListener('change', updateImage);
-        document.getElementById('brightness').addEventListener('input', updateImage);
-        document.getElementById('contrast').addEventListener('input', updateImage);
-
-        function updateImage() {
-            // In a real application, this function would apply the selected options and effects to the image
-            console.log('Image updated with new settings');
-        }
-    </script>
 </head>
 
 <body>
@@ -266,13 +183,14 @@
             <div class="upload-area" id="upload-area">
                 <p>Upload Image</p>
             </div>
-            <input type="file" id="image-upload" accept="image/*">
+            <p>Uploaded Image</p>
+            <input type="file" id="image-upload" accept=".png,.jpg,.jpeg" multiple>
             <div id="uploaded-image-container"></div>
             <button id="process-btn" class="process-btn" disabled>Process Image</button>
             <div id="processed-image-container"></div>
         </div>
 
-        <div id="options-screen" class="screen">
+        <!-- <div id="options-screen" class="screen">
             <h2>Options</h2>
             <label for="quality">Image Quality:</label>
             <select id="quality">
@@ -292,9 +210,9 @@
                 <input type="checkbox" id="preserve-transparency">
                 Preserve Transparency
             </label>
-        </div>
+        </div> -->
 
-        <div id="effects-screen" class="screen">
+        <!-- <div id="effects-screen" class="screen">
             <h2>Effects</h2>
             <label for="filter">Apply Filter:</label>
             <select id="filter">
@@ -309,12 +227,98 @@
 
             <label for="contrast">Contrast:</label>
             <input type="range" id="contrast" min="0" max="200" value="100">
-        </div>
+        </div> -->
     </div>
 
 
 
     <!-- <script src="renderer.js"></script> -->
+    <script src="renderer.js">
+        // let logout = document.getElementById('logout')
+        // // if (logout) {
+        // logout.addEventListener('submit', (e) => {
+        //     e.preventDefault();
+        //     localStorage.clear();
+        //     message.classList.add('pop-up', 'alert', 'alert-danger');
+        //     message.textContent = "Logout SuccessFul";
+        //     setTimeout(() => {
+        //         message.classList.add('hide');
+        //     }, 2000);
+        //     setTimeout(() => {
+        //         window.location.href = 'http://localhost:3000/api/login';
+        //     }, 1000)
+        // })
+        // }
+        const toggleBtn = document.getElementById('toggle-btn');
+        const processScreen = document.getElementById('process-screen');
+        const optionsScreen = document.getElementById('options-screen');
+        const effectsScreen = document.getElementById('effects-screen');
+        const uploadArea = document.getElementById('upload-area');
+        const imageUpload = document.getElementById('image-upload');
+        const uploadedImageContainer = document.getElementById('uploaded-image-container');
+        const processBtn = document.getElementById('process-btn');
+        const processedImageContainer = document.getElementById('processed-image-container');
+
+        let currentScreen = 'process';
+
+        // toggleBtn.addEventListener('click', () => {
+        //     if (currentScreen === 'process') {
+        //         processScreen.classList.remove('active');
+        //         optionsScreen.classList.add('active');
+        //         toggleBtn.textContent = 'Switch to Process';
+        //         currentScreen = 'options';
+        //     } else {
+        //         optionsScreen.classList.remove('active');
+        //         effectsScreen.classList.remove('active');
+        //         processScreen.classList.add('active');
+        //         toggleBtn.textContent = 'Switch to Settings';
+        //         currentScreen = 'process';
+        //     }
+        // });
+
+        uploadArea.addEventListener('click', () => {
+            imageUpload.click();
+        });
+
+        imageUpload.addEventListener('click', (event) => {
+            // const file = event.target.files[0];
+            const file = imageUpload.files;
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    uploadedImageContainer.innerHTML = `<img src="${e.target.result}" alt="Uploaded Image">`;
+                    processBtn.disabled = false;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        processBtn.addEventListener('click', () => {
+            // Simulating image processing
+            setTimeout(() => {
+                const uploadedImage = uploadedImageContainer.querySelector('img');
+                if (uploadedImage) {
+                    processedImageContainer.innerHTML = `
+                        <h3>Processed Image:</h3>
+                        <img src="${uploadedImage.src}" alt="Processed Image">
+                    `;
+                }
+            }, 1000);
+        });
+
+        // Add event listeners for options and effects screens
+        // document.getElementById('quality').addEventListener('change', updateImage);
+        // document.getElementById('format').addEventListener('change', updateImage);
+        // document.getElementById('preserve-transparency').addEventListener('change', updateImage);
+        // document.getElementById('filter').addEventListener('change', updateImage);
+        // document.getElementById('brightness').addEventListener('input', updateImage);
+        // document.getElementById('contrast').addEventListener('input', updateImage);
+
+        // function updateImage() {
+        //     // In a real application, this function would apply the selected options and effects to the image
+        //     console.log('Image updated with new settings');
+        // }
+    </script>
 </body>
 
 </html>
