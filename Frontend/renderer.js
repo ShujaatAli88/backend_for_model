@@ -1,8 +1,8 @@
 const { ipcRenderer } = require('electron');
 const dotenv = require('dotenv');
 // import { loadStripe } from '@stripe/stripe-js';
-let Stripe = require("stripe")
-let stripe = Stripe(process.env.STRIPE_PUBLIC_KEY)
+// let Stripe = require("stripe")
+// let stripe = Stripe(process.env.STRIPE_PUBLIC_KEY)
 
 dotenv.config();
 
@@ -46,6 +46,44 @@ document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('payment-form');
     const submitButton = document.getElementById('submit-button');
     // const paymentType = document.getElementById('price-select');
+
+    const uploadArea = document.getElementById('upload-area');
+    const imageUpload = document.getElementById('image-upload');
+    const uploadedImageContainer = document.getElementById('uploaded-image-container');
+    const processBtn = document.getElementById('process-btn');
+    const processedImageContainer = document.getElementById('processed-image-container');
+
+    if (uploadArea) {
+        uploadArea.addEventListener('click', () => {
+            imageUpload.click();
+        });
+
+        imageUpload.addEventListener('change', (event) => {
+            const file = imageUpload.files[0]; // Select the first file only
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    uploadedImageContainer.innerHTML = `<img src="${e.target.result}" alt="Uploaded Image">`;
+                    processBtn.disabled = false; // Enable the process button
+                    console.log(imageUpload.files); // See what files are selected
+                    console.log(e.target.result); // Check if the file is correctly read
+                };
+                reader.readAsDataURL(file); // Read the first file
+            }
+        });
+
+        processBtn.addEventListener('click', () => {
+            setTimeout(() => {
+                const uploadedImage = uploadedImageContainer.querySelector('img');
+                if (uploadedImage) {
+                    processedImageContainer.innerHTML = `
+                <h3>Processed Image:</h3>
+                <img src="${uploadedImage.src}" alt="Processed Image">
+            `;
+                }
+            }, 1000); // Simulating processing delay
+        });
+    }
 
     // if (form) {
     //     let elements, cardElement;
