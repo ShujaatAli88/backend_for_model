@@ -98,7 +98,8 @@
         }
 
         .process-btn {
-            background-color: #3b82f6;
+            /* background-color: #3b82f6; */
+            background-color: rgb(63, 3, 119);
             color: white;
             border: none;
             padding: 8px 16px;
@@ -108,14 +109,18 @@
             margin-bottom: 16px;
         }
 
-        .process-btn:hover {
-            background-color: #2563eb;
-        }
-
         .process-btn:disabled {
             background-color: #d1d5db;
             cursor: not-allowed;
         }
+
+        .process-btn:hover:not(:disabled) {
+            /* background-color: #2563eb; */
+            background-color: aliceblue;
+            color: black;
+            border: 1px solid rgb(0, 133, 249);
+        }
+
 
         select,
         input[type="range"] {
@@ -129,6 +134,19 @@
         label {
             display: block;
             margin-bottom: 8px;
+        }
+
+        #uploaded-image-container {
+            border-radius: 8px;
+            width: 200px;
+            height: auto;
+        }
+
+        #processed-image-container {
+            border-radius: 8px;
+            width: 200px;
+            height: auto;
+
         }
     </style>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -163,12 +181,11 @@
     <div class="container">
         <h1>Image Processor</h1>
         <!-- <button id="toggle-btn" class="toggle-btn btn btn-primary">Switch to Settings</button> -->
-
         <div id="process-screen" class="screen active">
             <div class="upload-area" id="upload-area">
                 <p>Upload Image</p>
             </div>
-            <p>Uploaded Image</p>
+            <!-- <p>Uploaded Image</p> -->
             <input type="file" id="image-upload" accept=".png,.jpg,.jpeg" multiple>
             <div id="uploaded-image-container"></div>
             <button id="process-btn" class="process-btn" disabled>Process Image</button>
@@ -177,11 +194,47 @@
 
     </div>
 
-
-
-    <!-- <script src="renderer.js"></script> -->
     <!-- src="renderer.js" -->
-    <script>
+    <script src="renderer.js">
+        // document.addEventListener('DOMContentLoaded', () => {
+        //     const processScreen = document.getElementById('process-screen');
+        //     const uploadArea = document.getElementById('upload-area');
+        //     const imageUpload = document.getElementById('image-upload');
+        //     const uploadedImageContainer = document.getElementById('uploaded-image-container');
+        //     const processBtn = document.getElementById('process-btn');
+        //     const processedImageContainer = document.getElementById('processed-image-container');
+
+        //     uploadArea.addEventListener('click', () => {
+        //         imageUpload.click();
+        //     });
+
+        //     imageUpload.addEventListener('change', (event) => {
+        //         const file = imageUpload.files[0]; // Select the first file only
+        //         if (file) {
+        //             const reader = new FileReader();
+        //             reader.onload = (e) => {
+        //                 uploadedImageContainer.innerHTML = `<img src="${e.target.result}" alt="Uploaded Image">`;
+        //                 processBtn.disabled = false; // Enable the process button
+        //                 console.log(imageUpload.files); // See what files are selected
+        //                 console.log(e.target.result); // Check if the file is correctly read
+        //             };
+        //             reader.readAsDataURL(file); // Read the first file
+        //         }
+        //     });
+
+        //     processBtn.addEventListener('click', () => {
+        //         setTimeout(() => {
+        //             const uploadedImage = uploadedImageContainer.querySelector('img');
+        //             if (uploadedImage) {
+        //                 processedImageContainer.innerHTML = `
+        //             <h3>Processed Image:</h3>
+        //             <img src="${uploadedImage.src}" alt="Processed Image">
+        //         `;
+        //             }
+        //         }, 1000); // Simulating processing delay
+        //     });
+        // });
+
         // let logout = document.getElementById('logout')
         // // if (logout) {
         // logout.addEventListener('submit', (e) => {
@@ -226,8 +279,6 @@
         //     }
         // });
 
-
-
         // uploadArea.addEventListener('click', () => {
         //     imageUpload.click();
         // });
@@ -251,8 +302,7 @@
         //         const uploadedImage = uploadedImageContainer.querySelector('img');
         //         if (uploadedImage) {
         //             processedImageContainer.innerHTML = `
-        //                 <h3>Processed Image:</h3>
-        //                 <img src="${uploadedImage.src}" alt="Processed Image">
+
         //             `;
         //         }
         //     }, 1000);
@@ -270,44 +320,6 @@
         //     // In a real application, this function would apply the selected options and effects to the image
         //     console.log('Image updated with new settings');
         // }
-        document.addEventListener('DOMContentLoaded', () => {
-            const processScreen = document.getElementById('process-screen');
-            const uploadArea = document.getElementById('upload-area');
-            const imageUpload = document.getElementById('image-upload');
-            const uploadedImageContainer = document.getElementById('uploaded-image-container');
-            const processBtn = document.getElementById('process-btn');
-            const processedImageContainer = document.getElementById('processed-image-container');
-
-            uploadArea.addEventListener('click', () => {
-                imageUpload.click();
-            });
-
-            imageUpload.addEventListener('change', (event) => {
-                const file = imageUpload.files[0]; // Select the first file only
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = (e) => {
-                        uploadedImageContainer.innerHTML = `<img src="${e.target.result}" alt="Uploaded Image">`;
-                        processBtn.disabled = false; // Enable the process button
-                        console.log(imageUpload.files); // See what files are selected
-                        console.log(e.target.result); // Check if the file is correctly read
-                    };
-                    reader.readAsDataURL(file); // Read the first file
-                }
-            });
-
-            processBtn.addEventListener('click', () => {
-                setTimeout(() => {
-                    const uploadedImage = uploadedImageContainer.querySelector('img');
-                    if (uploadedImage) {
-                        processedImageContainer.innerHTML = `
-                    <h3>Processed Image:</h3>
-                    <img src="${uploadedImage.src}" alt="Processed Image">
-                `;
-                    }
-                }, 1000); // Simulating processing delay
-            });
-        });
     </script>
 </body>
 

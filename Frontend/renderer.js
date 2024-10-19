@@ -1,11 +1,7 @@
 const { ipcRenderer } = require('electron');
 const dotenv = require('dotenv');
-// import { loadStripe } from '@stripe/stripe-js';
-// let Stripe = require("stripe")
-// let stripe = Stripe(process.env.STRIPE_PUBLIC_KEY)
 
 dotenv.config();
-
 
 // async function loadStripe(key) {
 //     return new Promise((resolve, reject) => {
@@ -53,7 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const processBtn = document.getElementById('process-btn');
     const processedImageContainer = document.getElementById('processed-image-container');
 
-    if (uploadArea) {
+    if (uploadArea && imageUpload && processBtn) {
         uploadArea.addEventListener('click', () => {
             imageUpload.click();
         });
