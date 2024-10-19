@@ -67,18 +67,95 @@ document.addEventListener('DOMContentLoaded', () => {
                 reader.readAsDataURL(file); // Read the first file
             }
         });
+        const token = localStorage.getItem('authToken');
+        // processBtn.addEventListener('click', () => {
+        //     setTimeout(() => {
+        //         const uploadedImage = uploadedImageContainer.querySelector('img');
+        //         if (uploadedImage) {
+        //             processedImageContainer.innerHTML = `
+        //         <h3>Processed Image:</h3>
+        //         <img src="${uploadedImage.src}" alt="Processed Image">
+        //     `;
+        //         }
+        //     }, 1000); // Simulating processing delay
+        // });
+        processBtn.addEventListener('click', async () => {
+            try {
+                processBtn.disabled = true;
+                // processBtn.textContent = 'Processing...';
+                // message.innerHTML = '';
 
-        processBtn.addEventListener('click', () => {
-            setTimeout(() => {
-                const uploadedImage = uploadedImageContainer.querySelector('img');
-                if (uploadedImage) {
-                    processedImageContainer.innerHTML = `
-                <h3>Processed Image:</h3>
-                <img src="${uploadedImage.src}" alt="Processed Image">
-            `;
+                // Create FormData
+                const formData = new FormData();
+                for (let i = 0; i < imageUpload.files.length; i++) {
+                    formData.append('files', imageUpload.files[i]);
                 }
-            }, 1000); // Simulating processing delay
+
+                // Convert FormData to array of file paths
+                const files = Array.from(imageUpload.files).map(file => file.path);
+
+                // Send to main process
+                ipcRenderer.send('remove-background', { files, token });
+
+                // Listen for progress updates
+                ipcRenderer.on('background-remove-progress', (event, data) => {
+                    message.classList.add('pop-up', 'alert', 'alert-info');
+                    message.textContent = `Processing: ${data.progress}%`;
+                });
+
+                // Listen for completion
+                ipcRenderer.once('background-remove-complete', (event, response) => {
+                    if (response.success) {
+                        message.classList.remove('alert-info');
+                        message.classList.add('pop-up', 'alert', 'alert-success');
+                        message.textContent = 'Processing complete!';
+
+                        if (response.files.length === 1) {
+                            displayResult(response.files[0]);
+                        } else {
+                            downloadZip(response.zipPath);
+                        }
+                    } else {
+                        message.classList.add('pop-up', 'alert', 'alert-danger');
+                        message.textContent = response.error || 'Processing failed';
+                    }
+                });
+
+                // Listen for errors
+                ipcRenderer.once('background-remove-error', (event, error) => {
+                    message.classList.add('pop-up', 'alert', 'alert-danger');
+                    message.textContent = error.message || 'An error occurred';
+                });
+
+            } catch (error) {
+                message.classList.add('pop-up', 'alert', 'alert-danger');
+                message.textContent = 'An error occurred while processing the images';
+            } finally {
+                processBtn.disabled = false;
+                processBtn.textContent = 'Process Image';
+            }
         });
+    }
+
+
+
+    function displayResult(filePath) {
+        processedImageContainer.innerHTML = `
+        <h3>Processed Image:</h3>
+        <img src="${filePath}" alt="Processed Image">
+        <button class="download-btn" onclick="ipcRenderer.send('save-file', '${filePath}')">
+            Save Image
+        </button>
+    `;
+    }
+
+    function downloadZip(zipPath) {
+        processedImageContainer.innerHTML = `
+        <h3>Processing Complete:</h3>
+        <button class="download-btn" onclick="ipcRenderer.send('save-file', '${zipPath}')">
+            Download ZIP
+        </button>
+    `;
     }
 
     // if (form) {

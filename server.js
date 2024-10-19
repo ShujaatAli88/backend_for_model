@@ -5,6 +5,7 @@ const dotenv = require('dotenv');
 const cors = require("cors")
 const bodyParser = require("body-parser")
 const userRouter = require("./controllers/user")
+const imageRouter = require("./controllers/imageModel")
 const path = require("path")
 
 const port = 3000 || process.env.PORT;
@@ -27,6 +28,7 @@ app.use(bodyParser.json());
 
 // Api call for the user registration and login
 app.use("/api", userRouter)
+app.use("/imageModel", imageRouter)
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);

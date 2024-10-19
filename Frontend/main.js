@@ -1,6 +1,6 @@
 // const { app, BrowserWindow } = require('electron');
 // const path = require('path');
-import { app, BrowserWindow, ipcMain } from 'electron';
+import { app, BrowserWindow, ipcMain, dialog } from 'electron';
 
 // const Store = require('electron-store');
 // import Store from "electron-store"
@@ -9,6 +9,10 @@ import { app, BrowserWindow, ipcMain } from 'electron';
 import dotenv from 'dotenv'
 // import Stripe from 'stripe';
 import axios from 'axios';
+const { spawn } = require('child_process');
+const path = require('path');
+const fs = require('fs').promises;
+const archiver = require('archiver');
 
 dotenv.config()
 
@@ -460,6 +464,94 @@ ipcMain.on("yearly-subscription", async (event, data) => {
     catch (error) {
         // console.log("error", error.response?.data.message)
         event.reply('yearly-subscription-result', { success: false, message: error.response?.data.message || error.response?.data || 'Error in the payment checkout' });
+    }
+});
+
+ipcMain.on('remove-background', async (event, data) => {
+    try {
+        const { files } = data;
+        const results = [];
+
+        // Create output directory if it doesn't exist
+        const outputDir = path.join(app.getPath('temp'), 'background-removed');
+        await fs.mkdir(outputDir, { recursive: true });
+
+        // Process each file
+        for (let i = 0; i < files.length; i++) {
+            const inputPath = files[i];
+            const outputPath = path.join(outputDir, `processed-${path.basename(inputPath)}`);
+
+            // Run Python script
+            await new Promise((resolve, reject) => {
+                const pythonProcess = spawn('python', [
+                    'background_remover.py',
+                    inputPath,
+                    outputPath
+                ]);
+
+                pythonProcess.on('close', (code) => {
+                    if (code === 0) {
+                        results.push(outputPath);
+                        // Send progress update
+                        event.sender.send('background-remove-progress', {
+                            progress: Math.round(((i + 1) / files.length) * 100)
+                        });
+                        resolve();
+                    } else {
+                        reject(new Error(`Processing failed with code ${code}`));
+                    }
+                });
+            });
+        }
+
+        // Handle results
+        if (results.length === 1) {
+            event.sender.send('background-remove-complete', {
+                success: true,
+                files: results
+            });
+        } else {
+            // Create ZIP file for multiple images
+            const zipPath = path.join(outputDir, 'processed-images.zip');
+            const archive = archiver('zip');
+            const output = fs.createWriteStream(zipPath);
+
+            archive.pipe(output);
+            results.forEach(file => {
+                archive.file(file, { name: path.basename(file) });
+            });
+            await archive.finalize();
+
+            event.sender.send('background-remove-complete', {
+                success: true,
+                zipPath,
+                files: results
+            });
+        }
+    } catch (error) {
+        event.sender.send('background-remove-error', {
+            success: false,
+            message: error.message
+        });
+    }
+});
+
+// Handle file saving
+ipcMain.on('save-file', async (event, filePath) => {
+    try {
+        const { filePath: savePath } = await dialog.showSaveDialog({
+            defaultPath: path.basename(filePath)
+        });
+
+        if (savePath) {
+            await fs.copyFile(filePath, savePath);
+            event.sender.send('save-complete', { success: true });
+        }
+    } catch (error) {
+        event.sender.send('save-complete', {
+            success: false,
+            error: error.message
+        });
     }
 });
 // ipcMain.on("create-subscription", async (event, data) => {
