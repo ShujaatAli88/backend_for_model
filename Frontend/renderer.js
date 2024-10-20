@@ -49,87 +49,179 @@ document.addEventListener('DOMContentLoaded', () => {
     const processBtn = document.getElementById('process-btn');
     const processedImageContainer = document.getElementById('processed-image-container');
 
+    // if (uploadArea && imageUpload && processBtn) {
+    //     uploadArea.addEventListener('click', () => {
+    //         imageUpload.click();
+    //     });
+
+    //     imageUpload.addEventListener('change', (event) => {
+    //         const file = imageUpload.files[0]; // Select the first file only
+    //         if (file) {
+    //             const reader = new FileReader();
+    //             reader.onload = (e) => {
+    //                 uploadedImageContainer.innerHTML = `<img src="${e.target.result}" alt="Uploaded Image">`;
+    //                 processBtn.disabled = false; // Enable the process button
+    //             };
+    //             reader.readAsDataURL(file); // Read the first file
+    //         }
+    //     });
+
+    //     const token = localStorage.getItem('authToken');
+
+    //     processBtn.addEventListener('click', async () => {
+    //         try {
+    //             processBtn.disabled = true;
+    //             processBtn.textContent = 'Processing...';
+
+    //             const file = imageUpload.files[0];
+
+    //             if (!file) {
+    //                 // alert('Please upload an image first.');
+    //                 message.classList.add('pop-up', 'alert', 'alert-danger');
+    //                 message.textContent = 'Please upload an image first.';
+    //                 setTimeout(() => {
+    //                     message.classList.add('hide');
+    //                 }, 2000);
+    //                 return;
+    //             }
+
+    //             const reader = new FileReader();
+    //             reader.onload = () => {
+    //                 const imageBuffer = reader.result; // Get the file content as ArrayBuffer or base64 string
+
+    //                 // Send the image buffer to the main process via ipcRenderer
+    //                 ipcRenderer.send('remove-background', {
+    //                     token,
+    //                     imageBuffer, // Send the image content
+    //                     fileName: file.name // Include the file name
+    //                 })
+    //                 // Create FormData for the image file
+    //                 // const formData = new FormData();
+    //                 // formData.append('file', file); // The backend API will expect a 'file' field
+
+    //                 // ipcRenderer.send('remove-background', {
+    //                 //     token,
+    //                 //     formData
+    //                 // })
+    //                 ipcRenderer.on('remove-background-result', (event, response) => {
+    //                     if (response.success) {
+    //                         // Display the processed image
+    //                         // message.textContent = 'Processing complete!';
+    //                         message.classList.add('pop-up', 'alert', 'alert-danger');
+    //                         message.textContent = response.message;
+    //                         setTimeout(() => {
+    //                             message.classList.add('hide');
+    //                         }, 2000);
+    //                         // displayResult(result.processedImageUrl); // Assuming backend returns a URL
+    //                         displayResult(response.images); // Assuming backend returns a URL
+    //                     } else if (!response.success && response.message === 'Not Authorized' || 'Not Authorized, No Token') {
+    //                         message.classList.add('pop-up', 'alert', 'alert-danger');
+    //                         console.log('Error: ', response.message)
+    //                         message.textContent = response.message;
+    //                         setTimeout(() => {
+    //                             message.classList.add('hide');
+    //                         }, 2000);
+    //                         // throw new Error(result.message || 'Failed to process the image');
+    //                         setTimeout("window.location.href = 'dashboard.html';", 3000);
+    //                     }
+    //                 })
+    //             };
+
+    //             // Start reading the file as an ArrayBuffer (or Data URL)
+    //             reader.readAsArrayBuffer(file);
+    //             // const response = await fetch('http://localhost:3000/api/remove-background', {
+    //             //     method: 'POST',
+    //             //     headers: {
+    //             //         'Authorization': `Bearer ${token}`
+    //             //     },
+    //             //     body: formData // Send the form data with the image
+    //             // });
+
+    //             // const result = await response.json();
+
+    //         } catch (error) {
+    //             message.classList.add('pop-up', 'alert', 'alert-danger');
+    //             message.textContent = error.message || 'An error occurred while processing the image';
+    //         } finally {
+    //             processBtn.disabled = false;
+    //             processBtn.textContent = 'Process Image';
+    //         }
+    //     });
+    // }
     if (uploadArea && imageUpload && processBtn) {
         uploadArea.addEventListener('click', () => {
             imageUpload.click();
         });
 
         imageUpload.addEventListener('change', (event) => {
-            const file = imageUpload.files[0]; // Select the first file only
+            const file = imageUpload.files[0];
             if (file) {
                 const reader = new FileReader();
                 reader.onload = (e) => {
                     uploadedImageContainer.innerHTML = `<img src="${e.target.result}" alt="Uploaded Image">`;
-                    processBtn.disabled = false; // Enable the process button
-                    console.log(imageUpload.files); // See what files are selected
-                    console.log(e.target.result); // Check if the file is correctly read
+                    processBtn.disabled = false;
                 };
-                reader.readAsDataURL(file); // Read the first file
+                reader.readAsDataURL(file);
             }
         });
+
         const token = localStorage.getItem('authToken');
-        // processBtn.addEventListener('click', () => {
-        //     setTimeout(() => {
-        //         const uploadedImage = uploadedImageContainer.querySelector('img');
-        //         if (uploadedImage) {
-        //             processedImageContainer.innerHTML = `
-        //         <h3>Processed Image:</h3>
-        //         <img src="${uploadedImage.src}" alt="Processed Image">
-        //     `;
-        //         }
-        //     }, 1000); // Simulating processing delay
-        // });
+
         processBtn.addEventListener('click', async () => {
             try {
                 processBtn.disabled = true;
-                // processBtn.textContent = 'Processing...';
-                // message.innerHTML = '';
+                processBtn.textContent = 'Processing...';
 
-                // Create FormData
-                const formData = new FormData();
-                for (let i = 0; i < imageUpload.files.length; i++) {
-                    formData.append('files', imageUpload.files[i]);
+                const file = imageUpload.files[0];
+
+                if (!file) {
+                    message.classList.add('pop-up', 'alert', 'alert-danger');
+                    message.textContent = 'Please upload an image first.';
+                    setTimeout(() => {
+                        message.classList.add('hide');
+                    }, 2000);
+                    return;
                 }
 
-                // Convert FormData to array of file paths
-                const files = Array.from(imageUpload.files).map(file => file.path);
+                const reader = new FileReader();
+                reader.onload = async () => {
+                    // Convert ArrayBuffer to Base64
+                    const base64Image = arrayBufferToBase64(reader.result);
 
-                // Send to main process
-                ipcRenderer.send('remove-background', { files, token });
+                    // Send the base64 image to main process
+                    ipcRenderer.send('remove-background', {
+                        token,
+                        imageBuffer: base64Image,
+                        fileName: file.name
+                    });
+                };
 
-                // Listen for progress updates
-                ipcRenderer.on('background-remove-progress', (event, data) => {
-                    message.classList.add('pop-up', 'alert', 'alert-info');
-                    message.textContent = `Processing: ${data.progress}%`;
-                });
-
-                // Listen for completion
-                ipcRenderer.once('background-remove-complete', (event, response) => {
+                // Listen for the response
+                ipcRenderer.on('remove-background-result', (event, response) => {
                     if (response.success) {
-                        message.classList.remove('alert-info');
                         message.classList.add('pop-up', 'alert', 'alert-success');
-                        message.textContent = 'Processing complete!';
-
-                        if (response.files.length === 1) {
-                            displayResult(response.files[0]);
-                        } else {
-                            downloadZip(response.zipPath);
-                        }
-                    } else {
+                        message.textContent = response.message;
+                        setTimeout(() => {
+                            message.classList.add('hide');
+                        }, 2000);
+                        displayResult(response.images);
+                    } else if (!response.success && (response.message === 'Not Authorized' || response.message === 'Not Authorized, No Token')) {
                         message.classList.add('pop-up', 'alert', 'alert-danger');
-                        message.textContent = response.error || 'Processing failed';
+                        console.log('Error: ', response.message);
+                        message.textContent = response.message;
+                        setTimeout(() => {
+                            message.classList.add('hide');
+                        }, 2000);
+                        setTimeout(() => {
+                            window.location.href = 'dashboard.html';
+                        }, 3000);
                     }
                 });
 
-                // Listen for errors
-                ipcRenderer.once('background-remove-error', (event, error) => {
-                    message.classList.add('pop-up', 'alert', 'alert-danger');
-                    message.textContent = error.message || 'An error occurred';
-                });
-
+                reader.readAsArrayBuffer(file);
             } catch (error) {
                 message.classList.add('pop-up', 'alert', 'alert-danger');
-                message.textContent = 'An error occurred while processing the images';
+                message.textContent = error.message || 'An error occurred while processing the image';
             } finally {
                 processBtn.disabled = false;
                 processBtn.textContent = 'Process Image';
@@ -137,26 +229,133 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Helper function to convert ArrayBuffer to Base64
+    function arrayBufferToBase64(buffer) {
+        const binary = new Uint8Array(buffer);
+        const bytes = binary.reduce((data, byte) => data + String.fromCharCode(byte), '');
+        return btoa(bytes);
+    }
 
-
-    function displayResult(filePath) {
+    function displayResult(imageUrl) {
         processedImageContainer.innerHTML = `
         <h3>Processed Image:</h3>
-        <img src="${filePath}" alt="Processed Image">
-        <button class="download-btn" onclick="ipcRenderer.send('save-file', '${filePath}')">
-            Save Image
-        </button>
+        <img src="${imageUrl}" alt="Processed Image">
+        <button class="download-btn" onclick="saveImage('${imageUrl}')">Save Image</button>
     `;
     }
 
-    function downloadZip(zipPath) {
-        processedImageContainer.innerHTML = `
-        <h3>Processing Complete:</h3>
-        <button class="download-btn" onclick="ipcRenderer.send('save-file', '${zipPath}')">
-            Download ZIP
-        </button>
-    `;
+    function saveImage(imageUrl) {
+        ipcRenderer.send('save-file', imageUrl); // Send the URL to main process to save the file
     }
+
+    // if (uploadArea && imageUpload && processBtn) {
+    //     uploadArea.addEventListener('click', () => {
+    //         imageUpload.click();
+    //     });
+
+    //     imageUpload.addEventListener('change', (event) => {
+    //         const file = imageUpload.files[0]; // Select the first file only
+    //         if (file) {
+    //             const reader = new FileReader();
+    //             reader.onload = (e) => {
+    //                 uploadedImageContainer.innerHTML = `<img src="${e.target.result}" alt="Uploaded Image">`;
+    //                 processBtn.disabled = false; // Enable the process button
+    //                 console.log(imageUpload.files); // See what files are selected
+    //                 console.log(e.target.result); // Check if the file is correctly read
+    //             };
+    //             reader.readAsDataURL(file); // Read the first file
+    //         }
+    //     });
+    //     const token = localStorage.getItem('authToken');
+    //     // processBtn.addEventListener('click', () => {
+    //     //     setTimeout(() => {
+    //     //         const uploadedImage = uploadedImageContainer.querySelector('img');
+    //     //         if (uploadedImage) {
+    //     //             processedImageContainer.innerHTML = `
+    //     //         <h3>Processed Image:</h3>
+    //     //         <img src="${uploadedImage.src}" alt="Processed Image">
+    //     //     `;
+    //     //         }
+    //     //     }, 1000); // Simulating processing delay
+    //     // });
+    //     processBtn.addEventListener('click', async () => {
+    //         try {
+    //             processBtn.disabled = true;
+    //             // processBtn.textContent = 'Processing...';
+    //             // message.innerHTML = '';
+
+    //             // Create FormData
+    //             const formData = new FormData();
+    //             for (let i = 0; i < imageUpload.files.length; i++) {
+    //                 formData.append('files', imageUpload.files[i]);
+    //             }
+
+    //             // Convert FormData to array of file paths
+    //             const files = Array.from(imageUpload.files).map(file => file.path);
+
+    //             // Send to main process
+    //             ipcRenderer.send('remove-background', { files, token });
+
+    //             // Listen for progress updates
+    //             ipcRenderer.on('background-remove-progress', (event, data) => {
+    //                 message.classList.add('pop-up', 'alert', 'alert-info');
+    //                 message.textContent = `Processing: ${data.progress}%`;
+    //             });
+
+    //             // Listen for completion
+    //             ipcRenderer.once('background-remove-complete', (event, response) => {
+    //                 if (response.success) {
+    //                     message.classList.remove('alert-info');
+    //                     message.classList.add('pop-up', 'alert', 'alert-success');
+    //                     message.textContent = 'Processing complete!';
+
+    //                     if (response.files.length === 1) {
+    //                         displayResult(response.files[0]);
+    //                     } else {
+    //                         downloadZip(response.zipPath);
+    //                     }
+    //                 } else {
+    //                     message.classList.add('pop-up', 'alert', 'alert-danger');
+    //                     message.textContent = response.error || 'Processing failed';
+    //                 }
+    //             });
+
+    //             // Listen for errors
+    //             ipcRenderer.once('background-remove-error', (event, error) => {
+    //                 message.classList.add('pop-up', 'alert', 'alert-danger');
+    //                 message.textContent = error.message || 'An error occurred';
+    //             });
+
+    //         } catch (error) {
+    //             message.classList.add('pop-up', 'alert', 'alert-danger');
+    //             message.textContent = 'An error occurred while processing the images';
+    //         } finally {
+    //             processBtn.disabled = false;
+    //             processBtn.textContent = 'Process Image';
+    //         }
+    //     });
+    // }
+
+
+
+    // function displayResult(filePath) {
+    //     processedImageContainer.innerHTML = `
+    //     <h3>Processed Image:</h3>
+    //     <img src="${filePath}" alt="Processed Image">
+    //     <button class="download-btn" onclick="ipcRenderer.send('save-file', '${filePath}')">
+    //         Save Image
+    //     </button>
+    // `;
+    // }
+
+    // function downloadZip(zipPath) {
+    //     processedImageContainer.innerHTML = `
+    //     <h3>Processing Complete:</h3>
+    //     <button class="download-btn" onclick="ipcRenderer.send('save-file', '${zipPath}')">
+    //         Download ZIP
+    //     </button>
+    // `;
+    // }
 
     // if (form) {
     //     let elements, cardElement;

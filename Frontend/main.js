@@ -9,10 +9,12 @@ import { app, BrowserWindow, ipcMain, dialog } from 'electron';
 import dotenv from 'dotenv'
 // import Stripe from 'stripe';
 import axios from 'axios';
-const { spawn } = require('child_process');
-const path = require('path');
-const fs = require('fs').promises;
-const archiver = require('archiver');
+// const { spawn } = require('child_process');
+// const path = require('path');
+import path from 'path';
+import file from 'fs';
+const fs = file.promises;
+// const archiver = require('archiver');
 
 dotenv.config()
 
@@ -467,74 +469,132 @@ ipcMain.on("yearly-subscription", async (event, data) => {
     }
 });
 
+// ipcMain.on('remove-background', async (event, data) => {
+//     try {
+//         console.log("image ", data.imageBuffer)
+//         const response = await axios.post(`http://localhost:3000/imageModel/remove-background`, {
+//             images: [data.imageBuffer],
+//             fileName: data.fileName
+//         },
+//             {
+//                 headers: {
+//                     'Authorization': `Bearer ${data.token}`
+//                 }
+//             }
+//         )
+//         event.reply("remove-background-result", {
+//             success: true,
+//             images: response.data.result,
+//             message: response.data.message,
+//         })
+//     }
+//     catch (error) {
+//         event.reply('remove-background-result', { success: false, message: error.response?.data.message || error.response?.data || 'Error processing the image' });
+//     }
+// })
+
 ipcMain.on('remove-background', async (event, data) => {
+    console.log(data.imageBuffer)
     try {
-        const { files } = data;
-        const results = [];
+        // Convert base64 back to buffer for multipart/form-data
+        const imageBuffer = Buffer.from(data.imageBuffer, 'base64');
 
-        // Create output directory if it doesn't exist
-        const outputDir = path.join(app.getPath('temp'), 'background-removed');
-        await fs.mkdir(outputDir, { recursive: true });
+        // Create form data
+        const formData = new FormData();
+        formData.append('files', imageBuffer, data.fileName);
 
-        // Process each file
-        for (let i = 0; i < files.length; i++) {
-            const inputPath = files[i];
-            const outputPath = path.join(outputDir, `processed-${path.basename(inputPath)}`);
+        const response = await axios.post('http://localhost:3000/imageModel/remove-background',
+            formData,
+            {
+                headers: {
+                    'Authorization': `Bearer ${data.token}`,
+                    ...formData.getHeaders()
+                }
+            }
+        );
 
-            // Run Python script
-            await new Promise((resolve, reject) => {
-                const pythonProcess = spawn('python', [
-                    'background_remover.py',
-                    inputPath,
-                    outputPath
-                ]);
-
-                pythonProcess.on('close', (code) => {
-                    if (code === 0) {
-                        results.push(outputPath);
-                        // Send progress update
-                        event.sender.send('background-remove-progress', {
-                            progress: Math.round(((i + 1) / files.length) * 100)
-                        });
-                        resolve();
-                    } else {
-                        reject(new Error(`Processing failed with code ${code}`));
-                    }
-                });
-            });
-        }
-
-        // Handle results
-        if (results.length === 1) {
-            event.sender.send('background-remove-complete', {
-                success: true,
-                files: results
-            });
-        } else {
-            // Create ZIP file for multiple images
-            const zipPath = path.join(outputDir, 'processed-images.zip');
-            const archive = archiver('zip');
-            const output = fs.createWriteStream(zipPath);
-
-            archive.pipe(output);
-            results.forEach(file => {
-                archive.file(file, { name: path.basename(file) });
-            });
-            await archive.finalize();
-
-            event.sender.send('background-remove-complete', {
-                success: true,
-                zipPath,
-                files: results
-            });
-        }
-    } catch (error) {
-        event.sender.send('background-remove-error', {
+        event.reply("remove-background-result", {
+            success: true,
+            images: response.data.result,
+            message: response.data.message,
+        });
+    }
+    catch (error) {
+        event.reply('remove-background-result', {
             success: false,
-            message: error.message
+            message: error.response?.data.message || error.response?.data || 'Error processing the image'
         });
     }
 });
+
+// ipcMain.on('remove-background', async (event, data) => {
+//     try {
+//         const { files } = data;
+//         const results = [];
+
+//         // Create output directory if it doesn't exist
+//         const outputDir = path.join(app.getPath('temp'), 'background-removed');
+//         await fs.mkdir(outputDir, { recursive: true });
+
+//         // Process each file
+//         for (let i = 0; i < files.length; i++) {
+//             const inputPath = files[i];
+//             const outputPath = path.join(outputDir, `processed-${path.basename(inputPath)}`);
+
+//             // Run Python script
+//             await new Promise((resolve, reject) => {
+//                 const pythonProcess = spawn('python', [
+//                     'background_remover.py',
+//                     inputPath,
+//                     outputPath
+//                 ]);
+
+//                 pythonProcess.on('close', (code) => {
+//                     if (code === 0) {
+//                         results.push(outputPath);
+//                         // Send progress update
+//                         event.sender.send('background-remove-progress', {
+//                             progress: Math.round(((i + 1) / files.length) * 100)
+//                         });
+//                         resolve();
+//                     } else {
+//                         reject(new Error(`Processing failed with code ${code}`));
+//                     }
+//                 });
+//             });
+//         }
+
+//         // Handle results
+//         if (results.length === 1) {
+//             event.sender.send('background-remove-complete', {
+//                 success: true,
+//                 files: results
+//             });
+//         } else {
+//             // Create ZIP file for multiple images
+//             const zipPath = path.join(outputDir, 'processed-images.zip');
+//             const archive = archiver('zip');
+//             const output = fs.createWriteStream(zipPath);
+
+//             archive.pipe(output);
+//             results.forEach(file => {
+//                 archive.file(file, { name: path.basename(file) });
+//             });
+//             await archive.finalize();
+
+//             event.sender.send('background-remove-complete', {
+//                 success: true,
+//                 zipPath,
+//                 files: results
+//             });
+//         }
+//     } catch (error) {
+//         event.sender.send('background-remove-error', {
+//             success: false,
+//             message: error.message
+//         });
+//     }
+// });
 
 // Handle file saving
 ipcMain.on('save-file', async (event, filePath) => {

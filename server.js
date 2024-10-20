@@ -28,7 +28,7 @@ app.use(bodyParser.json());
 
 // Api call for the user registration and login
 app.use("/api", userRouter)
-app.use("/imageModel", imageRouter)
+app.use("/imageModel/", imageRouter)
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
