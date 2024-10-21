@@ -11,9 +11,16 @@ import dotenv from 'dotenv'
 import axios from 'axios';
 // const { spawn } = require('child_process');
 // const path = require('path');
-import path from 'path';
-import file from 'fs';
-const fs = file.promises;
+// import FormData from 'form-data'
+// import path from 'path';
+// import file from 'fs';
+// const fs = file.promises;
+import { writeFile, createReadStream, unlinkSync, existsSync } from 'node:fs';
+import { writeFile as writeFilePromise } from 'node:fs/promises';
+import FormData from 'form-data';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
 // const archiver = require('archiver');
 
 dotenv.config()
@@ -493,25 +500,256 @@ ipcMain.on("yearly-subscription", async (event, data) => {
 //     }
 // })
 
+// ipcMain.on('remove-background', async (event, data) => {
+//     // console.log(data.imageBuffer)
+//     try {
+//         // Convert base64 back to buffer for multipart/form-data
+//         // const imageBuffer = Buffer.from(data.imageBuffer, 'base64');
+//         // console.log("Image Buffer: ", imageBuffer)
+//         // // Create form data
+//         // const formData = new FormData();
+//         // console.log("Testing Before append .......")
+//         // formData.append('files', imageBuffer, data.fileName);
+//         // console.log("Testing After append .......")
+//         // console.log("FormData: ", formData)
+
+//         // const response = await axios.post('http://localhost:3000/imageModel/remove-background',
+//         //     formData,
+//         //     {
+//         //         headers: {
+//         //             'Authorization': `Bearer ${data.token}`,
+//         //             ...formData.getHeaders()
+//         //         }
+//         //     }
+//         // );
+//         const imageBuffer = Buffer.from(data.imageBuffer, 'base64');
+//         console.log("Image Buffer: ", imageBuffer)
+//         // Create temporary file
+//         const tempFilePath = path.join(app.getPath('temp'), data.fileName);
+//         console.log("tempFilePath: ", tempFilePath)
+//         fs.writeFileSync(tempFilePath, imageBuffer);
+
+//         // Create form data
+//         const formData = new FormData();
+//         console.log("Testing Before append .......")
+//         formData.append('files', fs.createReadStream(tempFilePath));
+//         console.log("FormData: ", formData)
+
+//         const response = await axios.post('http://localhost:3000/imageModel/remove-background',
+//             formData,
+//             {
+//                 headers: {
+//                     'Authorization': `Bearer ${data.token}`,
+//                     ...formData.getHeaders()
+//                 }
+//             }
+//         );
+
+//         // Clean up temp file
+//         fs.unlinkSync(tempFilePath);
+//         event.reply("remove-background-result", {
+//             success: true,
+//             images: response.data.result,
+//             message: response.data.message,
+//         });
+//     }
+//     catch (error) {
+//         event.reply('remove-background-result', {
+//             success: false,
+//             message: error.response?.data.message || error.response?.data || 'Error processing the image'
+//         });
+//     }
+// });
+
+// ipcMain.on('remove-background', async (event, data) => {
+//     try {
+//         console.log('Starting background removal process...');
+
+//         // Convert base64 to buffer
+//         const imageBuffer = Buffer.from(data.imageBuffer, 'base64');
+//         console.log('Buffer created successfully');
+
+//         // Create temporary file with more detailed error handling
+//         let tempFilePath;
+//         try {
+//             tempFilePath = path.join(app.getPath('temp'), data.fileName);
+//             console.log('Temp file path:', tempFilePath);
+
+//             fs.writeFileSync(tempFilePath, imageBuffer);
+//             console.log('File written successfully');
+
+//             // Verify file exists
+//             if (!fs.existsSync(tempFilePath)) {
+//                 throw new Error('File was not created successfully');
+//             }
+//         } catch (fileError) {
+//             console.error('Error with file operations:', fileError);
+//             throw fileError;
+//         }
+
+//         console.log('Creating FormData...');
+//         // Create form data with error handling
+//         try {
+//             const formData = new FormData();
+//             console.log('FormData created');
+
+//             const fileStream = fs.createReadStream(tempFilePath);
+//             console.log('File stream created');
+
+//             formData.append('files', fileStream);
+//             console.log('File appended to FormData');
+
+//             console.log('Sending request...');
+//             const response = await axios.post(
+//                 'http://localhost:3000/imageModel/remove-background',
+//                 formData,
+//                 {
+//                     headers: {
+//                         'Authorization': `Bearer ${data.token}`,
+//                         ...formData.getHeaders()
+//                     },
+//                     maxContentLength: Infinity,
+//                     maxBodyLength: Infinity
+//                 }
+//             );
+//             console.log('Request completed');
+
+//             // Clean up temp file
+//             try {
+//                 fs.unlinkSync(tempFilePath);
+//                 console.log('Temp file cleaned up');
+//             } catch (cleanupError) {
+//                 console.error('Error cleaning up temp file:', cleanupError);
+//                 // Continue execution even if cleanup fails
+//             }
+
+//             event.reply("remove-background-result", {
+//                 success: true,
+//                 images: response.data.result,
+//                 message: response.data.message,
+//             });
+//         } catch (processError) {
+//             console.error('Error in processing:', processError);
+//             throw processError;
+//         }
+//     }
+//     catch (error) {
+//         console.error('Final error catch:', error);
+//         event.reply('remove-background-result', {
+//             success: false,
+//             message: error.response?.data.message || error.response?.data || error.message || 'Error processing the image'
+//         });
+//     }
+// });
+
+// ipcMain.on('remove-background', async (event, data) => {
+//     try {
+//         console.log('Starting background removal process...');
+
+//         // Convert base64 to buffer
+//         const imageBuffer = Buffer.from(data.imageBuffer, 'base64');
+//         console.log('Buffer created successfully');
+
+//         // Create temporary file with more detailed error handling
+//         let tempFilePath;
+//         try {
+//             tempFilePath = path.join(app.getPath('temp'), data.fileName);
+//             console.log('Temp file path:', tempFilePath);
+
+//             // Use Promise-based writeFile instead of writeFileSync
+//             await writeFilePromise(tempFilePath, imageBuffer);
+//             console.log('File written successfully');
+
+//             // Verify file exists
+//             if (!existsSync(tempFilePath)) {
+//                 throw new Error('File was not created successfully');
+//             }
+//         } catch (fileError) {
+//             console.error('Error with file operations:', fileError);
+//             throw fileError;
+//         }
+
+//         console.log('Creating FormData...');
+//         try {
+//             const formData = new FormData();
+//             console.log('FormData created');
+
+//             const fileStream = createReadStream(tempFilePath);
+//             console.log('File stream created');
+
+//             formData.append('files', fileStream);
+//             console.log('File appended to FormData');
+
+//             console.log('Sending request...');
+//             const response = await axios.post(
+//                 'http://localhost:3000/imageModel/remove-background',
+//                 formData,
+//                 {
+//                     headers: {
+//                         'Authorization': `Bearer ${data.token}`,
+//                         ...formData.getHeaders()
+//                     },
+//                     maxContentLength: Infinity,
+//                     maxBodyLength: Infinity
+//                 }
+//             );
+//             console.log('Request completed');
+
+//             // Clean up temp file
+//             try {
+//                 unlinkSync(tempFilePath);
+//                 console.log('Temp file cleaned up');
+//             } catch (cleanupError) {
+//                 console.error('Error cleaning up temp file:', cleanupError);
+//             }
+
+//             event.reply("remove-background-result", {
+//                 success: true,
+//                 images: response.data.result,
+//                 message: response.data.message,
+//             });
+//         } catch (processError) {
+//             console.error('Error in processing:', processError);
+//             throw processError;
+//         }
+//     }
+//     catch (error) {
+//         console.error('Final error catch:', error);
+//         event.reply('remove-background-result', {
+//             success: false,
+//             message: error.response?.data.message || error.response?.data || error.message || 'Error processing the image'
+//         });
+//     }
+// });
+
 ipcMain.on('remove-background', async (event, data) => {
-    console.log(data.imageBuffer)
     try {
-        // Convert base64 back to buffer for multipart/form-data
-        const imageBuffer = Buffer.from(data.imageBuffer, 'base64');
+        console.log('Starting background removal process...');
 
-        // Create form data
+        // Create FormData
         const formData = new FormData();
-        formData.append('files', imageBuffer, data.fileName);
 
-        const response = await axios.post('http://localhost:3000/imageModel/remove-background',
+        // Convert base64 to buffer and append directly to FormData
+        const imageBuffer = Buffer.from(data.imageBuffer, 'base64');
+        formData.append('files', imageBuffer, {
+            filename: data.fileName,
+            contentType: 'image/png'
+        });
+
+        console.log('Sending request...');
+        const response = await axios.post(
+            'http://localhost:3000/imageModel/remove-background',
             formData,
             {
                 headers: {
                     'Authorization': `Bearer ${data.token}`,
                     ...formData.getHeaders()
-                }
+                },
+                maxContentLength: Infinity,
+                maxBodyLength: Infinity
             }
         );
+        console.log('Request completed');
 
         event.reply("remove-background-result", {
             success: true,
@@ -520,9 +758,10 @@ ipcMain.on('remove-background', async (event, data) => {
         });
     }
     catch (error) {
+        console.error('Final error catch:', error);
         event.reply('remove-background-result', {
             success: false,
-            message: error.response?.data.message || error.response?.data || 'Error processing the image'
+            message: error.response?.data?.message || error.message || 'Error processing the image'
         });
     }
 });
