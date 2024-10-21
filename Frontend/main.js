@@ -722,6 +722,50 @@ ipcMain.on("yearly-subscription", async (event, data) => {
 //     }
 // });
 
+// ipcMain.on('remove-background', async (event, data) => {
+//     try {
+//         console.log('Starting background removal process...');
+
+//         // Create FormData
+//         const formData = new FormData();
+
+//         // Convert base64 to buffer and append directly to FormData
+//         const imageBuffer = Buffer.from(data.imageBuffer, 'base64');
+//         formData.append('files', imageBuffer, {
+//             filename: data.fileName,
+//             contentType: 'image/png'
+//         });
+
+//         console.log('Sending request...');
+//         const response = await axios.post(
+//             'http://localhost:3000/imageModel/remove-background',
+//             formData,
+//             {
+//                 headers: {
+//                     'Authorization': `Bearer ${data.token}`,
+//                     ...formData.getHeaders()
+//                 },
+//                 maxContentLength: Infinity,
+//                 maxBodyLength: Infinity
+//             }
+//         );
+//         console.log('Request completed');
+
+//         event.reply("remove-background-result", {
+//             success: true,
+//             images: response.data.result,
+//             message: response.data.message,
+//         });
+//     }
+//     catch (error) {
+//         console.error('Final error catch:', error);
+//         event.reply('remove-background-result', {
+//             success: false,
+//             message: error.response?.data?.message || error.message || 'Error processing the image'
+//         });
+//     }
+// });
+
 ipcMain.on('remove-background', async (event, data) => {
     try {
         console.log('Starting background removal process...');
@@ -751,9 +795,10 @@ ipcMain.on('remove-background', async (event, data) => {
         );
         console.log('Request completed');
 
+        // Send the entire result array
         event.reply("remove-background-result", {
             success: true,
-            images: response.data.result,
+            images: response.data.result,  // This should be an array of {filename, base64} objects
             message: response.data.message,
         });
     }

@@ -197,8 +197,29 @@ document.addEventListener('DOMContentLoaded', () => {
                 };
 
                 // Listen for the response
+                // ipcRenderer.on('remove-background-result', (event, response) => {
+                //     if (response.success) {
+                //         message.classList.add('pop-up', 'alert', 'alert-success');
+                //         message.textContent = response.message;
+                //         setTimeout(() => {
+                //             message.classList.add('hide');
+                //         }, 2000);
+                //         displayResult(response.images);
+                //     } else if (!response.success && (response.message === 'Not Authorized' || response.message === 'Not Authorized, No Token')) {
+                //         message.classList.add('pop-up', 'alert', 'alert-danger');
+                //         console.log('Error: ', response.message);
+                //         message.textContent = response.message;
+                //         setTimeout(() => {
+                //             message.classList.add('hide');
+                //         }, 2000);
+                //         setTimeout(() => {
+                //             window.location.href = 'dashboard.html';
+                //         }, 3000);
+                //     }
+                // });
+                // Listen for the response
                 ipcRenderer.on('remove-background-result', (event, response) => {
-                    if (response.success) {
+                    if (response.success && response.images && response.images.length > 0) {
                         message.classList.add('pop-up', 'alert', 'alert-success');
                         message.textContent = response.message;
                         setTimeout(() => {
@@ -215,9 +236,14 @@ document.addEventListener('DOMContentLoaded', () => {
                         setTimeout(() => {
                             window.location.href = 'dashboard.html';
                         }, 3000);
+                    } else {
+                        message.classList.add('pop-up', 'alert', 'alert-danger');
+                        message.textContent = response.message || 'Error processing image';
+                        setTimeout(() => {
+                            message.classList.add('hide');
+                        }, 2000);
                     }
                 });
-
                 reader.readAsArrayBuffer(file);
             } catch (error) {
                 message.classList.add('pop-up', 'alert', 'alert-danger');
@@ -236,17 +262,38 @@ document.addEventListener('DOMContentLoaded', () => {
         return btoa(bytes);
     }
 
-    function displayResult(imageUrl) {
-        processedImageContainer.innerHTML = `
-        <h3>Processed Image:</h3>
-        <img src="${imageUrl}" alt="Processed Image">
-        <button class="download-btn" onclick="saveImage('${imageUrl}')">Save Image</button>
-    `;
+    function displayResult(images) {
+        if (Array.isArray(images) && images.length > 0) {
+            const image = images[0]; // Get first image if multiple
+            processedImageContainer.innerHTML = `
+                <h3>Processed Image:</h3>
+                <img src="${image.base64}" alt="Processed Image">
+                <button class="download-btn" onclick="saveImage('${image.filename}', '${image.base64}')">Save Image</button>
+            `;
+        }
     }
 
-    function saveImage(imageUrl) {
-        ipcRenderer.send('save-file', imageUrl); // Send the URL to main process to save the file
+    // Add this function to handle image saving
+    function saveImage(filename, base64Data) {
+        const link = document.createElement('a');
+        link.href = base64Data;
+        link.download = `processed_${filename}`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
     }
+
+    // function displayResult(imageUrl) {
+    //     processedImageContainer.innerHTML = `
+    //     <h3>Processed Image:</h3>
+    //     <img src="${imageUrl}" alt="Processed Image">
+    //     <button class="download-btn" onclick="saveImage('${imageUrl}')">Save Image</button>
+    // `;
+    // }
+
+    // function saveImage(imageUrl) {
+    //     ipcRenderer.send('save-file', imageUrl); // Send the URL to main process to save the file
+    // }
 
     // if (uploadArea && imageUpload && processBtn) {
     //     uploadArea.addEventListener('click', () => {
