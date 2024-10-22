@@ -158,7 +158,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (file) {
                 const reader = new FileReader();
                 reader.onload = (e) => {
-                    uploadedImageContainer.innerHTML = `<img src="${e.target.result}" alt="Uploaded Image">`;
+                    uploadedImageContainer.innerHTML = `<h5>Orignal Image:</h5></h5><img src="${e.target.result}" alt="Uploaded Image" class="translate images">`;
                     processBtn.disabled = false;
                 };
                 reader.readAsDataURL(file);
@@ -226,6 +226,9 @@ document.addEventListener('DOMContentLoaded', () => {
                             message.classList.add('hide');
                         }, 2000);
                         displayResult(response.images);
+                        const image = response.images[0];
+                        document.getElementById("save-btn").addEventListener('click', () => { saveImage(image.filename, image.base64) })
+
                     } else if (!response.success && (response.message === 'Not Authorized' || response.message === 'Not Authorized, No Token')) {
                         message.classList.add('pop-up', 'alert', 'alert-danger');
                         console.log('Error: ', response.message);
@@ -266,12 +269,13 @@ document.addEventListener('DOMContentLoaded', () => {
         if (Array.isArray(images) && images.length > 0) {
             const image = images[0]; // Get first image if multiple
             processedImageContainer.innerHTML = `
-                <h3>Processed Image:</h3>
-                <img src="${image.base64}" alt="Processed Image">
-                <button class="download-btn" onclick="saveImage('${image.filename}', '${image.base64}')">Save Image</button>
+                <h5>Processed Image:</h5>
+                <img src="${image.base64}" alt="Processed Image" class="translate images ">
+                <button class="btn mb-2" id="save-btn", '${image.base64}')">Save Image</button>
             `;
         }
     }
+
 
     // Add this function to handle image saving
     function saveImage(filename, base64Data) {

@@ -19,7 +19,7 @@
         .btn {
             font-size: 0.8rem;
             font-weight: 700;
-            /* color: blueviolet; */
+            color: white;
             background-color: rgb(63, 3, 119) !important;
         }
 
@@ -91,7 +91,7 @@
             display: none;
         }
 
-        img {
+        .images {
             max-width: 100%;
             border-radius: 8px;
             margin-bottom: 16px;
@@ -146,7 +146,24 @@
             border-radius: 8px;
             width: 200px;
             height: auto;
+        }
 
+        .translate:hover {
+            transform: scale(1.025);
+            border: 1px solid rgb(63, 3, 119);
+        }
+
+        .image-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .img-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
     </style>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -161,10 +178,12 @@
     <div class="row align-items-center justify-content-center h-100 g-0 px-4 px-sm-0 w-100">
         <p id="message"></p>
     </div>
-    <div class="d-flex justify-content-between m-4 navbar p-2">
+    <div class="d-flex justify-content-between mx-4 mb-2 navbar p-2">
+
         <a href="#">
             <img src="images/icon-512.png" alt="" width="40">
         </a>
+
         <!-- <i class='bx bxs-user' size="lg"></i> -->
         <form id="logout">
             <button type="submit" class="btn btn-primary">Logout</button>
@@ -187,9 +206,12 @@
             </div>
             <!-- <p>Uploaded Image</p> -->
             <input type="file" id="image-upload" accept=".png,.jpg,.jpeg" multiple>
-            <div id="uploaded-image-container"></div>
+            <div class="image-container">
+                <div id="uploaded-image-container">
+                </div>
+                <div id="processed-image-container"></div>
+            </div>
             <button id="process-btn" class="process-btn" disabled>Process Image</button>
-            <div id="processed-image-container"></div>
         </div>
 
     </div>
