@@ -55,10 +55,11 @@
             align-items: center;
             background-color: white;
             border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
             padding: 24px;
             /* width: 400px; */
             height: auto;
+            margin-bottom: 10px;
         }
 
         h1 {
@@ -178,7 +179,7 @@
     <div class="row align-items-center justify-content-center h-100 g-0 px-4 px-sm-0 w-100">
         <p id="message"></p>
     </div>
-    <div class="d-flex justify-content-between mx-4 mb-2 navbar p-2">
+    <div class="d-flex justify-content-between mx-4 mt-2 mb-2 navbar p-2">
 
         <a href="#">
             <img src="images/icon-512.png" alt="" width="40">
@@ -204,6 +205,7 @@
             <div class="upload-area" id="upload-area">
                 <p>Upload Image</p>
             </div>
+            <button id="process-btn" class="process-btn" disabled>Process Image</button>
             <!-- <p>Uploaded Image</p> -->
             <input type="file" id="image-upload" accept=".png,.jpg,.jpeg" multiple>
             <div class="image-container">
@@ -211,51 +213,12 @@
                 </div>
                 <div id="processed-image-container"></div>
             </div>
-            <button id="process-btn" class="process-btn" disabled>Process Image</button>
         </div>
 
     </div>
 
     <!-- src="renderer.js" -->
     <script src="renderer.js">
-        // document.addEventListener('DOMContentLoaded', () => {
-        //     const processScreen = document.getElementById('process-screen');
-        //     const uploadArea = document.getElementById('upload-area');
-        //     const imageUpload = document.getElementById('image-upload');
-        //     const uploadedImageContainer = document.getElementById('uploaded-image-container');
-        //     const processBtn = document.getElementById('process-btn');
-        //     const processedImageContainer = document.getElementById('processed-image-container');
-
-        //     uploadArea.addEventListener('click', () => {
-        //         imageUpload.click();
-        //     });
-
-        //     imageUpload.addEventListener('change', (event) => {
-        //         const file = imageUpload.files[0]; // Select the first file only
-        //         if (file) {
-        //             const reader = new FileReader();
-        //             reader.onload = (e) => {
-        //                 uploadedImageContainer.innerHTML = `<img src="${e.target.result}" alt="Uploaded Image">`;
-        //                 processBtn.disabled = false; // Enable the process button
-        //                 console.log(imageUpload.files); // See what files are selected
-        //                 console.log(e.target.result); // Check if the file is correctly read
-        //             };
-        //             reader.readAsDataURL(file); // Read the first file
-        //         }
-        //     });
-
-        //     processBtn.addEventListener('click', () => {
-        //         setTimeout(() => {
-        //             const uploadedImage = uploadedImageContainer.querySelector('img');
-        //             if (uploadedImage) {
-        //                 processedImageContainer.innerHTML = `
-        //             <h3>Processed Image:</h3>
-        //             <img src="${uploadedImage.src}" alt="Processed Image">
-        //         `;
-        //             }
-        //         }, 1000); // Simulating processing delay
-        //     });
-        // });
 
         // let logout = document.getElementById('logout')
         // // if (logout) {
@@ -271,76 +234,6 @@
         //         window.location.href = 'http://localhost:3000/api/login';
         //     }, 1000)
         // })
-        // }
-        // const toggleBtn = document.getElementById('toggle-btn');
-        // const optionsScreen = document.getElementById('options-screen');
-        // const effectsScreen = document.getElementById('effects-screen');
-
-
-        // const processScreen = document.getElementById('process-screen');
-        // const uploadArea = document.getElementById('upload-area');
-        // const imageUpload = document.getElementById('image-upload');
-        // const uploadedImageContainer = document.getElementById('uploaded-image-container');
-        // const processBtn = document.getElementById('process-btn');
-        // const processedImageContainer = document.getElementById('processed-image-container');
-
-        // let currentScreen = 'process';
-
-        // toggleBtn.addEventListener('click', () => {
-        //     if (currentScreen === 'process') {
-        //         processScreen.classList.remove('active');
-        //         optionsScreen.classList.add('active');
-        //         toggleBtn.textContent = 'Switch to Process';
-        //         currentScreen = 'options';
-        //     } else {
-        //         optionsScreen.classList.remove('active');
-        //         effectsScreen.classList.remove('active');
-        //         processScreen.classList.add('active');
-        //         toggleBtn.textContent = 'Switch to Settings';
-        //         currentScreen = 'process';
-        //     }
-        // });
-
-        // uploadArea.addEventListener('click', () => {
-        //     imageUpload.click();
-        // });
-
-        // imageUpload.addEventListener('change', (event) => {
-        //     // const file = event.target.files[0];
-        //     const file = imageUpload.files[0];
-        //     if (file) {
-        //         const reader = new FileReader();
-        //         reader.onload = (e) => {
-        //             uploadedImageContainer.innerHTML = `<img src="${e.target.result}" alt="Uploaded Image">`;
-        //             processBtn.disabled = false;
-        //         };
-        //         reader.readAsDataURL(file);
-        //     }
-        // });
-
-        // processBtn.addEventListener('click', () => {
-        //     // Simulating image processing
-        //     setTimeout(() => {
-        //         const uploadedImage = uploadedImageContainer.querySelector('img');
-        //         if (uploadedImage) {
-        //             processedImageContainer.innerHTML = `
-
-        //             `;
-        //         }
-        //     }, 1000);
-        // });
-
-        // Add event listeners for options and effects screens
-        // document.getElementById('quality').addEventListener('change', updateImage);
-        // document.getElementById('format').addEventListener('change', updateImage);
-        // document.getElementById('preserve-transparency').addEventListener('change', updateImage);
-        // document.getElementById('filter').addEventListener('change', updateImage);
-        // document.getElementById('brightness').addEventListener('input', updateImage);
-        // document.getElementById('contrast').addEventListener('input', updateImage);
-
-        // function updateImage() {
-        //     // In a real application, this function would apply the selected options and effects to the image
-        //     console.log('Image updated with new settings');
         // }
     </script>
 </body>

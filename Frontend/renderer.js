@@ -270,7 +270,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const image = images[0]; // Get first image if multiple
             processedImageContainer.innerHTML = `
                 <h5>Processed Image:</h5>
-                <img src="${image.base64}" alt="Processed Image" class="translate images ">
+                <img src="${image.base64}" alt="Processed Image" id="save-btn" class="translate images ">
                 <button class="btn mb-2" id="save-btn", '${image.base64}')">Save Image</button>
             `;
         }
