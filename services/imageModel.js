@@ -852,106 +852,222 @@ async function ensureUploadsDirectory() {
     return uploadsDir;
 }
 
-async function backgroundRemover(files) {
-    if (!files || files.length === 0) {
-        throw new Error("No file found, Please upload a file");
-    }
+// async function backgroundRemover(files) {
+//     if (!files || files.length === 0) {
+//         throw new Error("No file found, Please upload a file");
+//     }
 
-    if (files.length > MAX_FILES) {
-        throw new Error(`Maximum ${MAX_FILES} files allowed`);
-    }
+//     if (files.length > MAX_FILES) {
+//         throw new Error(`Maximum ${MAX_FILES} files allowed`);
+//     }
+
+//     const uploadsDir = await ensureUploadsDirectory();
+//     const results = [];
+
+//     for (const file of files) {
+//         if (allowedFile(file.originalname)) {
+//             try {
+//                 // Create temporary input and output file names
+//                 const inputFileName = `input_${uuidv4()}${path.extname(file.originalname)}`;
+//                 const outputFileName = `output_${uuidv4()}.png`;
+//                 const inputFilePath = path.join(uploadsDir, inputFileName);
+//                 const outputFilePath = path.join(uploadsDir, outputFileName);
+
+//                 // Write input file
+//                 await fs.writeFile(inputFilePath, file.buffer);
+//                 console.log('Input file created at:', inputFilePath);
+
+//                 // Process with rembg using files instead of pipes
+//                 await new Promise((resolve, reject) => {
+//                     // Adjust the Python path according to your system
+//                     // const pythonProcess = spawn('python', [
+//                     //     '-m',
+//                     //     'rembg',
+//                     //     'i',
+//                     //     inputFilePath,
+//                     //     outputFilePath
+//                     // ]);
+//                     const pythonProcess = spawn('rembg', ['i', inputFilePath,
+//                         outputFilePath]);
+
+//                     let errorOutput = '';
+
+//                     pythonProcess.stderr.on('data', (data) => {
+//                         errorOutput += data.toString();
+//                         console.error('Python process error:', data.toString());
+//                     });
+
+//                     pythonProcess.on('error', (error) => {
+//                         console.error('Failed to start Python process:', error);
+//                         reject(error);
+//                     });
+
+//                     pythonProcess.on('close', async (code) => {
+//                         if (code !== 0) {
+//                             reject(new Error(`Python process exited with code ${code}. Error: ${errorOutput}`));
+//                             return;
+//                         }
+//                         resolve();
+//                     });
+//                 });
+
+
+//                 const processedBuffer = await fs.readFile(outputFilePath);
+
+//                 // Convert to base64 with proper formatting
+//                 const base64Image = processedBuffer.toString('base64');
+//                 results.push({
+//                     filename: file.originalname,
+//                     base64: `data:image/png;base64,${base64Image}`
+//                 });
+
+//                 // Clean up temporary files
+//                 await Promise.all([
+//                     fs.unlink(inputFilePath).catch(console.error),
+//                     fs.unlink(outputFilePath).catch(console.error)
+//                 ]);
+//                 // Read the output file
+//                 // const processedBuffer = await fs.readFile(outputFilePath);
+
+//                 // // Convert to base64
+//                 // const base64Image = processedBuffer.toString('base64');
+//                 // results.push({
+//                 //     filename: file.originalname,
+//                 //     base64: `data:image/png;base64,${base64Image}`
+//                 // });
+
+//                 // // Clean up temporary files
+//                 // await Promise.all([
+//                 //     fs.unlink(inputFilePath).catch(console.error),
+//                 //     fs.unlink(outputFilePath).catch(console.error)
+//                 // ]);
+
+//             } catch (error) {
+//                 console.error('Error processing image:', error);
+//                 throw new Error(`Error processing image ${file.originalname}: ${error.message}`);
+//             }
+//         } else {
+//             throw new Error(`File type not allowed for ${file.originalname}`);
+//         }
+//     }
+
+//     return results;
+// }
+
+const backgroundRemover = async (files) => {
+    if (!files?.length) throw new Error("No file found");
+    if (files.length > MAX_FILES) throw new Error(`Maximum ${MAX_FILES} files allowed`);
 
     const uploadsDir = await ensureUploadsDirectory();
-    const results = [];
-
-    for (const file of files) {
-        if (allowedFile(file.originalname)) {
-            try {
-                // Create temporary input and output file names
-                const inputFileName = `input_${uuidv4()}${path.extname(file.originalname)}`;
-                const outputFileName = `output_${uuidv4()}.png`;
-                const inputFilePath = path.join(uploadsDir, inputFileName);
-                const outputFilePath = path.join(uploadsDir, outputFileName);
-
-                // Write input file
-                await fs.writeFile(inputFilePath, file.buffer);
-                console.log('Input file created at:', inputFilePath);
-
-                // Process with rembg using files instead of pipes
-                await new Promise((resolve, reject) => {
-                    // Adjust the Python path according to your system
-                    // const pythonProcess = spawn('python', [
-                    //     '-m',
-                    //     'rembg',
-                    //     'i',
-                    //     inputFilePath,
-                    //     outputFilePath
-                    // ]);
-                    const pythonProcess = spawn('rembg', ['i', inputFilePath,
-                        outputFilePath]);
-
-                    let errorOutput = '';
-
-                    pythonProcess.stderr.on('data', (data) => {
-                        errorOutput += data.toString();
-                        console.error('Python process error:', data.toString());
-                    });
-
-                    pythonProcess.on('error', (error) => {
-                        console.error('Failed to start Python process:', error);
-                        reject(error);
-                    });
-
-                    pythonProcess.on('close', async (code) => {
-                        if (code !== 0) {
-                            reject(new Error(`Python process exited with code ${code}. Error: ${errorOutput}`));
-                            return;
-                        }
-                        resolve();
-                    });
-                });
-
-
-                const processedBuffer = await fs.readFile(outputFilePath);
-
-                // Convert to base64 with proper formatting
-                const base64Image = processedBuffer.toString('base64');
-                results.push({
-                    filename: file.originalname,
-                    base64: `data:image/png;base64,${base64Image}`
-                });
-
-                // Clean up temporary files
-                await Promise.all([
-                    fs.unlink(inputFilePath).catch(console.error),
-                    fs.unlink(outputFilePath).catch(console.error)
-                ]);
-                // Read the output file
-                // const processedBuffer = await fs.readFile(outputFilePath);
-
-                // // Convert to base64
-                // const base64Image = processedBuffer.toString('base64');
-                // results.push({
-                //     filename: file.originalname,
-                //     base64: `data:image/png;base64,${base64Image}`
-                // });
-
-                // // Clean up temporary files
-                // await Promise.all([
-                //     fs.unlink(inputFilePath).catch(console.error),
-                //     fs.unlink(outputFilePath).catch(console.error)
-                // ]);
-
-            } catch (error) {
-                console.error('Error processing image:', error);
-                throw new Error(`Error processing image ${file.originalname}: ${error.message}`);
-            }
-        } else {
+    const processFile = async (file) => {
+        if (!allowedFile(file.originalname)) {
             throw new Error(`File type not allowed for ${file.originalname}`);
         }
-    }
+
+        const inputFileName = `input_${uuidv4()}${path.extname(file.originalname)}`;
+        const outputFileName = `output_${uuidv4()}.png`;
+        const inputFilePath = path.join(uploadsDir, inputFileName);
+        const outputFilePath = path.join(uploadsDir, outputFileName);
+
+        await fs.writeFile(inputFilePath, file.buffer);
+
+        try {
+            await new Promise((resolve, reject) => {
+                const pythonProcess = spawn('rembg', ['i', inputFilePath, outputFilePath], {
+                    stdio: ['pipe', 'pipe', 'pipe']
+                });
+
+                pythonProcess.on('error', reject);
+                pythonProcess.on('close', code => {
+                    code === 0 ? resolve() : reject(new Error(`Process exited with code ${code}`));
+                });
+            });
+
+            const processedBuffer = await fs.readFile(outputFilePath);
+            const base64Image = `data:image/png;base64,${processedBuffer.toString('base64')}`;
+
+            // Cleanup files in background
+            Promise.all([
+                fs.unlink(inputFilePath),
+                fs.unlink(outputFilePath)
+            ]).catch(console.error);
+
+            return {
+                filename: file.originalname,
+                base64: base64Image
+            };
+        } catch (error) {
+            // Ensure cleanup even on error
+            Promise.all([
+                fs.unlink(inputFilePath),
+                fs.unlink(outputFilePath)
+            ]).catch(console.error);
+            throw error;
+        }
+    };
+
+    // Process files in parallel with concurrency limit
+    const concurrencyLimit = 3;
+    const results = await Promise.all(
+        files.map(async (file, index) => {
+            await new Promise(resolve =>
+                setTimeout(resolve, Math.floor(index / concurrencyLimit) * 100)
+            );
+            return processFile(file);
+        })
+    );
 
     return results;
-}
+};
+
+// main.js
+// Add worker threads for parallel processing
+
+
+// Modify your backgroundRemover function to use workers
+// const backgroundRemover = async (files) => {
+//     if (!files?.length) throw new Error("No file found");
+//     if (files.length > MAX_FILES) throw new Error(`Maximum ${MAX_FILES} files allowed`);
+
+//     const uploadsDir = await ensureUploadsDirectory();
+//     const processFile = async (file) => {
+//         if (!allowedFile(file.originalname)) {
+//             throw new Error(`File type not allowed for ${file.originalname}`);
+//         }
+
+//         const inputFileName = `input_${uuidv4()}${path.extname(file.originalname)}`;
+//         const outputFileName = `output_${uuidv4()}.png`;
+//         const inputFilePath = path.join(uploadsDir, inputFileName);
+//         const outputFilePath = path.join(uploadsDir, outputFileName);
+
+//         await fs.writeFile(inputFilePath, file.buffer);
+
+//         try {
+//             await processWithWorker(inputFilePath, outputFilePath);
+//             const processedBuffer = await fs.readFile(outputFilePath);
+//             const base64Image = `data:image/png;base64,${processedBuffer.toString('base64')}`;
+
+//             // Cleanup files
+//             await Promise.all([
+//                 fs.unlink(inputFilePath).catch(console.error),
+//                 fs.unlink(outputFilePath).catch(console.error)
+//             ]);
+
+//             return {
+//                 filename: file.originalname,
+//                 base64: base64Image
+//             };
+//         } catch (error) {
+//             // Cleanup on error
+//             await Promise.all([
+//                 fs.unlink(inputFilePath).catch(console.error),
+//                 fs.unlink(outputFilePath).catch(console.error)
+//             ]);
+//             throw error;
+//         }
+//     };
+
+//     return Promise.all(files.map(processFile));
+// };
 
 module.exports = { backgroundRemover };

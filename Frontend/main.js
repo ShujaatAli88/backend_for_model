@@ -766,21 +766,80 @@ ipcMain.on("yearly-subscription", async (event, data) => {
 //     }
 // });
 
-ipcMain.on('remove-background', async (event, data) => {
+// ipcMain.on('remove-background', async (event, data) => {
+//     try {
+//         console.log('Starting background removal process...');
+
+//         // Create FormData
+//         const formData = new FormData();
+
+//         // Convert base64 to buffer and append directly to FormData
+//         const imageBuffer = Buffer.from(data.imageBuffer, 'base64');
+//         formData.append('files', imageBuffer, {
+//             filename: data.fileName,
+//             contentType: 'image/png'
+//         });
+
+//         console.log('Sending request...');
+//         const response = await axios.post(
+//             'http://localhost:3000/imageModel/remove-background',
+//             formData,
+//             {
+//                 headers: {
+//                     'Authorization': `Bearer ${data.token}`,
+//                     ...formData.getHeaders()
+//                 },
+//                 maxContentLength: Infinity,
+//                 maxBodyLength: Infinity
+//             }
+//         );
+//         console.log('Request completed');
+
+//         // Send the entire result array
+//         event.reply("remove-background-result", {
+//             success: true,
+//             images: response.data.result,  // This should be an array of {filename, base64} objects
+//             message: response.data.message,
+//         });
+//     }
+//     catch (error) {
+//         console.error('Final error catch:', error);
+//         event.reply('remove-background-result', {
+//             success: false,
+//             message: error.response?.data?.message || error.message || 'Error processing the image'
+//         });
+//     }
+// });
+
+const requestQueue = [];
+const processedCache = new Map();
+let isProcessing = false;
+
+async function processNextInQueue() {
+    if (isProcessing || requestQueue.length === 0) return;
+
+    isProcessing = true;
+    const { event, data } = requestQueue.shift();
+
     try {
-        console.log('Starting background removal process...');
+        // Check cache first
+        const cacheKey = data.imageBuffer;
+        if (processedCache.has(cacheKey)) {
+            event.reply("remove-background-result", {
+                success: true,
+                images: processedCache.get(cacheKey),
+                message: "Retrieved from cache",
+            });
+            return;
+        }
 
-        // Create FormData
         const formData = new FormData();
-
-        // Convert base64 to buffer and append directly to FormData
         const imageBuffer = Buffer.from(data.imageBuffer, 'base64');
         formData.append('files', imageBuffer, {
             filename: data.fileName,
             contentType: 'image/png'
         });
 
-        console.log('Sending request...');
         const response = await axios.post(
             'http://localhost:3000/imageModel/remove-background',
             formData,
@@ -793,23 +852,37 @@ ipcMain.on('remove-background', async (event, data) => {
                 maxBodyLength: Infinity
             }
         );
-        console.log('Request completed');
 
-        // Send the entire result array
+        // Cache the result
+        processedCache.set(cacheKey, response.data.result);
+        if (processedCache.size > 50) { // Limit cache size
+            const firstKey = processedCache.keys().next().value;
+            processedCache.delete(firstKey);
+        }
+
         event.reply("remove-background-result", {
             success: true,
-            images: response.data.result,  // This should be an array of {filename, base64} objects
+            images: response.data.result,
             message: response.data.message,
         });
-    }
-    catch (error) {
-        console.error('Final error catch:', error);
+    } catch (error) {
         event.reply('remove-background-result', {
             success: false,
-            message: error.response?.data?.message || error.message || 'Error processing the image'
+            message: error.response?.data?.message || error.message
         });
+    } finally {
+        isProcessing = false;
+        processNextInQueue();
     }
+}
+
+ipcMain.on('remove-background', async (event, data) => {
+    requestQueue.push({ event, data });
+    console.log("Sending picture ")
+    processNextInQueue();
+    console.log("Picture recieved")
 });
+
 
 // ipcMain.on('remove-background', async (event, data) => {
 //     try {
