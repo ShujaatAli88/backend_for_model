@@ -158,6 +158,13 @@
             display: flex;
             justify-content: space-between;
             gap: 10px;
+            width: 70%;
+        }
+
+        .upload-container {
+            display: flex;
+            width: 30%;
+            flex-direction: column;
         }
 
         .img-container {
@@ -202,12 +209,14 @@
         <h1>Image Processor</h1>
         <!-- <button id="toggle-btn" class="toggle-btn btn btn-primary">Switch to Settings</button> -->
         <div id="process-screen" class="screen active">
-            <div class="upload-area" id="upload-area">
-                <p>Upload Image</p>
+            <div class="upload-container">
+                <div class="upload-area" id="upload-area">
+                    <p>Upload Image</p>
+                </div>
+                <button id="process-btn" class="process-btn" disabled>Process Image</button>
+                <!-- <p>Uploaded Image</p> -->
+                <input type="file" id="image-upload" accept=".png,.jpg,.jpeg" multiple>
             </div>
-            <button id="process-btn" class="process-btn" disabled>Process Image</button>
-            <!-- <p>Uploaded Image</p> -->
-            <input type="file" id="image-upload" accept=".png,.jpg,.jpeg" multiple>
             <div class="image-container">
                 <div id="uploaded-image-container">
                 </div>
