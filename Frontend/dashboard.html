@@ -20,6 +20,7 @@
             margin: 0;
             padding: 0;
             background-color: #f0f2f6;
+            overflow-x: hidden;
         }
 
         .navbar {
@@ -57,14 +58,14 @@
             background-color: white;
             padding: 1.5rem;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            overflow-y: auto;
+            overflow: hidden;
         }
 
         .main-content {
             margin-left: var(--sidebar-width);
             margin-top: var(--navbar-height);
             padding: 2rem;
-            max-width: var(--main-content-max-width);
+            /* max-width: var(--main-content-max-width); */
             margin-right: auto;
         }
 
@@ -169,19 +170,22 @@
         }
 
         .image-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            display: flex;
+            /* grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); */
             gap: 1rem;
             margin-top: 1rem;
             justify-content: center;
             align-items: center;
+            overflow: hidden;
         }
 
         .image-container {
-            background-color: white;
-            padding: 1rem;
-            border-radius: 0.5rem;
+            text-align: center;
+            background-color: #f0f2f6;
+            /* padding: 0.5rem; */
+            border-radius: 5px;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+
         }
 
         .image-container h3 {
@@ -204,15 +208,26 @@
 
         .images {
             max-width: 100%;
+            border: 1px solid rgb(63, 3, 119);
             border-radius: 8px;
-            margin-bottom: 16px;
+            /* margin-bottom: 16px; */
+        }
+
+        .images:hover {
+            transform: scale(1.05);
+        }
+
+        #image-upload {
+            text-align: center;
         }
     </style>
 </head>
 
 <body>
-    <div id="message"></div>
-
+    <!-- <div id="message"></div> -->
+    <div class="row align-items-center justify-content-center h-auto g-0 px-4 mx-2 px-sm-0 w-100">
+        <p id="message"></p>
+    </div>
     <!-- Navbar -->
     <div class="navbar">
         <a href="#">
@@ -230,7 +245,7 @@
 
         <div class="upload-area" id="upload-area">
             <p>Choose images or drag and drop here</p>
-            <input type="file" id="image-upload" accept=".png,.jpg,.jpeg" multiple>
+            <!-- <input type="file" id="image-upload" accept=".png,.jpg,.jpeg" multiple> -->
         </div>
 
         <button id="process-btn" disabled>

@@ -306,6 +306,10 @@ document.addEventListener('DOMContentLoaded', () => {
             if (file) {
                 const reader = new FileReader();
                 reader.onload = (e) => {
+                    // const element = document.getElementById("hidden");
+                    // element.style.display = ""
+                    // // Remove the id attribute
+                    // element.removeAttribute("id");
                     uploadedImageContainer.innerHTML = `<h3>Orignal Image:</h3><img src="${e.target.result}" alt="Uploaded Image" class="translate images">`;
                     processBtn.disabled = false;
                 };
@@ -427,18 +431,21 @@ document.addEventListener('DOMContentLoaded', () => {
                         message.classList.add('pop-up', 'alert', 'alert-success');
                         message.textContent = response.message;
                         setTimeout(() => {
-                            message.classList.add('hide');
+                            // message.classList.add('hide');
+                            message.setAttribute("id", "hidden")
                         }, 2000);
                         displayResult(response.images);
                         const image = response.images[0];
                         document.getElementById("save-btn").addEventListener('click', () => { saveImage(image.filename, image.base64) })
+
 
                     } else if (!response.success && (response.message === 'Not Authorized' || response.message === 'Not Authorized, No Token')) {
                         message.classList.add('pop-up', 'alert', 'alert-danger');
                         console.log('Error: ', response.message);
                         message.textContent = response.message;
                         setTimeout(() => {
-                            message.classList.add('hide');
+                            // message.classList.add('hide');
+                            message.setAttribute("id", "hidden")
                         }, 2000);
                         setTimeout(() => {
                             window.location.href = 'dashboard.html';
@@ -447,7 +454,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         message.classList.add('pop-up', 'alert', 'alert-danger');
                         message.textContent = response.message || 'Error processing image';
                         setTimeout(() => {
-                            message.classList.add('hide');
+                            // message.classList.add('hide');
+                            message.setAttribute("id", "hidden")
                         }, 2000);
                     }
                 });
@@ -574,26 +582,28 @@ document.addEventListener('DOMContentLoaded', () => {
             processedImageContainer.innerHTML = `
             <div class="img-container">
                 <h3>Processed Image:</h3>
-                <img src="${image.base64}" alt="Processed Image" class="translate images">
-                <button class="btn btn-primary mt-2" onclick="saveImage('${image.filename}', '${image.base64}')">
-                    Save Image
-                </button>
+                <img src="${image.base64}" alt="Processed Image" id="save-btn" class="translate images" onclick="saveImage('${image.filename}', '${image.base64}')">
+                
             </div>
         `;
         }
     }
 
+    {/* <button class="btn btn-primary mt-2" onclick="saveImage('${image.filename}', '${image.base64}')">
+                    Save Image
+                </button> */}
 
-    function displayResult(images) {
-        if (Array.isArray(images) && images.length > 0) {
-            const image = images[0]; // Get first image if multiple
-            processedImageContainer.innerHTML = `
-                <h5>Processed Image:</h5>
-                <img src="${image.base64}" alt="Processed Image" id="save-btn" class="translate images ">
-                <button class="btn mb-2" id="save-btn", '${image.base64}')">Save Image</button>
-            `;
-        }
-    }
+
+    // function displayResult(images) {
+    //     if (Array.isArray(images) && images.length > 0) {
+    //         const image = images[0]; // Get first image if multiple
+    //         processedImageContainer.innerHTML = `
+    //             <h5>Processed Image:</h5>
+    //             <img src="${image.base64}" alt="Processed Image" id="save-btn" class="translate images ">
+    //             <button class="btn mb-2" id="save-btn", '${image.base64}')">Save Image</button>
+    //         `;
+    //     }
+    // }
 
 
     // function displayResult(images) {
