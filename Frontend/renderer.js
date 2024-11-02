@@ -366,7 +366,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
             `;
 
-
                     ipcRenderer.send('remove-background', {
                         token: localStorage.getItem('authToken'),
                         imageBuffer: base64Image,
@@ -375,56 +374,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 };
 
                 reader.readAsArrayBuffer(compressedBlob);
-
-
-                // processBtn.disabled = true;
-                // processBtn.textContent = 'Processing...';
-
-                // const file = imageUpload.files[0];
-
-                // if (!file) {
-                //     message.classList.add('pop-up', 'alert', 'alert-danger');
-                //     message.textContent = 'Please upload an image first.';
-                //     setTimeout(() => {
-                //         message.classList.add('hide');
-                //     }, 2000);
-                //     return;
-                // }
-
-                // const reader = new FileReader();
-                // reader.onload = async () => {
-                //     // Convert ArrayBuffer to Base64
-                //     const base64Image = arrayBufferToBase64(reader.result);
-
-                //     // Send the base64 image to main process
-                //     ipcRenderer.send('remove-background', {
-                //         token,
-                //         imageBuffer: base64Image,
-                //         fileName: file.name
-                //     });
-                // };
-
-                // Listen for the response
-                // ipcRenderer.on('remove-background-result', (event, response) => {
-                //     if (response.success) {
-                //         message.classList.add('pop-up', 'alert', 'alert-success');
-                //         message.textContent = response.message;
-                //         setTimeout(() => {
-                //             message.classList.add('hide');
-                //         }, 2000);
-                //         displayResult(response.images);
-                //     } else if (!response.success && (response.message === 'Not Authorized' || response.message === 'Not Authorized, No Token')) {
-                //         message.classList.add('pop-up', 'alert', 'alert-danger');
-                //         console.log('Error: ', response.message);
-                //         message.textContent = response.message;
-                //         setTimeout(() => {
-                //             message.classList.add('hide');
-                //         }, 2000);
-                //         setTimeout(() => {
-                //             window.location.href = 'dashboard.html';
-                //         }, 3000);
-                //     }
-                // });
                 // Listen for the response
                 ipcRenderer.on('remove-background-result', (event, response) => {
                     if (response.success && response.images && response.images.length > 0) {
@@ -459,7 +408,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         }, 2000);
                     }
                 });
-                reader.readAsArrayBuffer(file);
+                // reader.readAsArrayBuffer(file);
             } catch (error) {
                 message.classList.add('pop-up', 'alert', 'alert-danger');
                 message.textContent = error.message || 'An error occurred while processing the image';
@@ -512,6 +461,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+
     function blobToBase64(blob) {
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
@@ -526,6 +476,54 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // processBtn.disabled = true;
+    // processBtn.textContent = 'Processing...';
+
+    // const file = imageUpload.files[0];
+
+    // if (!file) {
+    //     message.classList.add('pop-up', 'alert', 'alert-danger');
+    //     message.textContent = 'Please upload an image first.';
+    //     setTimeout(() => {
+    //         message.classList.add('hide');
+    //     }, 2000);
+    //     return;
+    // }
+
+    // const reader = new FileReader();
+    // reader.onload = async () => {
+    //     // Convert ArrayBuffer to Base64
+    //     const base64Image = arrayBufferToBase64(reader.result);
+
+    //     // Send the base64 image to main process
+    //     ipcRenderer.send('remove-background', {
+    //         token,
+    //         imageBuffer: base64Image,
+    //         fileName: file.name
+    //     });
+    // };
+
+    // Listen for the response
+    // ipcRenderer.on('remove-background-result', (event, response) => {
+    //     if (response.success) {
+    //         message.classList.add('pop-up', 'alert', 'alert-success');
+    //         message.textContent = response.message;
+    //         setTimeout(() => {
+    //             message.classList.add('hide');
+    //         }, 2000);
+    //         displayResult(response.images);
+    //     } else if (!response.success && (response.message === 'Not Authorized' || response.message === 'Not Authorized, No Token')) {
+    //         message.classList.add('pop-up', 'alert', 'alert-danger');
+    //         console.log('Error: ', response.message);
+    //         message.textContent = response.message;
+    //         setTimeout(() => {
+    //             message.classList.add('hide');
+    //         }, 2000);
+    //         setTimeout(() => {
+    //             window.location.href = 'dashboard.html';
+    //         }, 3000);
+    //     }
+    // });
     // Modified process button click handler
     // if (processBtn) {
     //     processBtn.addEventListener('click', async () => {
