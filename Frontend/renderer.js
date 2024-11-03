@@ -580,13 +580,15 @@ document.addEventListener('DOMContentLoaded', () => {
             processedImageContainer.innerHTML = `
             <div class="img-container">
                 <h3>Processed Image:</h3>
-                <img src="${image.base64}" alt="Processed Image" id="save-btn" class="translate images" onclick="saveImage('${image.filename}', '${image.base64}')">
-                
+                <img src="${image.base64}" alt="Processed Image"  class="translate images" onclick="saveImage('${image.filename}', '${image.base64}')">
+                <button class="btn btn-primary mt-2" id="save-btn" >
+                    Save Image
+                </button>
             </div>
         `;
         }
     }
-
+    // onclick="saveImage('${image.filename}', '${image.base64}')"
     {/* <button class="btn btn-primary mt-2" onclick="saveImage('${image.filename}', '${image.base64}')">
                     Save Image
                 </button> */}
