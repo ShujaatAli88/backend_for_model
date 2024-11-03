@@ -842,15 +842,15 @@ function allowedFile(filename) {
     return allowedExtensions.includes(path.extname(filename).toLowerCase());
 }
 
-async function ensureUploadsDirectory() {
-    const uploadsDir = path.join(__dirname, 'uploads');
-    try {
-        await fs.access(uploadsDir);
-    } catch {
-        await fs.mkdir(uploadsDir, { recursive: true });
-    }
-    return uploadsDir;
-}
+// async function ensureUploadsDirectory() {
+//     const uploadsDir = path.join(__dirname, 'uploads');
+//     try {
+//         await fs.access(uploadsDir);
+//     } catch {
+//         await fs.mkdir(uploadsDir, { recursive: true });
+//     }
+//     return uploadsDir;
+// }
 
 // async function backgroundRemover(files) {
 //     if (!files || files.length === 0) {
@@ -954,71 +954,71 @@ async function ensureUploadsDirectory() {
 //     return results;
 // }
 
-const backgroundRemover = async (files) => {
-    if (!files?.length) throw new Error("No file found");
-    if (files.length > MAX_FILES) throw new Error(`Maximum ${MAX_FILES} files allowed`);
+// const backgroundRemover = async (files) => {
+//     if (!files?.length) throw new Error("No file found");
+//     if (files.length > MAX_FILES) throw new Error(`Maximum ${MAX_FILES} files allowed`);
 
-    const uploadsDir = await ensureUploadsDirectory();
-    const processFile = async (file) => {
-        if (!allowedFile(file.originalname)) {
-            throw new Error(`File type not allowed for ${file.originalname}`);
-        }
+//     const uploadsDir = await ensureUploadsDirectory();
+//     const processFile = async (file) => {
+//         if (!allowedFile(file.originalname)) {
+//             throw new Error(`File type not allowed for ${file.originalname}`);
+//         }
 
-        const inputFileName = `input_${uuidv4()}${path.extname(file.originalname)}`;
-        const outputFileName = `output_${uuidv4()}.png`;
-        const inputFilePath = path.join(uploadsDir, inputFileName);
-        const outputFilePath = path.join(uploadsDir, outputFileName);
+//         const inputFileName = `input_${uuidv4()}${path.extname(file.originalname)}`;
+//         const outputFileName = `output_${uuidv4()}.png`;
+//         const inputFilePath = path.join(uploadsDir, inputFileName);
+//         const outputFilePath = path.join(uploadsDir, outputFileName);
 
-        await fs.writeFile(inputFilePath, file.buffer);
+//         await fs.writeFile(inputFilePath, file.buffer);
 
-        try {
-            await new Promise((resolve, reject) => {
-                const pythonProcess = spawn('rembg', ['i', inputFilePath, outputFilePath], {
-                    stdio: ['pipe', 'pipe', 'pipe']
-                });
+//         try {
+//             await new Promise((resolve, reject) => {
+//                 const pythonProcess = spawn('rembg', ['i', inputFilePath, outputFilePath], {
+//                     stdio: ['pipe', 'pipe', 'pipe']
+//                 });
 
-                pythonProcess.on('error', reject);
-                pythonProcess.on('close', code => {
-                    code === 0 ? resolve() : reject(new Error(`Process exited with code ${code}`));
-                });
-            });
+//                 pythonProcess.on('error', reject);
+//                 pythonProcess.on('close', code => {
+//                     code === 0 ? resolve() : reject(new Error(`Process exited with code ${code}`));
+//                 });
+//             });
 
-            const processedBuffer = await fs.readFile(outputFilePath);
-            const base64Image = `data:image/png;base64,${processedBuffer.toString('base64')}`;
+//             const processedBuffer = await fs.readFile(outputFilePath);
+//             const base64Image = `data:image/png;base64,${processedBuffer.toString('base64')}`;
 
-            // Cleanup files in background
-            Promise.all([
-                fs.unlink(inputFilePath),
-                fs.unlink(outputFilePath)
-            ]).catch(console.error);
+//             // Cleanup files in background
+//             Promise.all([
+//                 fs.unlink(inputFilePath),
+//                 fs.unlink(outputFilePath)
+//             ]).catch(console.error);
 
-            return {
-                filename: file.originalname,
-                base64: base64Image
-            };
-        } catch (error) {
-            // Ensure cleanup even on error
-            Promise.all([
-                fs.unlink(inputFilePath),
-                fs.unlink(outputFilePath)
-            ]).catch(console.error);
-            throw error;
-        }
-    };
+//             return {
+//                 filename: file.originalname,
+//                 base64: base64Image
+//             };
+//         } catch (error) {
+//             // Ensure cleanup even on error
+//             Promise.all([
+//                 fs.unlink(inputFilePath),
+//                 fs.unlink(outputFilePath)
+//             ]).catch(console.error);
+//             throw error;
+//         }
+//     };
 
-    // Process files in parallel with concurrency limit
-    const concurrencyLimit = 3;
-    const results = await Promise.all(
-        files.map(async (file, index) => {
-            await new Promise(resolve =>
-                setTimeout(resolve, Math.floor(index / concurrencyLimit) * 100)
-            );
-            return processFile(file);
-        })
-    );
+//     // Process files in parallel with concurrency limit
+//     const concurrencyLimit = 3;
+//     const results = await Promise.all(
+//         files.map(async (file, index) => {
+//             await new Promise(resolve =>
+//                 setTimeout(resolve, Math.floor(index / concurrencyLimit) * 100)
+//             );
+//             return processFile(file);
+//         })
+//     );
 
-    return results;
-};
+//     return results;
+// };
 
 // main.js
 // Add worker threads for parallel processing
@@ -1069,5 +1069,102 @@ const backgroundRemover = async (files) => {
 
 //     return Promise.all(files.map(processFile));
 // };
+
+const ALLOWED_TYPES = ['.png', '.jpg', '.jpeg'];
+
+const ensureUploadsDirectory = async () => {
+    const uploadsDir = path.join(process.cwd(), 'uploads');
+    await fs.mkdir(uploadsDir, { recursive: true });
+    return uploadsDir;
+};
+
+// Background removal service
+const backgroundRemover = async (files) => {
+    if (!files?.length) throw new Error('No file found');
+    if (files.length > MAX_FILES) throw new Error(`Maximum ${MAX_FILES} files allowed`);
+
+    const uploadsDir = await ensureUploadsDirectory();
+
+    const processFile = async (file) => {
+        const fileExt = path.extname(file.originalname).toLowerCase();
+        if (!ALLOWED_TYPES.includes(fileExt)) {
+            throw new Error(`File type not allowed for ${file.originalname}`);
+        }
+
+        const inputFileName = `input_${uuidv4()}${fileExt}`;
+        const outputFileName = `output_${uuidv4()}.png`;
+        const inputFilePath = path.join(uploadsDir, inputFileName);
+        const outputFilePath = path.join(uploadsDir, outputFileName);
+
+        await fs.writeFile(inputFilePath, file.buffer);
+
+        try {
+            await new Promise((resolve, reject) => {
+                // Assuming remove_bg.py is in the same directory
+                const pythonScript = path.join(__dirname, 'backgroundRemover.py');
+                const pythonProcess = spawn('python', [
+                    pythonScript,
+                    inputFilePath,
+                    outputFilePath
+                ], {
+                    stdio: ['pipe', 'pipe', 'pipe']
+                });
+
+                let errorOutput = '';
+
+                pythonProcess.stderr.on('data', (data) => {
+                    errorOutput += data.toString();
+                });
+
+                pythonProcess.on('error', (error) => {
+                    reject(new Error(`Failed to start Python process: ${error.message}`));
+                });
+
+                pythonProcess.on('close', (code) => {
+                    if (code === 0) {
+                        resolve();
+                    } else {
+                        reject(new Error(`Python process failed with code ${code}: ${errorOutput}`));
+                    }
+                });
+            });
+
+            const processedBuffer = await fs.readFile(outputFilePath);
+            const base64Image = `data:image/png;base64,${processedBuffer.toString('base64')}`;
+
+            // Cleanup files
+            await Promise.all([
+                fs.unlink(inputFilePath),
+                fs.unlink(outputFilePath)
+            ]).catch(console.error);
+
+            return {
+                filename: file.originalname,
+                base64: base64Image
+            };
+        } catch (error) {
+            // Ensure cleanup even on error
+            await Promise.all([
+                fs.unlink(inputFilePath),
+                fs.unlink(outputFilePath)
+            ]).catch(console.error);
+            throw error;
+        }
+    };
+
+    // Process files in parallel with concurrency limit
+    const concurrencyLimit = 3;
+    const results = await Promise.all(
+        files.map(async (file, index) => {
+            await new Promise(resolve =>
+                setTimeout(resolve, Math.floor(index / concurrencyLimit) * 100)
+            );
+            return processFile(file);
+        })
+    );
+
+    return results;
+};
+
 
 module.exports = { backgroundRemover };
