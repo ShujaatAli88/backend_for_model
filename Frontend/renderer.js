@@ -50,22 +50,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const processedImageContainer = document.getElementById('processed-image-container');
 
 
-    // const uploadForm = document.getElementById('upload-form');
-    // const fileUploader = document.getElementById('file-uploader');
-    // const originalImg = document.getElementById('original-img');
-    // const resultImg = document.getElementById('result-img');
-    // const downloadSection = document.getElementById('download-section');
-    // const downloadBtn = document.getElementById('download-btn');
-    // // const message = document.getElementById('message');
-    // const logoutForm = document.getElementById('logout');
-    // // Helper function to show messages
-    // function showMessage(text, type) {
-    //     message.textContent = text;
-    //     message.className = `alert alert-${type} pop-up`;
-    //     setTimeout(() => {
-    //         message.classList.add('hide');
-    //     }, 2000);
-    // }
 
     // // Helper function to convert ArrayBuffer to Base64
     // function arrayBufferToBase64(buffer) {
@@ -306,11 +290,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (file) {
                 const reader = new FileReader();
                 reader.onload = (e) => {
-                    // const element = document.getElementById("hidden");
-                    // element.style.display = ""
-                    // // Remove the id attribute
-                    // element.removeAttribute("id");
                     uploadedImageContainer.innerHTML = `<h3>Orignal Image:</h3><img src="${e.target.result}" alt="Uploaded Image" class="translate images">`;
+                    document.getElementById("fileName").textContent = "Filename: " + file.name
                     processBtn.disabled = false;
                 };
                 reader.readAsDataURL(file);
@@ -319,14 +300,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const token = localStorage.getItem('authToken');
 
-        // processBtn.addEventListener('click', async () => {
-        //     try {
-
-        //     } catch (error) {
-        //         message.classList.add('pop-up', 'alert', 'alert-danger');
-        //         message.textContent = error.message;
-        //     }
-        // });
         processBtn.addEventListener('click', async () => {
             try {
                 processBtn.disabled = true;
@@ -475,21 +448,6 @@ document.addEventListener('DOMContentLoaded', () => {
             reader.readAsDataURL(blob);
         });
     }
-
-    // processBtn.disabled = true;
-    // processBtn.textContent = 'Processing...';
-
-    // const file = imageUpload.files[0];
-
-    // if (!file) {
-    //     message.classList.add('pop-up', 'alert', 'alert-danger');
-    //     message.textContent = 'Please upload an image first.';
-    //     setTimeout(() => {
-    //         message.classList.add('hide');
-    //     }, 2000);
-    //     return;
-    // }
-
     // const reader = new FileReader();
     // reader.onload = async () => {
     //     // Convert ArrayBuffer to Base64
@@ -503,27 +461,6 @@ document.addEventListener('DOMContentLoaded', () => {
     //     });
     // };
 
-    // Listen for the response
-    // ipcRenderer.on('remove-background-result', (event, response) => {
-    //     if (response.success) {
-    //         message.classList.add('pop-up', 'alert', 'alert-success');
-    //         message.textContent = response.message;
-    //         setTimeout(() => {
-    //             message.classList.add('hide');
-    //         }, 2000);
-    //         displayResult(response.images);
-    //     } else if (!response.success && (response.message === 'Not Authorized' || response.message === 'Not Authorized, No Token')) {
-    //         message.classList.add('pop-up', 'alert', 'alert-danger');
-    //         console.log('Error: ', response.message);
-    //         message.textContent = response.message;
-    //         setTimeout(() => {
-    //             message.classList.add('hide');
-    //         }, 2000);
-    //         setTimeout(() => {
-    //             window.location.href = 'dashboard.html';
-    //         }, 3000);
-    //     }
-    // });
     // Modified process button click handler
     // if (processBtn) {
     //     processBtn.addEventListener('click', async () => {
@@ -544,34 +481,6 @@ document.addEventListener('DOMContentLoaded', () => {
     //         }
     //     });
     // }
-
-    // // Modified response handler
-    // ipcRenderer.on('remove-background-result', (event, response) => {
-    //     // Reset button state
-    //     if (processBtn) {
-    //         processBtn.disabled = false;
-    //         processBtn.textContent = 'Process Image';
-    //     }
-
-    //     if (response.success && response.images && response.images.length > 0) {
-    //         message.classList.add('pop-up', 'alert', 'alert-success');
-    //         message.textContent = response.message;
-    //         setTimeout(() => {
-    //             message.classList.remove('pop-up', 'alert', 'alert-success');
-    //         }, 2000);
-
-    //         displayResult(response.images);
-    //     } else {
-    //         message.classList.add('pop-up', 'alert', 'alert-danger');
-    //         message.textContent = response.message || 'Error processing image';
-    //         setTimeout(() => {
-    //             message.classList.remove('pop-up', 'alert', 'alert-danger');
-    //         }, 2000);
-
-    //         // Clear processing indicator
-    //         processedImageContainer.innerHTML = '';
-    //     }
-    // });
 
     // Modified display result function
     function displayResult(images) {
@@ -728,47 +637,6 @@ document.addEventListener('DOMContentLoaded', () => {
     //             // Convert FormData to array of file paths
     //             const files = Array.from(imageUpload.files).map(file => file.path);
 
-    //             // Send to main process
-    //             ipcRenderer.send('remove-background', { files, token });
-
-    //             // Listen for progress updates
-    //             ipcRenderer.on('background-remove-progress', (event, data) => {
-    //                 message.classList.add('pop-up', 'alert', 'alert-info');
-    //                 message.textContent = `Processing: ${data.progress}%`;
-    //             });
-
-    //             // Listen for completion
-    //             ipcRenderer.once('background-remove-complete', (event, response) => {
-    //                 if (response.success) {
-    //                     message.classList.remove('alert-info');
-    //                     message.classList.add('pop-up', 'alert', 'alert-success');
-    //                     message.textContent = 'Processing complete!';
-
-    //                     if (response.files.length === 1) {
-    //                         displayResult(response.files[0]);
-    //                     } else {
-    //                         downloadZip(response.zipPath);
-    //                     }
-    //                 } else {
-    //                     message.classList.add('pop-up', 'alert', 'alert-danger');
-    //                     message.textContent = response.error || 'Processing failed';
-    //                 }
-    //             });
-
-    //             // Listen for errors
-    //             ipcRenderer.once('background-remove-error', (event, error) => {
-    //                 message.classList.add('pop-up', 'alert', 'alert-danger');
-    //                 message.textContent = error.message || 'An error occurred';
-    //             });
-
-    //         } catch (error) {
-    //             message.classList.add('pop-up', 'alert', 'alert-danger');
-    //             message.textContent = 'An error occurred while processing the images';
-    //         } finally {
-    //             processBtn.disabled = false;
-    //             processBtn.textContent = 'Process Image';
-    //         }
-    //     });
     // }
 
 
@@ -1114,15 +982,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     authCredentials.authToken = response.token
                     authCredentials.userEmail = response.email
                     authCredentials.firstName = response.firstName
-                    // sessionStorage.setItem('authToken', response.token);
-                    // sessionStorage.setItem('userEmail', response.email);
-                    // sessionStorage.setItem('firstName', response.firstName);
-                    // if (response.trial) {
-                    //     upgrade.classList.remove('hidden');
-                    // }
-                    // else {
-                    //     upgrade.style.display = 'none';
-                    // }
                     setTimeout("window.location.href = 'dashboard.html';", 3000);
                     // window.location.href = 'dashboard.html';
                 }
@@ -1314,60 +1173,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         })
     }
-    //     if (yearlySub) {
-    //     // const Stripe = async () => {
-    //     //     const stripe = await stripe(process.env.STRIPE_PUBLIC_KEY)
-    //     //     return stripe
-    //     // }
-    //     yearlySub.addEventListener('click', (e) => {
-    //         e.preventDefault();
-    //         const email = localStorage.getItem('userEmail');
-    //         const token = localStorage.getItem('authToken');
-    //         console.log(token, email)
-    //         // const body = {
-    //         //     productName: 'Yearly Subsciption',
-    //         //     productPrice: 4444.8
-    //         // }
-    //         // const headers = {
-    //         //     "Content-Type": "application/json"
-    //         // }
 
-    //         const productName = 'Yearly Plan';
-    //         const productPrice = 4444.8
-    //         ipcRenderer.send('yearly-subscription', { email, token, productName, productPrice });
-    //     });
-    //     ipcRenderer.on('yearly-subscription', (event, response) => {
-    //         // message.textContent = response.message;
-    //         if (response.success) {
-    //             message.classList.add('pop-up', 'alert', 'alert-primary');
-    //             message.textContent = response.message;
-    //             // localStorage.setItem('authToken', response.token);
-    //             // localStorage.setItem('userEmail', response.email);
-    //             // localStorage.setItem('firstName', response.firstName);
-    //             // window.location.href = 'verify.html';
-    //             // setTimeout
-    //             const result = stripe.redirectToCheckout({
-    //                 sessionId: response.session.id
-    //             })
-    //             if (result.error) {
-    //                 console.log(result.error)
-    //             }
-    //             else {
-    //                 setTimeout("window.location.href = 'dashboard.html';", 3000);
-    //             }
-    //         }
-    //         else if (!response.success) {
-    //             message.classList.add('pop-up', 'alert', 'alert-danger');
-    //             message.textContent = response.message;
-    //             setTimeout(() => {
-    //                 message.classList.add('hide');
-    //             }, 2000);
-    //             setTimeout(() => {
-    //                 window.location.href = 'subscription.html';
-    //             }, 1000)
-    //         }
-    //     })
-    // }
     // if (form) {
     //     (async function () {
     //         const stripeInstance = await stripe;
@@ -1567,9 +1373,3 @@ function showPassword() {
 //     });
 // }
 
-// (async function () {
-//     stripe = await loadStripe(pk_test_51PeLrvGQqr36Qs46HEU1SLOkkajz5x6p2OgrxZHnA7xuoqGuEbjKPLW6soYEBHLJ0oCc5ECKvOtwHZ8VsW7mjejd00WkLPe8YY);
-//     elements = stripe.elements();
-//     cardElement = elements.create('card');
-//     cardElement.mount('#card-element');
-// })()

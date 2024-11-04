@@ -1,33 +1,15 @@
-// const { app, BrowserWindow } = require('electron');
-// const path = require('path');
 import { app, BrowserWindow, ipcMain, dialog } from 'electron';
 
-// const Store = require('electron-store');
-// import Store from "electron-store"
-// const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-// import { stripe } from 'stripe';
 import dotenv from 'dotenv'
-// import Stripe from 'stripe';
+
 import axios from 'axios';
-// const { spawn } = require('child_process');
-// const path = require('path');
-// import FormData from 'form-data'
-// import path from 'path';
-// import file from 'fs';
-// const fs = file.promises;
 import { writeFile, createReadStream, unlinkSync, existsSync } from 'node:fs';
 import { writeFile as writeFilePromise } from 'node:fs/promises';
 import FormData from 'form-data';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-// const archiver = require('archiver');
-
 dotenv.config()
-
-// stripe(process.env.STRIPE_SECRET_KEY);
-
-// const stripe = require('stripe')('YOUR_SECRET_KEY');
 
 
 // function createWindow() {
@@ -91,29 +73,6 @@ app.on('activate', () => {
     }
 });
 
-// ipcMain.on('register', (event, userData) => {
-//     const users = store.get('users') || [];
-//     const existingUser = users.find(user => user.username === userData.username);
-
-//     if (existingUser) {
-//         event.reply('register-response', { success: false, message: 'Username already exists' });
-//     } else {
-//         users.push(userData);
-//         store.set('users', users);
-//         event.reply('register-response', { success: true, message: 'Registration successful' });
-//     }
-// });
-
-// ipcMain.on('login', (event, credentials) => {
-//     const users = store.get('users') || [];
-//     const user = users.find(u => u.username === credentials.username && u.password === credentials.password);
-
-//     if (user) {
-//         event.reply('login-response', { success: true, message: 'Login successful' });
-//     } else {
-//         event.reply('login-response', { success: false, message: 'Invalid credentials' });
-//     }
-// });
 
 const API_URL = 'http://localhost:3000/api'; // Replace with your backend URL
 
@@ -224,8 +183,6 @@ ipcMain.on('login', async (event, credentials) => {
     try {
         // Clear existing data
         // store.clear();
-        // console.log('Store cleared');
-
         const response = await axios.post(`${API_URL}/login`, {
             email: credentials.email,
             password: credentials.password
@@ -275,15 +232,7 @@ ipcMain.on('login', async (event, credentials) => {
 
 ipcMain.on('verify-code', async (event, data) => {
     try {
-        // const response = await axios.post(`${API_URL}/verify-code`, data);
-        // const token = store.get('authToken');
-        // const response = await axios.post(`${API_URL}/verify-code`, data, {
-        //     headers: {
-        //         'Authorization': `Bearer ${token}`
-        //     }
-        // });
-        // const token = store.get('authToken');
-        // const userEmail = store.get('userEmail');
+
         console.log(data.token)
         const response = await axios.post(`${API_URL}/verify-code`,
             { code: data.code, email: data.email },
@@ -971,34 +920,3 @@ ipcMain.on('save-file', async (event, filePath) => {
         });
     }
 });
-// ipcMain.on("create-subscription", async (event, data) => {
-//     try {
-//         const response = await axios.post(`${API_URL}/payment-checkout`,
-//             {
-//                 paymentMethod: data.paymentMethod,
-//                 name: data.name,
-//                 email: data.email,
-//                 priceId: data.priceId,
-//             },
-//             {
-//                 headers: {
-//                     'Authorization': `Bearer ${data.token}`
-//                 }
-//             }
-//         )
-//         event.reply('subscription-result', {
-//             success: true,
-//             message: response.data.message,
-//             clientSecret: response.data.clientSecret,
-//             subscriptionId: response.data.subscriptionId
-//             // email: response.data.email,
-//             // token: response.data.token
-//         });
-//     }
-//     catch (error) {
-//         event.reply('subscription-result', { success: false, message: error.response?.data.message || error.response?.data || 'Error in the payment checkout' });
-//     }
-// });
-
-
-

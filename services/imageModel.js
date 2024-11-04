@@ -1,33 +1,4 @@
 
-// const multer = require('multer');
-// const { spawn } = require('child_process');
-// const sharp = require('sharp');
-// const fs = require('fs');
-// const path = require('path');
-// const archiver = require('archiver');
-// const { v4: uuidv4 } = require('uuid');
-// const fileURLToPath = require('url')
-
-// const __filename = fileURLToPath(import.meta.url);
-// const __dirname = path.dirname(__filename);
-
-// const MAX_FILES = 5;
-
-// function allowedFile(filename) {
-//     const allowedExtensions = ['.png', '.jpg', '.jpeg', '.webp'];
-//     return allowedExtensions.includes(path.extname(filename).toLowerCase());
-// }
-
-// async function ensureUploadsDirectory() {
-//     const uploadsDir = path.join(__dirname, 'uploads');
-//     try {
-//         await fs.access(uploadsDir);
-//     } catch {
-//         await fs.mkdir(uploadsDir, { recursive: true });
-//     }
-//     return uploadsDir;
-// }
-
 // async function backgroundRemover(files) {
 //     if (!files || files.length === 0) {
 //         throw new Error("No file found, Please upload a file");
@@ -107,25 +78,6 @@
 
 //     return results;
 // }
-
-// // const upload = multer({ storage: multer.memoryStorage() });
-// // const MAX_FILES = 5;
-// // const ALLOWED_EXTENSIONS = ['png', 'jpg', 'jpeg'];
-
-// // function allowedFile(file) {
-// //     const ext = path.extname(file.originalname).toLowerCase().replace('.', '');
-// //     return ALLOWED_EXTENSIONS.includes(ext);
-// // }
-
-// // async function ensureUploadsDirectory() {
-// //     const uploadsDir = path.join(__dirname, 'uploads');
-// //     try {
-// //         await fs.access(uploadsDir);
-// //     } catch {
-// //         await fs.mkdir(uploadsDir, { recursive: true });
-// //     }
-// //     return uploadsDir;
-// // }
 
 // // async function backgroundRemover(files) {
 // //     if (!files || files.length === 0) {
@@ -504,32 +456,6 @@
 // //     }
 // // });
 
-// import { spawn } from 'child_process';
-// import path from 'path';
-// import fs from 'fs/promises';
-// import { v4 as uuidv4 } from 'uuid';
-// import sharp from 'sharp';
-// import { fileURLToPath } from 'url';
-
-// const currentFilePath = fileURLToPath(import.meta.url);
-// const __dirname = path.dirname(currentFilePath);
-
-// const MAX_FILES = 5;
-
-// function allowedFile(filename) {
-//     const allowedExtensions = ['.png', '.jpg', '.jpeg', '.webp'];
-//     return allowedExtensions.includes(path.extname(filename).toLowerCase());
-// }
-
-// async function ensureUploadsDirectory() {
-//     const uploadsDir = path.join(__dirname, 'uploads');
-//     try {
-//         await fs.access(uploadsDir);
-//     } catch {
-//         await fs.mkdir(uploadsDir, { recursive: true });
-//     }
-//     return uploadsDir;
-// }
 
 // async function backgroundRemover(files) {
 //     if (!files || files.length === 0) {
@@ -618,23 +544,6 @@ const path = require('path');
 const fs = require('fs').promises;
 const { v4: uuidv4 } = require('uuid');
 const sharp = require('sharp');
-
-// const MAX_FILES = 5;
-
-// function allowedFile(filename) {
-//     const allowedExtensions = ['.png', '.jpg', '.jpeg', '.webp'];
-//     return allowedExtensions.includes(path.extname(filename).toLowerCase());
-// }
-
-// async function ensureUploadsDirectory() {
-//     const uploadsDir = path.join(__dirname, 'uploads');
-//     try {
-//         await fs.access(uploadsDir);
-//     } catch {
-//         await fs.mkdir(uploadsDir, { recursive: true });
-//     }
-//     return uploadsDir;
-// }
 
 // async function backgroundRemover(files) {
 //     if (!files || files.length === 0) {
