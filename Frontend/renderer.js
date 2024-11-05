@@ -16,6 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const freeTrial = document.getElementById('freeTrial');
     const monthlySub = document.getElementById('monthlySub');
     const upgrade = document.getElementById('upgrade');
+
     // const data = {}
     let authCredentials = {}
     // const stripe = loadStripe(process.env.STRIPE_PUBLIC_KEY);
@@ -32,23 +33,24 @@ document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('payment-form');
     const submitButton = document.getElementById('submit-button');
 
+    const folderUploadArea = document.getElementById('folder-upload-area')
+    const folderUpload = document.getElementById('folder-upload')
     const uploadArea = document.getElementById('upload-area');
     const imageUpload = document.getElementById('image-upload');
     const uploadedImageContainer = document.getElementById('uploaded-image-container');
     const processBtn = document.getElementById('process-btn');
     const processedImageContainer = document.getElementById('processed-image-container');
+    const processBtnFolder = document.getElementsByClassName("processbtn")
 
     // imageUpload.setAttribute('directory', ''); // For Firefox
 
-    if (uploadArea && imageUpload && processBtn) {
-        // imageUpload.setAttribute('webkitdirectory', ''); // Enable directory upload
-        uploadArea.addEventListener('click', () => {
-            imageUpload.click();
+    if (folderUpload && folderUploadArea && processBtn) {
+        folderUploadArea.addEventListener('click', () => {
+            folderUpload.click();
         });
 
-        // Modified change event handler for multiple files
-        imageUpload.addEventListener('change', (event) => {
-            const files = Array.from(imageUpload.files);
+        folderUpload.addEventListener('change', (event) => {
+            const files = Array.from(folderUpload.files);
             if (files.length > 0) {
                 // Display preview of uploaded images
                 let previewHTML = '<h3>Original Images:</h3><div class="image-preview-grid">';
@@ -81,7 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 processBtn.disabled = true;
                 processBtn.textContent = 'Processing...';
 
-                const files = Array.from(imageUpload.files).filter(file =>
+                const files = Array.from(folderUpload.files).filter(file =>
                     file.type.startsWith('image/'));
 
                 if (files.length === 0) {
@@ -110,7 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 // Send all files to main process
-                ipcRenderer.send('remove-background', {
+                ipcRenderer.send('remove-background-folder', {
                     token: localStorage.getItem('authToken'),
                     images: processedFiles
                 });
@@ -129,7 +131,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 message.textContent = response.message;
                 setTimeout(() => message.setAttribute("id", "hidden"), 2000);
                 displayResult(response.images);
-                document.getElementById("save-btn").addEventListener("click", () => { saveImage(image.filename, image.base64) })
+                // document.getElementById("save-btn").addEventListener("click", () => { saveImage(image.filename, image.base64) })
+                document.getElementById("zip-btn").addEventListener("click", () => { downloadZip(response.images) })
 
             } else {
                 message.classList.add('pop-up', 'alert', 'alert-danger');
@@ -140,7 +143,6 @@ document.addEventListener('DOMContentLoaded', () => {
             processBtn.textContent = 'Remove Background';
         });
     }
-
     // onclick="saveImage('${image.filename}', '${image.base64}')"
 
     // Modified display result function
@@ -169,16 +171,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 html += `
                     <div class="processed-image-item">
                         <img src="${image.base64}" alt="${image.filename}" class="processed-image">
-                        <button class="btn btn-sm btn-secondary mt-1 save" onclick="saveImage('${image.filename}', '${image.base64}')">
-                            Download
-                        </button>
                     </div>
                 `;
             });
 
             html += `
                 </div>
-                <button class="btn btn-primary mt-3" onclick="downloadZip(${JSON.stringify(images)})">
+                <button class="btn btn-primary mt-3" id="zip-btn">
                     Download All as ZIP
                 </button>
             `;
@@ -186,6 +185,10 @@ document.addEventListener('DOMContentLoaded', () => {
             processedImageContainer.innerHTML = html;
         }
     }
+    // onclick="downloadZip(${JSON.stringify(images)})"
+    {/* <button class="btn btn-sm btn-secondary mt-1 save" id="zip-btn" onclick="saveImage('${image.filename}', '${image.base64}')">
+                            Download
+                        </button> */}
 
     // Add CSS for the new grid layouts
     const style = document.createElement('style');
@@ -231,7 +234,7 @@ document.addEventListener('DOMContentLoaded', () => {
         link.download = 'processed_images.zip';
         document.body.appendChild(link);
         link.click();
-        document.body.removeChild(link);
+        // document.body.removeChild(link);
     }
 
     // // Helper function to convert ArrayBuffer to Base64
@@ -465,117 +468,117 @@ document.addEventListener('DOMContentLoaded', () => {
     // }
 
     // ---------------- Working code for handling single file upload -------------------
-    // if (uploadArea && imageUpload && processBtn) {
-    //     uploadArea.addEventListener('click', () => {
-    //         imageUpload.click();
-    //     });
+    if (uploadArea && imageUpload && processBtn) {
+        uploadArea.addEventListener('click', () => {
+            imageUpload.click();
+        });
 
-    //     imageUpload.addEventListener('change', (event) => {
-    //         const file = imageUpload.files[0];
-    //         if (file) {
-    //             const reader = new FileReader();
-    //             reader.onload = (e) => {
-    //                 uploadedImageContainer.innerHTML = `<h3>Orignal Image:</h3><img src="${e.target.result}" alt="Uploaded Image" class="translate images">`;
-    //                 document.getElementById("fileName").textContent = "Filename: " + file.name
-    //                 processBtn.disabled = false;
-    //             };
-    //             reader.readAsDataURL(file);
-    //         }
-    //     });
+        imageUpload.addEventListener('change', (event) => {
+            const file = imageUpload.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    uploadedImageContainer.innerHTML = `<h3>Orignal Image:</h3><img src="${e.target.result}" alt="Uploaded Image" class="translate images">`;
+                    document.getElementById("fileName").textContent = "Filename: " + file.name
+                    processBtn.disabled = false;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
 
-    //     const token = localStorage.getItem('authToken');
+        const token = localStorage.getItem('authToken');
 
-    //     processBtn.addEventListener('click', async () => {
-    //         try {
-    //             processBtn.disabled = true;
-    //             processBtn.textContent = 'Processing...';
+        processBtn.addEventListener('click', async () => {
+            try {
+                processBtn.disabled = true;
+                processBtn.textContent = 'Processing...';
 
-    //             // const file = imageUpload.files[0];
+                const file = imageUpload.files[0];
 
-    //             const file = imageUpload.files[0];
-    //             if (!file) {
-    //                 throw new Error('Please upload an image first.');
-    //             }
+                // const file = imageUpload.files[0];
+                if (!file) {
+                    throw new Error('Please upload an image first.');
+                }
 
-    //             // Compress image before sending
-    //             const compressedBlob = await compressImage(file);
-    //             const reader = new FileReader();
+                // Compress image before sending
+                const compressedBlob = await compressImage(file);
+                const reader = new FileReader();
 
-    //             reader.onload = async () => {
-    //                 const base64Image = arrayBufferToBase64(reader.result);
+                reader.onload = async () => {
+                    const base64Image = arrayBufferToBase64(reader.result);
 
-    //                 // Show processing indicator
-    //                 processedImageContainer.innerHTML = `
-    //                     <div class="processing-indicator">
-    //                         <div class="spinner"></div>
-    //                         <p>Processing image...</p>
-    //                     </div>
-    //                 `;
-    //                 processBtn.disabled = true;
-    //                 processBtn.textContent = 'Processing...';
+                    // Show processing indicator
+                    processedImageContainer.innerHTML = `
+                        <div class="processing-indicator">
+                            <div class="spinner"></div>
+                            <p>Processing image...</p>
+                        </div>
+                    `;
+                    processBtn.disabled = true;
+                    processBtn.textContent = 'Processing...';
 
-    //                 // Show processing indicator immediately
-    //                 processedImageContainer.innerHTML = `
-    //             <div class="processing-indicator">
-    //                 <div class="spinner-border text-primary" role="status">
-    //                     <span class="visually-hidden">Processing...</span>
-    //                 </div>
-    //                 <p class="mt-2">Processing image...</p>
-    //             </div>
-    //         `;
+                    // Show processing indicator immediately
+                    processedImageContainer.innerHTML = `
+                <div class="processing-indicator">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Processing...</span>
+                    </div>
+                    <p class="mt-2">Processing image...</p>
+                </div>
+            `;
 
-    //                 ipcRenderer.send('remove-background', {
-    //                     token: localStorage.getItem('authToken'),
-    //                     imageBuffer: base64Image,
-    //                     fileName: file.name
-    //                 });
-    //             };
+                    ipcRenderer.send('remove-background-image', {
+                        token: localStorage.getItem('authToken'),
+                        imageBuffer: base64Image,
+                        fileName: file.name
+                    });
+                };
 
-    //             reader.readAsArrayBuffer(compressedBlob);
-    //             // Listen for the response
-    //             ipcRenderer.on('remove-background-result', (event, response) => {
-    //                 if (response.success && response.images && response.images.length > 0) {
-    //                     message.classList.add('pop-up', 'alert', 'alert-success');
-    //                     message.textContent = response.message;
-    //                     setTimeout(() => {
-    //                         // message.classList.add('hide');
-    //                         message.setAttribute("id", "hidden")
-    //                     }, 2000);
-    //                     displayResult(response.images);
-    //                     const image = response.images[0];
-    //                     document.getElementById("save-btn").addEventListener('click', () => { saveImage(image.filename, image.base64) })
+                reader.readAsArrayBuffer(compressedBlob);
+                // Listen for the response
+                ipcRenderer.on('remove-background-result', (event, response) => {
+                    if (response.success && response.images && response.images.length > 0) {
+                        message.classList.add('pop-up', 'alert', 'alert-success');
+                        message.textContent = response.message;
+                        setTimeout(() => {
+                            // message.classList.add('hide');
+                            message.setAttribute("id", "hidden")
+                        }, 2000);
+                        displayResult(response.images);
+                        const image = response.images[0];
+                        document.getElementById("save-btn").addEventListener('click', () => { saveImage(image.filename, image.base64) })
 
 
-    //                 } else if (!response.success && (response.message === 'Not Authorized' || response.message === 'Not Authorized, No Token')) {
-    //                     message.classList.add('pop-up', 'alert', 'alert-danger');
-    //                     console.log('Error: ', response.message);
-    //                     message.textContent = response.message;
-    //                     setTimeout(() => {
-    //                         // message.classList.add('hide');
-    //                         message.setAttribute("id", "hidden")
-    //                     }, 2000);
-    //                     setTimeout(() => {
-    //                         window.location.href = 'dashboard.html';
-    //                     }, 3000);
-    //                 } else {
-    //                     message.classList.add('pop-up', 'alert', 'alert-danger');
-    //                     message.textContent = response.message || 'Error processing image';
-    //                     setTimeout(() => {
-    //                         // message.classList.add('hide');
-    //                         message.setAttribute("id", "hidden")
-    //                     }, 2000);
-    //                 }
-    //             });
-    //             // reader.readAsArrayBuffer(file);
-    //         } catch (error) {
-    //             message.classList.add('pop-up', 'alert', 'alert-danger');
-    //             message.textContent = error.message || 'An error occurred while processing the image';
-    //         } finally {
-    //             processBtn.disabled = false;
-    //             processBtn.textContent = 'Process Image';
-    //         }
-    //     });
-    // }
+                    } else if (!response.success && (response.message === 'Not Authorized' || response.message === 'Not Authorized, No Token')) {
+                        message.classList.add('pop-up', 'alert', 'alert-danger');
+                        console.log('Error: ', response.message);
+                        message.textContent = response.message;
+                        setTimeout(() => {
+                            // message.classList.add('hide');
+                            message.setAttribute("id", "hidden")
+                        }, 2000);
+                        setTimeout(() => {
+                            window.location.href = 'dashboard.html';
+                        }, 3000);
+                    } else {
+                        message.classList.add('pop-up', 'alert', 'alert-danger');
+                        message.textContent = response.message || 'Error processing image';
+                        setTimeout(() => {
+                            // message.classList.add('hide');
+                            message.setAttribute("id", "hidden")
+                        }, 2000);
+                    }
+                });
+                // reader.readAsArrayBuffer(file);
+            } catch (error) {
+                message.classList.add('pop-up', 'alert', 'alert-danger');
+                message.textContent = error.message || 'An error occurred while processing the image';
+            } finally {
+                processBtn.disabled = false;
+                processBtn.textContent = 'Process Image';
+            }
+        });
+    }
 
     // Helper function to convert ArrayBuffer to Base64
     // function arrayBufferToBase64(buffer) {
@@ -1098,38 +1101,6 @@ document.addEventListener('DOMContentLoaded', () => {
     //     });
     // }
 
-    // ... (keep your existing code for other functionalities)
-
-
-    // ... (keep your existing helper functions)
-    // async function loadStripe(key) {
-    //     return new Promise((resolve, reject) => {
-    //         if (window.Stripe) {
-    //             resolve(window.Stripe(key));
-    //         } else {
-    //             document.querySelector('script[src="https://js.stripe.com/v3/"]').addEventListener('load', () => {
-    //                 resolve(window.Stripe(key));
-    //             });
-    //         }
-    //     });
-    // }
-    // if (registerForm) {
-    //     registerForm.addEventListener('submit', (e) => {
-    //         e.preventDefault();
-    //         const username = document.getElementById('username').value;
-    //         const password = document.getElementById('password').value;
-    //         ipcRenderer.send('register', { username, password });
-    //     });
-
-    //     ipcRenderer.on('register-response', (event, response) => {
-    //         message.textContent = response.message;
-    //         if (response.success) {
-    //             // Redirect to login page or show success message
-    //             alert('Registration successful! Please login.');
-    //             window.location.href = 'login.html';
-    //         }
-    //     });
-    // }
 
     if (loginForm) {
         loginForm.addEventListener('submit', (e) => {
@@ -1561,16 +1532,4 @@ function showPassword() {
     }
 }
 
-
-// async function loadStripe(key) {
-//     return new Promise((resolve, reject) => {
-//         if (window.Stripe) {
-//             resolve(window.Stripe(key));
-//         } else {
-//             document.querySelector('script[src="https://js.stripe.com/v3/"]').addEventListener('load', () => {
-//                 resolve(window.Stripe(key));
-//             });
-//         }
-//     });
-// }
 
