@@ -1,5 +1,7 @@
 const { ipcRenderer } = require('electron');
 const dotenv = require('dotenv');
+const JSZip = require('jszip');
+const { saveAs } = require('file-saver');
 
 dotenv.config();
 
@@ -483,37 +485,82 @@ document.addEventListener('DOMContentLoaded', () => {
     // }
 
     // Modified display result function
+    // function displayResult(images) {
+    //     if (Array.isArray(images) && images.length > 0) {
+    //         const image = images[0];
+    //         processedImageContainer.innerHTML = `
+    //         <div class="img-container">
+    //             <h3>Processed Image:</h3>
+    //             <img src="${image.base64}" alt="Processed Image"  class="translate images" onclick="saveImage('${image.filename}', '${image.base64}')">
+    //             <button class="btn btn-primary mt-2" id="save-btn" >
+    //                 Save Image
+    //             </button>
+    //         </div>
+    //     `;
+    //     }
+    // }
+
     function displayResult(images) {
-        if (Array.isArray(images) && images.length > 0) {
+        processedImageContainer.innerHTML = '';
+
+        if (images.length === 1) {
+            // Single image case
             const image = images[0];
             processedImageContainer.innerHTML = `
-            <div class="img-container">
                 <h3>Processed Image:</h3>
-                <img src="${image.base64}" alt="Processed Image"  class="translate images" onclick="saveImage('${image.filename}', '${image.base64}')">
-                <button class="btn btn-primary mt-2" id="save-btn" >
-                    Save Image
+                <img src="${image.base64}" alt="${image.filename}" class="translate images">
+                <button class="btn btn-primary mt-2" id="save-btn" onclick="saveImage('${image.filename}', '${image.base64}')">
+                    Download Image
                 </button>
-            </div>
-        `;
+            `;
+        } else if (images.length > 1) {
+            // Multiple images case - provide a ZIP download option
+            processedImageContainer.innerHTML = '<h3>Processed Images:</h3>';
+            images.forEach(image => {
+                processedImageContainer.innerHTML += `
+                    <div class="img-container">
+                        <img src="${image.base64}" alt="${image.filename}" class="translate images">
+                    </div>
+                `;
+            });
+            processedImageContainer.innerHTML += `
+                <button class="btn btn-primary mt-2" onclick="downloadZip(images)">
+                    Download All as ZIP
+                </button>
+            `;
         }
     }
+    // Add this function to handle image saving
+    function saveImage(filename, base64Data) {
+        const link = document.createElement('a');
+        link.href = base64Data;
+        link.download = `processed_${filename}`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
+    // install with npm install file-saver
+
+    async function downloadZip(images) {
+        const zip = new JSZip();
+        const imgFolder = zip.folder("processed_images");
+
+        images.forEach(image => {
+            const base64Data = image.base64.replace(/^data:image\/\w+;base64,/, "");
+            const binaryData = Buffer.from(base64Data, 'base64');
+            imgFolder.file(image.filename, binaryData, { binary: true });
+        });
+
+        const content = await zip.generateAsync({ type: "blob" });
+        saveAs(content, "processed_images.zip");
+    }
+
+
     // onclick="saveImage('${image.filename}', '${image.base64}')"
     {/* <button class="btn btn-primary mt-2" onclick="saveImage('${image.filename}', '${image.base64}')">
                     Save Image
                 </button> */}
-
-
-    // function displayResult(images) {
-    //     if (Array.isArray(images) && images.length > 0) {
-    //         const image = images[0]; // Get first image if multiple
-    //         processedImageContainer.innerHTML = `
-    //             <h5>Processed Image:</h5>
-    //             <img src="${image.base64}" alt="Processed Image" id="save-btn" class="translate images ">
-    //             <button class="btn mb-2" id="save-btn", '${image.base64}')">Save Image</button>
-    //         `;
-    //     }
-    // }
-
 
     // function displayResult(images) {
     //     if (Array.isArray(images) && images.length > 0) {
@@ -530,15 +577,6 @@ document.addEventListener('DOMContentLoaded', () => {
     //     }
     // }
 
-    // Add this function to handle image saving
-    function saveImage(filename, base64Data) {
-        const link = document.createElement('a');
-        link.href = base64Data;
-        link.download = `processed_${filename}`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    }
 
     // async function compressImage(file) {
     //     return new Promise((resolve) => {
@@ -575,17 +613,6 @@ document.addEventListener('DOMContentLoaded', () => {
     //             };
     //         };
     //     });
-    // }
-
-    // Modified process button click handler
-
-
-    // function displayResult(imageUrl) {
-    //     processedImageContainer.innerHTML = `
-    //     <h3>Processed Image:</h3>
-    //     <img src="${imageUrl}" alt="Processed Image">
-    //     <button class="download-btn" onclick="saveImage('${imageUrl}')">Save Image</button>
-    // `;
     // }
 
     // function saveImage(imageUrl) {
