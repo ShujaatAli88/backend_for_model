@@ -1,3 +1,8 @@
+const { spawn } = require('child_process');
+const path = require('path');
+const fs = require('fs').promises;
+const { v4: uuidv4 } = require('uuid');
+const sharp = require('sharp');
 
 // async function backgroundRemover(files) {
 //     if (!files || files.length === 0) {
@@ -539,11 +544,6 @@
 
 // export { backgroundRemover };
 
-const { spawn } = require('child_process');
-const path = require('path');
-const fs = require('fs').promises;
-const { v4: uuidv4 } = require('uuid');
-const sharp = require('sharp');
 
 // async function backgroundRemover(files) {
 //     if (!files || files.length === 0) {
@@ -744,7 +744,7 @@ const sharp = require('sharp');
 //     return results;
 // }
 
-const MAX_FILES = 5;
+const MAX_FILES = 150;
 
 function allowedFile(filename) {
     const allowedExtensions = ['.png', '.jpg', '.jpeg', '.webp'];

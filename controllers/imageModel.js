@@ -7,7 +7,7 @@ const multer = require('multer');
 const fs = require("fs")
 
 // const upload = multer({ storage: multer.memoryStorage() });
-const MAX_FILES = 5;
+const MAX_FILES = 150;
 
 // router.post('/remove-background', protect, upload.array('files', MAX_FILES), async (req, res) => {
 //     console.log(req.body)
