@@ -110,6 +110,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         // Process button click handler for both single image and folder uploads
+        // Existing code...
+
+        // Process button click handler for both single image and folder uploads
         processBtn.addEventListener('click', async () => {
             const isSingleImage = imageUpload.files.length > 0;
             const isFolderUpload = folderUpload.files.length > 0;
@@ -125,39 +128,35 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     // Compress and convert to base64
                     const compressedBlob = await compressImage(file);
-                    const reader = new FileReader();
+                    const base64Image = await blobToBase64(compressedBlob);
 
-                    reader.onload = async () => {
-                        const base64Image = arrayBufferToBase64(reader.result);
-                        processedImageContainer.innerHTML = `
+                    processedImageContainer.innerHTML = `
                             <div class="processing-indicator">
                                 <div class="spinner-border text-primary" role="status">
-                                    <span class="visually-hidden">Processing...</span>
+                                <span class="visually-hidden">Processing...</span>
                                 </div>
                                 <p class="mt-2">Processing image...</p>
                             </div>
-                        `;
-                        ipcRenderer.send('remove-background', {
-                            token,
-                            imageBuffer: base64Image,
-                            fileName: file.name
-                        });
-                    };
-                    reader.readAsArrayBuffer(compressedBlob);
+                            `;
 
+                    ipcRenderer.send('remove-background', {
+                        token,
+                        imageBuffer: base64Image,
+                        fileName: file.name
+                    });
                 } else if (isFolderUpload) {
                     // Handle multiple images in folder upload
                     const files = Array.from(folderUpload.files).filter(file => file.type.startsWith('image/'));
                     if (files.length === 0) throw new Error('Please upload valid image files.');
 
                     processedImageContainer.innerHTML = `
-                        <div class="processing-indicator">
-                            <div class="spinner-border text-primary" role="status">
-                                <span class="visually-hidden">Processing...</span>
-                            </div>
-                            <p class="mt-2">Processing ${files.length} image(s)...</p>
-                        </div>
-                    `;
+                                <div class="processing-indicator">
+                                    <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Processing...</span>
+                                    </div>
+                                    <p class="mt-2">Processing ${files.length} image(s)...</p>
+                                </div>
+                                `;
 
                     const processedFiles = [];
                     for (const file of files) {
@@ -170,6 +169,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         token,
                         images: processedFiles
                     });
+                } else {
+                    throw new Error('Please upload an image or select a folder of images.');
                 }
             } catch (error) {
                 message.classList.add('pop-up', 'alert', 'alert-danger');
@@ -207,7 +208,110 @@ document.addEventListener('DOMContentLoaded', () => {
             processBtn.disabled = false;
             processBtn.textContent = 'Remove Background';
         });
+
+
+
     }
+
+
+    // processBtn.addEventListener('click', async () => {
+    //     const isSingleImage = imageUpload.files.length > 0;
+    //     const isFolderUpload = folderUpload.files.length > 0;
+    //     const token = localStorage.getItem('authToken');
+
+    //     try {
+    //         processBtn.disabled = true;
+    //         processBtn.textContent = 'Processing...';
+
+    //         if (isSingleImage) {
+    //             const file = imageUpload.files[0];
+    //             if (!file) throw new Error('Please upload an image first.');
+
+    //             // Compress and convert to base64
+    //             const compressedBlob = await compressImage(file);
+    //             const reader = new FileReader();
+
+    //             reader.onload = async () => {
+    //                 const base64Image = arrayBufferToBase64(reader.result);
+    //                 processedImageContainer.innerHTML = `
+    //                     <div class="processing-indicator">
+    //                         <div class="spinner-border text-primary" role="status">
+    //                             <span class="visually-hidden">Processing...</span>
+    //                         </div>
+    //                         <p class="mt-2">Processing image...</p>
+    //                     </div>
+    //                 `;
+    //                 ipcRenderer.send('remove-background', {
+    //                     token,
+    //                     imageBuffer: base64Image,
+    //                     fileName: file.name
+    //                 });
+    //             };
+    //             reader.readAsArrayBuffer(compressedBlob);
+
+    //         } else if (isFolderUpload) {
+    //             // Handle multiple images in folder upload
+    //             const files = Array.from(folderUpload.files).filter(file => file.type.startsWith('image/'));
+    //             if (files.length === 0) throw new Error('Please upload valid image files.');
+
+    //             processedImageContainer.innerHTML = `
+    //                 <div class="processing-indicator">
+    //                     <div class="spinner-border text-primary" role="status">
+    //                         <span class="visually-hidden">Processing...</span>
+    //                     </div>
+    //                     <p class="mt-2">Processing ${files.length} image(s)...</p>
+    //                 </div>
+    //             `;
+
+    //             const processedFiles = [];
+    //             for (const file of files) {
+    //                 const compressedBlob = await compressImage(file);
+    //                 const base64Image = await blobToBase64(compressedBlob);
+    //                 processedFiles.push({ base64: base64Image, fileName: file.name });
+    //             }
+
+    //             ipcRenderer.send('remove-background', {
+    //                 token,
+    //                 images: processedFiles
+    //             });
+    //         }
+    //     } catch (error) {
+    //         message.classList.add('pop-up', 'alert', 'alert-danger');
+    //         message.textContent = error.message || 'An error occurred while processing the image(s)';
+    //         setTimeout(() => message.setAttribute("id", "hidden"), 2000);
+    //     } finally {
+    //         processBtn.disabled = false;
+    //         processBtn.textContent = 'Remove Background';
+    //     }
+    // });
+
+    // // Handle response for both single image and folder uploads
+    // ipcRenderer.on('remove-background-result', (event, response) => {
+    //     if (response.success && response.images && response.images.length > 0) {
+    //         message.classList.add('pop-up', 'alert', 'alert-success');
+    //         message.textContent = response.message;
+    //         setTimeout(() => message.setAttribute("id", "hidden"), 2000);
+    //         displayResult(response.images);
+
+    //         if (response.images.length > 1) {
+    //             document.getElementById("zip-btn").addEventListener("click", () => {
+    //                 downloadZip(response.images);
+    //             });
+    //         } else {
+    //             const image = response.images[0];
+    //             document.getElementById("save-btn").addEventListener("click", () => {
+    //                 saveImage(image.filename, image.base64);
+    //             });
+    //         }
+    //     } else {
+    //         message.classList.add('pop-up', 'alert', 'alert-danger');
+    //         message.textContent = response.message || 'Error processing images';
+    //         setTimeout(() => message.setAttribute("id", "hidden"), 2000);
+    //     }
+    //     processBtn.disabled = false;
+    //     processBtn.textContent = 'Remove Background';
+    // });
+
 
 
 

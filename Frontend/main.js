@@ -847,7 +847,6 @@ async function processNextInQueue() {
     try {
         const formData = new FormData();
 
-        // Handle multiple images
         data.images.forEach((imageData, index) => {
             const imageBuffer = Buffer.from(imageData.base64, 'base64');
             formData.append('files', imageBuffer, {
@@ -869,6 +868,8 @@ async function processNextInQueue() {
             }
         );
 
+        // Handle multiple images
+
         event.reply("remove-background-result", {
             success: true,
             images: response.data.result,
@@ -886,6 +887,7 @@ async function processNextInQueue() {
 }
 
 ipcMain.on('remove-background', async (event, data) => {
+    console.log("Images:", data)
     requestQueue.push({ event, data });
     console.log("Sending File")
     processNextInQueue();
