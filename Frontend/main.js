@@ -199,28 +199,6 @@ ipcMain.on('login', async (event, credentials) => {
             subStatus: response.data.subStatus
         });
 
-        // const token = response.data.token;
-
-        // Set new values with error checking
-        // try {
-        //     store.set('authToken', token);
-        //     console.log('authToken set successfully');
-        // } catch (storeError) {
-        //     console.error('Error setting authToken:', storeError);
-        // }
-
-        // try {
-        //     store.set('userEmail', credentials.email);
-        //     console.log('userEmail set successfully');
-        // } catch (storeError) {
-        //     console.error('Error setting userEmail:', storeError);
-        // }
-
-        // Verify stored data
-        // console.log('Stored authToken:', store.get('authToken'));
-        // console.log('Stored userEmail:', store.get('userEmail'));
-
-
     } catch (error) {
         console.error('Login error:', error);
         event.reply('login-response', {
@@ -345,20 +323,6 @@ ipcMain.on('create-checkout-session', async (event, data) => {
                 }
             }
         )
-        // const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
-        // const session = await stripe.checkout.sessions.create({
-        //     payment_method_types: ['card'],
-        //     line_items: [
-        //         {
-        //             price: data.priceId,
-        //             quantity: 1,
-        //         },
-        //     ],
-        //     mode: 'subscription',
-        //     success_url: `http://localhost:3000/api/success`,
-        //     cancel_url: `http://localhost:3000/api/cancel`,
-        //     client_reference_id: data.email,
-        // });
 
         event.reply('checkout-session-created', {
             success: true,
@@ -425,90 +389,6 @@ ipcMain.on("yearly-subscription", async (event, data) => {
     }
 });
 
-// ipcMain.on('remove-background', async (event, data) => {
-//     try {
-//         console.log("image ", data.imageBuffer)
-//         const response = await axios.post(`http://localhost:3000/imageModel/remove-background`, {
-//             images: [data.imageBuffer],
-//             fileName: data.fileName
-//         },
-//             {
-//                 headers: {
-//                     'Authorization': `Bearer ${data.token}`
-//                 }
-//             }
-//         )
-//         event.reply("remove-background-result", {
-//             success: true,
-//             images: response.data.result,
-//             message: response.data.message,
-//         })
-//     }
-//     catch (error) {
-//         event.reply('remove-background-result', { success: false, message: error.response?.data.message || error.response?.data || 'Error processing the image' });
-//     }
-// })
-
-// ipcMain.on('remove-background', async (event, data) => {
-//     // console.log(data.imageBuffer)
-//     try {
-//         // Convert base64 back to buffer for multipart/form-data
-//         // const imageBuffer = Buffer.from(data.imageBuffer, 'base64');
-//         // console.log("Image Buffer: ", imageBuffer)
-//         // // Create form data
-//         // const formData = new FormData();
-//         // console.log("Testing Before append .......")
-//         // formData.append('files', imageBuffer, data.fileName);
-//         // console.log("Testing After append .......")
-//         // console.log("FormData: ", formData)
-
-//         // const response = await axios.post('http://localhost:3000/imageModel/remove-background',
-//         //     formData,
-//         //     {
-//         //         headers: {
-//         //             'Authorization': `Bearer ${data.token}`,
-//         //             ...formData.getHeaders()
-//         //         }
-//         //     }
-//         // );
-//         const imageBuffer = Buffer.from(data.imageBuffer, 'base64');
-//         console.log("Image Buffer: ", imageBuffer)
-//         // Create temporary file
-//         const tempFilePath = path.join(app.getPath('temp'), data.fileName);
-//         console.log("tempFilePath: ", tempFilePath)
-//         fs.writeFileSync(tempFilePath, imageBuffer);
-
-//         // Create form data
-//         const formData = new FormData();
-//         console.log("Testing Before append .......")
-//         formData.append('files', fs.createReadStream(tempFilePath));
-//         console.log("FormData: ", formData)
-
-//         const response = await axios.post('http://localhost:3000/imageModel/remove-background',
-//             formData,
-//             {
-//                 headers: {
-//                     'Authorization': `Bearer ${data.token}`,
-//                     ...formData.getHeaders()
-//                 }
-//             }
-//         );
-
-//         // Clean up temp file
-//         fs.unlinkSync(tempFilePath);
-//         event.reply("remove-background-result", {
-//             success: true,
-//             images: response.data.result,
-//             message: response.data.message,
-//         });
-//     }
-//     catch (error) {
-//         event.reply('remove-background-result', {
-//             success: false,
-//             message: error.response?.data.message || error.response?.data || 'Error processing the image'
-//         });
-//     }
-// });
 
 // ipcMain.on('remove-background', async (event, data) => {
 //     try {
@@ -759,14 +639,6 @@ ipcMain.on("yearly-subscription", async (event, data) => {
 //         });
 //     }
 // });
-
-// const requestQueue = [];
-// const processedCache = new Map();
-// let isProcessing = false;
-
-// const requestQueue = [];
-// const processedCache = new Map();
-// let isProcessing = false;
 
 const requestQueue = [];
 const processedCache = new Map();

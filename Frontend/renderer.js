@@ -17,18 +17,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const monthlySub = document.getElementById('monthlySub');
     const upgrade = document.getElementById('upgrade');
 
-    // const data = {}
     let authCredentials = {}
-    // const stripe = loadStripe(process.env.STRIPE_PUBLIC_KEY);
-    // const elements = stripe.elements();
     // const cardElement = elements.create('card');
     // cardElement.mount('#card-element');
     const yearlySub = document.getElementById('yearlySub');
     // const monthlySub = document.getElementById('monthlySub');
-    // const stripeInstance = stripe(process.env.STRIPE_PUBLIC_KEY);
-    // const elements = stripe.elements();
-    // const cardElement = elements.create('card');
-    // cardElement.mount('#card-element');
 
     const form = document.getElementById('payment-form');
     const submitButton = document.getElementById('submit-button');
@@ -41,11 +34,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const processBtn = document.getElementById('process-btn');
     // const processBtnFolder = document.getElementById('process-btn-folder');
     const processedImageContainer = document.getElementById('processed-image-container');
-    // const processBtnFolder = document.getElementsByClassName("processbtn")
 
     // imageUpload.setAttribute('directory', ''); // For Firefox
 
-    // if ((folderUpload && folderUploadArea) || (uploadArea && imageUpload)) {
 
     if ((uploadArea && imageUpload) || (folderUpload && folderUploadArea)) {
         // Handle image upload area click for single image
@@ -313,8 +304,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // });
 
 
-
-
     // if (uploadArea && imageUpload) {
     //     uploadArea.addEventListener('click', () => {
     //         imageUpload.click();
@@ -577,7 +566,7 @@ document.addEventListener('DOMContentLoaded', () => {
             processedImageContainer.innerHTML = html;
         }
     }
-    // onclick="downloadZip(${JSON.stringify(images)})"
+
     {/* <button class="btn btn-sm btn-secondary mt-1 save" id="zip-btn" onclick="saveImage('${image.filename}', '${image.base64}')">
                             Download
                         </button> */}
@@ -629,12 +618,6 @@ document.addEventListener('DOMContentLoaded', () => {
         // document.body.removeChild(link);
     }
 
-    // // Helper function to convert ArrayBuffer to Base64
-    // function arrayBufferToBase64(buffer) {
-    //     const binary = new Uint8Array(buffer);
-    //     const bytes = binary.reduce((data, byte) => data + String.fromCharCode(byte), '');
-    //     return btoa(bytes);
-    // }
 
     // // Image compression function
     // async function compressImage(file) {
@@ -673,89 +656,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // }
 
     // // Display the uploaded image
-
-    // // Handle form submission
-    // if (uploadForm) {
-    //     fileUploader.addEventListener('change', (event) => {
-    //         const file = event.target.files[0];
-    //         if (file) {
-    //             const reader = new FileReader();
-    //             reader.onload = (e) => {
-    //                 originalImg.src = e.target.result;
-    //                 originalImg.style.display = 'block';
-    //                 resultImg.style.display = 'none';
-    //                 downloadSection.style.display = 'none';
-    //             };
-    //             reader.readAsDataURL(file);
-    //         }
-    //     });
-    //     uploadForm.addEventListener('submit', async (e) => {
-    //         e.preventDefault();
-    //         const file = fileUploader.files[0];
-
-    //         if (!file) {
-    //             showMessage('Please upload an image first.', 'danger');
-    //             return;
-    //         }
-
-    //         try {
-    //             const uploadBtn = uploadForm.querySelector('.upload-btn');
-    //             uploadBtn.disabled = true;
-    //             uploadBtn.textContent = 'Processing...';
-
-    //             // Compress image
-    //             const compressedBlob = await compressImage(file);
-    //             const reader = new FileReader();
-
-    //             reader.onload = async () => {
-    //                 const base64Image = arrayBufferToBase64(reader.result);
-
-    //                 // Send to main process
-    //                 ipcRenderer.send('remove-background', {
-    //                     token: localStorage.getItem('authToken'),
-    //                     imageBuffer: base64Image,
-    //                     fileName: file.name
-    //                 });
-    //             };
-    //             ipcRenderer.on('remove-background-result', (event, response) => {
-    //                 const uploadBtn = uploadForm.querySelector('.upload-btn');
-    //                 uploadBtn.disabled = false;
-    //                 uploadBtn.textContent = 'Remove Background';
-
-    //                 if (response.success && response.images && response.images.length > 0) {
-    //                     const image = response.images[0];
-    //                     resultImg.src = `data:image/png;base64,${image.base64}`;
-    //                     resultImg.style.display = 'block';
-    //                     downloadSection.style.display = 'block';
-
-    //                     // Setup download button
-    //                     downloadBtn.onclick = () => {
-    //                         const link = document.createElement('a');
-    //                         link.href = `data:image/png;base64,${image.base64}`;
-    //                         link.download = `processed_${image.filename}`;
-    //                         document.body.appendChild(link);
-    //                         link.click();
-    //                         document.body.removeChild(link);
-    //                     };
-
-    //                     showMessage('Background removed successfully!', 'success');
-    //                 } else if (!response.success && (response.message === 'Not Authorized' || response.message === 'Not Authorized, No Token')) {
-    //                     showMessage(response.message, 'danger');
-    //                     setTimeout(() => {
-    //                         window.location.href = 'login.html';
-    //                     }, 3000);
-    //                 } else {
-    //                     showMessage(response.message || 'Error processing image', 'danger');
-    //                 }
-    //             });
-
-    //             reader.readAsArrayBuffer(compressedBlob);
-
-    //         } catch (error) {
-    //             showMessage(error.message || 'An error occurred while processing the image', 'danger');
-    //         }
-    //     });
-    // }
 
     // Handle background removal result
 
@@ -919,19 +819,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-    // const reader = new FileReader();
-    // reader.onload = async () => {
-    //     // Convert ArrayBuffer to Base64
-    //     const base64Image = arrayBufferToBase64(reader.result);
-
-    //     // Send the base64 image to main process
-    //     ipcRenderer.send('remove-background', {
-    //         token,
-    //         imageBuffer: base64Image,
-    //         fileName: file.name
-    //     });
-    // };
-
     // Modified process button click handler
     // if (processBtn) {
     //     processBtn.addEventListener('click', async () => {
@@ -1009,7 +896,6 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.removeChild(link);
     }
 
-    // install with npm install file-saver
 
     // async function downloadZip(images) {
     //     const zip = new JSZip();
@@ -1027,114 +913,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // onclick="saveImage('${image.filename}', '${image.base64}')"
-    {/* <button class="btn btn-primary mt-2" onclick="saveImage('${image.filename}', '${image.base64}')">
-                    Save Image
-                </button> */}
-
-    // function displayResult(images) {
-    //     if (Array.isArray(images) && images.length > 0) {
-    //         const image = images[0];
-    //         processedImageContainer.innerHTML = `
-    //             <div class="img-container">
-    //                 <h5>Processed Image:</h5>
-    //                 <img src="${image.base64}" alt="Processed Image" class="translate images">
-    //                 <button class="btn btn-primary mt-2" onclick="saveImage('${image.filename}', '${image.base64}')">
-    //                     Save Image
-    //                 </button>
-    //             </div>
-    //         `;
-    //     }
-    // }
-
-
-    // async function compressImage(file) {
-    //     return new Promise((resolve) => {
-    //         const reader = new FileReader();
-    //         reader.readAsDataURL(file);
-    //         reader.onload = (e) => {
-    //             const img = new Image();
-    //             img.src = e.target.result;
-    //             img.onload = () => {
-    //                 const canvas = document.createElement('canvas');
-    //                 const ctx = canvas.getContext('2d');
-
-    //                 // Calculate new dimensions while maintaining aspect ratio
-    //                 let width = img.width;
-    //                 let height = img.height;
-    //                 const MAX_DIMENSION = 1500;
-
-    //                 if (width > height && width > MAX_DIMENSION) {
-    //                     height *= MAX_DIMENSION / width;
-    //                     width = MAX_DIMENSION;
-    //                 } else if (height > MAX_DIMENSION) {
-    //                     width *= MAX_DIMENSION / height;
-    //                     height = MAX_DIMENSION;
-    //                 }
-
-    //                 canvas.width = width;
-    //                 canvas.height = height;
-    //                 ctx.drawImage(img, 0, 0, width, height);
-
-    //                 // Convert to blob with compression
-    //                 canvas.toBlob((blob) => {
-    //                     resolve(blob);
-    //                 }, 'image/jpeg', 0.7); // Adjust quality (0.7 = 70% quality)
-    //             };
-    //         };
-    //     });
-    // }
-
-    // function saveImage(imageUrl) {
-    //     ipcRenderer.send('save-file', imageUrl); // Send the URL to main process to save the file
-    // }
-
-    // if (uploadArea && imageUpload && processBtn) {
-    //     uploadArea.addEventListener('click', () => {
-    //         imageUpload.click();
-    //     });
-
-    //     imageUpload.addEventListener('change', (event) => {
-    //         const file = imageUpload.files[0]; // Select the first file only
-    //         if (file) {
-    //             const reader = new FileReader();
-    //             reader.onload = (e) => {
-    //                 uploadedImageContainer.innerHTML = `<img src="${e.target.result}" alt="Uploaded Image">`;
-    //                 processBtn.disabled = false; // Enable the process button
-    //                 console.log(imageUpload.files); // See what files are selected
-    //                 console.log(e.target.result); // Check if the file is correctly read
-    //             };
-    //             reader.readAsDataURL(file); // Read the first file
-    //         }
-    //     });
-    //     const token = localStorage.getItem('authToken');
-    //     // processBtn.addEventListener('click', () => {
-    //     //     setTimeout(() => {
-    //     //         const uploadedImage = uploadedImageContainer.querySelector('img');
-    //     //         if (uploadedImage) {
-    //     //             processedImageContainer.innerHTML = `
-    //     //         <h3>Processed Image:</h3>
-    //     //         <img src="${uploadedImage.src}" alt="Processed Image">
-    //     //     `;
-    //     //         }
-    //     //     }, 1000); // Simulating processing delay
-    //     // });
-    //     processBtn.addEventListener('click', async () => {
-    //         try {
-    //             processBtn.disabled = true;
-    //             // processBtn.textContent = 'Processing...';
-    //             // message.innerHTML = '';
-
-    //             // Create FormData
-    //             const formData = new FormData();
-    //             for (let i = 0; i < imageUpload.files.length; i++) {
-    //                 formData.append('files', imageUpload.files[i]);
-    //             }
-
-    //             // Convert FormData to array of file paths
-    //             const files = Array.from(imageUpload.files).map(file => file.path);
-
-    // }
-
 
     // function downloadZip(zipPath) {
     //     processedImageContainer.innerHTML = `
@@ -1342,45 +1120,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
-
-    // if (form) {
-    //     form.addEventListener('submit', async (event) => {
-    //         event.preventDefault();
-    //         submitButton.disabled = true;
-
-    //         try {
-    //             const email = localStorage.getItem('userEmail');
-    //             const token = localStorage.getItem('authToken');
-    //             const priceSelect = document.getElementById('price-select');
-    //             const selectedOption = priceSelect.options[priceSelect.selectedIndex];
-    //             const priceId = selectedOption.value;
-
-    //             // 'price_1PqK5dGQqr36Qs46jCT3Kamr'
-    //             const productName = selectedOption.textContent;
-
-    //             ipcRenderer.send('create-checkout-session', {
-    //                 email: email,
-    //                 token: token,
-    //                 // productName: productName,
-    //                 priceId: priceId
-    //             });
-    //         } catch (error) {
-    //             console.log(error)
-    //             console.error('Error creating checkout session:', error);
-    //             alert('An error occurred while setting up the payment. Please try again.', error);
-    //             submitButton.disabled = false;
-    //         }
-    //     });
-
-    //     ipcRenderer.on('checkout-session-created', (event, response) => {
-    //         if (response.success && response.sessionUrl) {
-    //             window.location = response.sessionUrl;
-    //         } else {
-    //             alert(response.message || 'An error occurred. Please try again.');
-    //             submitButton.disabled = false;
-    //         }
-    //     });
-    // }
 
 
     if (loginForm) {
@@ -1627,101 +1366,6 @@ document.addEventListener('DOMContentLoaded', () => {
         })
     }
 
-    // if (form) {
-    //     (async function () {
-    //         const stripeInstance = await stripe;
-
-    //         // const elements = stripeInstance.elements();
-    //         console.log(elements)
-    //         // const cardElement = elements.create('card');
-    //         // cardElement.mount('#card-element');
-    //         form.addEventListener('submit', async (event) => {
-    //             event.preventDefault();
-    //             submitButton.disabled = true;
-    //             const { paymentMethod, error } = await stripeInstance.createPaymentMethod({
-    //                 type: 'card',
-    //                 card: cardElement,
-    //                 billing_details: {
-    //                     name: document.getElementById('name').value,
-    //                     email: document.getElementById('email').value,
-    //                 },
-    //             });
-
-    //             if (error) {
-    //                 alert(error.message);
-    //                 submitButton.disabled = false;
-    //                 return;
-    //             }
-
-    //             const email = localStorage.getItem('userEmail');
-    //             const token = localStorage.getItem('authToken');
-    //             const productName = '';
-    //             const productPrice = 0;
-    //             const priceId = '';
-    //             const payment = paymentType
-
-    //             for (let i = 0; i < payment.length; i++) {
-    //                 let option = a.options[i];
-    //                 if (option.value == "Monthly Plan - €463/month") {
-    //                     productName = 'Monthly plan';
-    //                     productPrice = 463;
-    //                     priceId = 'price_1PqK5dGQqr36Qs46jCT3Kamr'
-    //                 }
-    //                 else if (option.value == "Yearly Plan - €4444.8/year") {
-    //                     productName = 'Yearly plan';
-    //                     productPrice = 4444.8;
-    //                     priceId = 'price_1PqK7JGQqr36Qs46An76ntuG'
-    //                 }
-    //             }
-    //             // if (paymentType === "Monthly Plan - €463/month") {
-    //             //     productName = 'Monthly plan';
-    //             //     productPrice = 463;
-    //             //     priceId = 'price_1PqK5dGQqr36Qs46jCT3Kamr'
-    //             // }
-    //             // else if (paymentType === "Yearly Plan - €4444.8/year") {
-    //             //     productName = 'Yearly plan';
-    //             //     productPrice = 4444.8;
-    //             //     priceId = 'price_1PqK7JGQqr36Qs46An76ntuG'
-    //             // }
-
-    //             ipcRenderer.send('create-subscription', {
-    //                 paymentMethodId: paymentMethod.id,
-    //                 name: document.getElementById('name').value,
-    //                 email: email,
-    //                 token: token,
-    //                 productName: productName,
-    //                 productPrice: productPrice,
-    //                 priceId: priceId
-    //             });
-    //         });
-
-    //         ipcRenderer.on('subscription-result', (event, response) => {
-    //             if (response.success) {
-    //                 if (response.clientSecret) {
-    //                     stripe.confirmCardPayment(response.clientSecret)
-    //                         .then(result => {
-    //                             if (result.error) {
-    //                                 alert(result.error.message);
-    //                             } else {
-    //                                 alert('Success! Check your email for the invoice.');
-    //                                 setTimeout(() => {
-    //                                     window.location.href = 'dashboard.html';
-    //                                 }, 3000);
-    //                             }
-    //                         });
-    //                 } else {
-    //                     alert('Success! Check your email for the invoice.');
-    //                     setTimeout(() => {
-    //                         window.location.href = 'dashboard.html';
-    //                     }, 3000);
-    //                 }
-    //             } else {
-    //                 alert(response.message || 'An error occurred. Please try again.');
-    //             }
-    //             submitButton.disabled = false;
-    //         });
-    //     })()
-    // }
     // if (yearlySub) {
     //     // const Stripe = async () => {
     //     //     const stripe = await stripe(process.env.STRIPE_PUBLIC_KEY)
