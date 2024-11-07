@@ -768,77 +768,77 @@ const requestQueue = [];
 const processedCache = new Map();
 let isProcessing = false;
 
-async function processNextInQueueImage() {
-    if (isProcessing || requestQueue.length === 0) return;
+// async function processNextInQueueImage() {
+//     if (isProcessing || requestQueue.length === 0) return;
 
-    isProcessing = true;
-    const { event, data } = requestQueue.shift();
+//     isProcessing = true;
+//     const { event, data } = requestQueue.shift();
 
-    try {
-        // Check cache first
-        const cacheKey = data.imageBuffer;
-        if (processedCache.has(cacheKey)) {
-            event.reply("remove-background-result", {
-                success: true,
-                images: processedCache.get(cacheKey),
-                message: "Retrieved from cache",
-            });
-            return;
-        }
+//     try {
+//         // Check cache first
+//         const cacheKey = data.imageBuffer;
+//         if (processedCache.has(cacheKey)) {
+//             event.reply("remove-background-result", {
+//                 success: true,
+//                 images: processedCache.get(cacheKey),
+//                 message: "Retrieved from cache",
+//             });
+//             return;
+//         }
 
-        const formData = new FormData();
-        const imageBuffer = Buffer.from(data.imageBuffer, 'base64');
-        formData.append('files', imageBuffer, {
-            filename: data.fileName,
-            contentType: 'image/png'
-        });
+//         const formData = new FormData();
+//         const imageBuffer = Buffer.from(data.imageBuffer, 'base64');
+//         formData.append('files', imageBuffer, {
+//             filename: data.fileName,
+//             contentType: 'image/png'
+//         });
 
-        const response = await axios.post(
-            'http://localhost:3000/imageModel/remove-background',
-            formData,
-            {
-                headers: {
-                    'Authorization': `Bearer ${data.token}`,
-                    ...formData.getHeaders()
-                },
-                maxContentLength: Infinity,
-                maxBodyLength: Infinity
-            }
-        );
+//         const response = await axios.post(
+//             'http://localhost:3000/imageModel/remove-background',
+//             formData,
+//             {
+//                 headers: {
+//                     'Authorization': `Bearer ${data.token}`,
+//                     ...formData.getHeaders()
+//                 },
+//                 maxContentLength: Infinity,
+//                 maxBodyLength: Infinity
+//             }
+//         );
 
-        // Cache the result
-        processedCache.set(cacheKey, response.data.result);
-        if (processedCache.size > 50) { // Limit cache size
-            const firstKey = processedCache.keys().next().value;
-            processedCache.delete(firstKey);
-        }
+//         // Cache the result
+//         processedCache.set(cacheKey, response.data.result);
+//         if (processedCache.size > 50) { // Limit cache size
+//             const firstKey = processedCache.keys().next().value;
+//             processedCache.delete(firstKey);
+//         }
 
-        event.reply("remove-background-result", {
-            success: true,
-            images: response.data.result,
-            message: response.data.message,
-        });
-    } catch (error) {
-        event.reply('remove-background-result', {
-            success: false,
-            message: error.response?.data?.message || error.message
-        });
-    } finally {
-        isProcessing = false;
-        processNextInQueueImage();
-    }
-}
+//         event.reply("remove-background-result", {
+//             success: true,
+//             images: response.data.result,
+//             message: response.data.message,
+//         });
+//     } catch (error) {
+//         event.reply('remove-background-result', {
+//             success: false,
+//             message: error.response?.data?.message || error.message
+//         });
+//     } finally {
+//         isProcessing = false;
+//         processNextInQueueImage();
+//     }
+// }
 
-ipcMain.on('remove-background-image', async (event, data) => {
-    requestQueue.push({ event, data });
-    console.log("Sending picture ")
-    processNextInQueueImage();
-    console.log("Picture recieved")
-});
+// ipcMain.on('remove-background-image', async (event, data) => {
+//     requestQueue.push({ event, data });
+//     console.log("Sending picture ")
+//     processNextInQueueImage();
+//     console.log("Picture recieved")
+// });
 
 // Modifications for main.js
 
-async function processNextInQueueFolder() {
+async function processNextInQueue() {
     if (isProcessing || requestQueue.length === 0) return;
 
     isProcessing = true;
@@ -881,14 +881,15 @@ async function processNextInQueueFolder() {
         });
     } finally {
         isProcessing = false;
-        processNextInQueueFolder();
+        processNextInQueue();
     }
 }
 
-ipcMain.on('remove-background-folder', async (event, data) => {
+ipcMain.on('remove-background', async (event, data) => {
     requestQueue.push({ event, data });
-    console.log()
-    processNextInQueueFolder();
+    console.log("Sending File")
+    processNextInQueue();
+    console.log("Reciving File")
 });
 
 

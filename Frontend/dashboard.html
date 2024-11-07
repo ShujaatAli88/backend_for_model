@@ -96,7 +96,7 @@
             border-color: var(--primary-color);
         }
 
-        #process-btn {
+        .processbtn {
             background-color: var(--primary-color);
             color: white;
             border: none;
@@ -108,13 +108,14 @@
             transition: background-color 0.3s ease;
         }
 
-        #process-btn:disabled {
+        .processbtn:disabled {
             background-color: #ccc;
             cursor: not-allowed;
         }
 
-        #process-btn:hover:not(:disabled) {
-            background-color: #ff3333;
+        .processbtn:hover:not(:disabled) {
+            /* background-color: #ff3333; */
+            background-color: rgb(63, 3, 119) !important;
         }
 
         .image-display {
@@ -249,12 +250,12 @@
             <h1 class="app-title">Background Remover</h1>
         </div>
 
-        <div class="upload-area my-4" id="upload-area">
+        <div class="upload-area my-2" id="upload-area">
             <p>Choose image or drag and drop here</p>
             <!-- <input type="file" id="image-upload" accept=".png,.jpg,.jpeg" multiple> -->
         </div>
 
-        <div class="upload-area" id="folder-upload-area">
+        <div class="upload-area my-2" id="folder-upload-area">
             <p>Choose folder or drag and drop here</p>
         </div>
 
