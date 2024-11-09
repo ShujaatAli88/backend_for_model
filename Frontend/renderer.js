@@ -34,6 +34,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const processBtn = document.getElementById('process-btn');
     // const processBtnFolder = document.getElementById('process-btn-folder');
     const processedImageContainer = document.getElementById('processed-image-container');
+    const backgroundColorPicker = document.getElementById('backgroundColorPicker');
+    const useTransparent = document.getElementById('useTransparent');
 
     // imageUpload.setAttribute('directory', ''); // For Firefox
 
@@ -108,6 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const isSingleImage = imageUpload.files.length > 0;
             const isFolderUpload = folderUpload.files.length > 0;
             const token = localStorage.getItem('authToken');
+            const backgroundColor = useTransparent.checked ? 'transparent' : backgroundColorPicker.value;
 
             try {
                 processBtn.disabled = true;
@@ -130,10 +133,12 @@ document.addEventListener('DOMContentLoaded', () => {
                             </div>
                             `;
 
+
                     ipcRenderer.send('remove-background', {
                         token,
                         imageBuffer: base64Image,
-                        fileName: file.name
+                        fileName: file.name,
+                        backgroundColor: backgroundColor
                     });
                 } else if (isFolderUpload) {
                     // Handle multiple images in folder upload
@@ -158,8 +163,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     ipcRenderer.send('remove-background', {
                         token,
-                        images: processedFiles
+                        images: processedFiles,
+                        backgroundColor: backgroundColor
                     });
+
+                    processBtn.disabled = true;
+                    processBtn.textContent = 'Processing...';
+
                 } else {
                     throw new Error('Please upload an image or select a folder of images.');
                 }
@@ -200,7 +210,9 @@ document.addEventListener('DOMContentLoaded', () => {
             processBtn.textContent = 'Remove Background';
         });
 
-
+        useTransparent.addEventListener('change', (e) => {
+            backgroundColorPicker.disabled = e.target.checked;
+        });
 
     }
 

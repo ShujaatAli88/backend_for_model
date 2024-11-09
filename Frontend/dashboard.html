@@ -226,6 +226,46 @@
             background-color: hsl(271, 95%, 24%);
             color: white;
         }
+
+        .color-picker-container {
+            margin-top: 1rem;
+            padding: 1rem;
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .color-picker-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .color-picker-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        #backgroundColorPicker {
+            padding: 0;
+            width: 50px;
+            height: 50px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        #useTransparent {
+            margin-right: 0.5rem;
+        }
+
+        .transparent-option {
+            display: flex;
+            align-items: center;
+            margin-top: 0.5rem;
+        }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js"></script>
 </head>
@@ -262,6 +302,17 @@
         <button id="process-btn" class="processbtn" disabled>
             Remove Background
         </button>
+        <div class="color-picker-container"></div>
+        <div class="color-picker-label">
+            <span>Background Color:</span>
+        </div>
+        <div class="color-picker-wrapper">
+            <input type="color" id="backgroundColorPicker" value="#ffffff">
+        </div>
+        <div class="transparent-option">
+            <input type="checkbox" id="useTransparent">
+            <label for="useTransparent">Use transparent background</label>
+        </div>
         <h5 id="fileName" class="my-2"> </h5>
         <div class="footer">
         </div>

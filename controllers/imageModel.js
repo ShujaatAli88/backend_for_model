@@ -124,7 +124,9 @@ router.post('/remove-background', protect, upload.array('files', MAX_FILES), asy
             });
         }
 
-        const result = await imageModelService.backgroundRemover(req.files);
+        const backgroundColor = req.body.backgroundColor
+
+        const result = await imageModelService.backgroundRemover(req.files, backgroundColor);
 
         return res.status(200).json({
             success: true,
