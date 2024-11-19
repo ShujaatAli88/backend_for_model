@@ -26,6 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('payment-form');
     const submitButton = document.getElementById('submit-button');
 
+    // variables for the background remover
     const folderUploadArea = document.getElementById('folder-upload-area')
     const folderUpload = document.getElementById('folder-upload')
     const uploadArea = document.getElementById('upload-area');
@@ -37,8 +38,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const backgroundColorPicker = document.getElementById('backgroundColorPicker');
     const useTransparent = document.getElementById('useTransparent');
 
-    // imageUpload.setAttribute('directory', ''); // For Firefox
-
+    // variables for the human-body-remover model
+    const folderUploadAreaHuman = document.getElementById('folder-upload-area-human')
+    const folderUploadHuman = document.getElementById('folder-upload-human')
+    const uploadAreaHuman = document.getElementById('upload-area-human');
+    const imageUploadHuman = document.getElementById('image-upload-human');
 
     if ((uploadArea && imageUpload) || (folderUpload && folderUploadArea)) {
         // Handle image upload area click for single image
@@ -213,6 +217,10 @@ document.addEventListener('DOMContentLoaded', () => {
         useTransparent.addEventListener('change', (e) => {
             backgroundColorPicker.disabled = e.target.checked;
         });
+
+    }
+
+    if (uploadAreaHuman && imageUploadHuman || folderUploadAreaHuman && folderUploadHuman) {
 
     }
 
@@ -772,13 +780,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // }
 
 
-
-    // Helper function to convert ArrayBuffer to Base64
-    // function arrayBufferToBase64(buffer) {
-    //     const binary = new Uint8Array(buffer);
-    //     const bytes = binary.reduce((data, byte) => data + String.fromCharCode(byte), '');
-    //     return btoa(bytes);
-    // }
     async function compressImage(file) {
         return new Promise((resolve) => {
             const reader = new FileReader();
@@ -925,15 +926,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // onclick="saveImage('${image.filename}', '${image.base64}')"
-
-    // function downloadZip(zipPath) {
-    //     processedImageContainer.innerHTML = `
-    //     <h3>Processing Complete:</h3>
-    //     <button class="download-btn" onclick="ipcRenderer.send('save-file', '${zipPath}')">
-    //         Download ZIP
-    //     </button>
-    // `;
-    // }
 
     // if (form) {
     //     let elements, cardElement;
