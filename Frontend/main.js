@@ -488,6 +488,11 @@ ipcMain.on('remove-background', async (event, data) => {
     processNextInQueue();
 });
 
+ipcMain.on('remove-human', async (event, data) => {
+    requestQueue.push({ event, data });
+    processNextInQueue();
+});
+
 // async function processNextInQueueImage() {
 //     if (isProcessing || requestQueue.length === 0) return;
 
@@ -605,14 +610,6 @@ ipcMain.on('remove-background', async (event, data) => {
 //         processNextInQueue();
 //     }
 // }
-
-// ipcMain.on('remove-background', async (event, data) => {
-//     console.log("Images:", data)
-//     requestQueue.push({ event, data });
-//     console.log("Sending File")
-//     processNextInQueue();
-//     console.log("Reciving File")
-// });
 
 // Handle file saving
 ipcMain.on('save-file', async (event, filePath) => {

@@ -221,7 +221,174 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (uploadAreaHuman && imageUploadHuman || folderUploadAreaHuman && folderUploadHuman) {
+        if (uploadAreaHuman && imageUploadHuman) {
+            uploadAreaHuman.addEventListener('click', () => {
+                imageUpload.click();
+            });
+        }
 
+        // Handle folder upload area click for folder of images
+        if (folderUploadHuman && folderUploadAreaHuman) {
+            folderUploadArea.addEventListener('click', () => {
+                folderUpload.click();
+            });
+        }
+
+        // Handle image upload (single image)
+        let image;
+        imageUploadHuman.addEventListener('change', (event) => {
+            const file = imageUploadHuman.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    uploadedImageContainer.innerHTML = `<h3>Original Image:</h3><img src="${e.target.result}" alt="Uploaded Image" class="translate images">`;
+                    document.getElementById("fileName").textContent = "Filename: " + file.name;
+                    processBtn.disabled = false;
+                };
+                reader.readAsDataURL(file);
+            }
+            image = file;
+        });
+
+        // Handle folder upload (multiple images)
+        folderUploadHuman.addEventListener('change', (event) => {
+            const files = Array.from(folderUploadHuman.files);
+            if (files.length > 0) {
+                const folderPath = files[0].webkitRelativePath;
+                const folderName = folderPath.split("/")[0];
+                let previewHTML = '<h3>Original Images:</h3><div class="image-preview-grid">';
+
+                files.forEach((file, index) => {
+                    if (file.type.startsWith('image/')) {
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            previewHTML += `
+                                <div class="preview-item">
+                                    <img src="${e.target.result}" alt="Image ${index + 1}" class="preview-image">
+                                    <p>${file.name}</p>
+                                </div>
+                            `;
+                            if (index === files.length - 1) {
+                                previewHTML += '</div>';
+                                uploadedImageContainer.innerHTML = previewHTML;
+                                document.getElementById("fileName").textContent = "Folder Name: " + folderName;
+                                processBtn.disabled = false;
+                            }
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
+        });
+
+        // Process button click handler for both single image and folder uploads
+        processBtn.addEventListener('click', async () => {
+            const isSingleImage = imageUploadHuman.files.length > 0;
+            const isFolderUpload = folderUploadHuman.files.length > 0;
+            const token = localStorage.getItem('authToken');
+            const backgroundColor = useTransparent.checked ? 'transparent' : backgroundColorPicker.value;
+
+            try {
+                processBtn.disabled = true;
+                processBtn.textContent = 'Processing...';
+
+                if (isSingleImage) {
+                    const file = imageUploadHuman.files[0];
+                    if (!file) throw new Error('Please upload an image first.');
+
+                    // Compress and convert to base64
+                    const compressedBlob = await compressImage(file);
+                    const base64Image = await blobToBase64(compressedBlob);
+
+                    processedImageContainer.innerHTML = `
+                            <div class="processing-indicator">
+                                <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Processing...</span>
+                                </div>
+                                <p class="mt-2">Processing image...</p>
+                            </div>
+                            `;
+
+
+                    ipcRenderer.send('remove-human', {
+                        token,
+                        imageBuffer: base64Image,
+                        fileName: file.name,
+                        backgroundColor: backgroundColor
+                    });
+                } else if (isFolderUpload) {
+                    // Handle multiple images in folder upload
+                    const files = Array.from(folderUpload.files).filter(file => file.type.startsWith('image/'));
+                    if (files.length === 0) throw new Error('Please upload valid image files.');
+
+                    processedImageContainer.innerHTML = `
+                                <div class="processing-indicator">
+                                    <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Processing...</span>
+                                    </div>
+                                    <p class="mt-2">Processing ${files.length} image(s)...</p>
+                                </div>
+                                `;
+
+                    const processedFiles = [];
+                    for (const file of files) {
+                        const compressedBlob = await compressImage(file);
+                        const base64Image = await blobToBase64(compressedBlob);
+                        processedFiles.push({ base64: base64Image, fileName: file.name });
+                    }
+
+                    ipcRenderer.send('remove-human', {
+                        token,
+                        images: processedFiles,
+                        backgroundColor: backgroundColor
+                    });
+
+                    processBtn.disabled = true;
+                    processBtn.textContent = 'Processing...';
+
+                } else {
+                    throw new Error('Please upload an image or select a folder of images.');
+                }
+            } catch (error) {
+                message.classList.add('pop-up', 'alert', 'alert-danger');
+                message.textContent = error.message || 'An error occurred while processing the image(s)';
+                setTimeout(() => message.setAttribute("id", "hidden"), 2000);
+            } finally {
+                processBtn.disabled = false;
+                processBtn.textContent = 'Remove Background';
+            }
+        });
+
+        // Handle response for both single image and folder uploads
+        ipcRenderer.on('remove-background-result', (event, response) => {
+            if (response.success && response.images && response.images.length > 0) {
+                message.classList.add('pop-up', 'alert', 'alert-success');
+                message.textContent = response.message;
+                setTimeout(() => message.setAttribute("id", "hidden"), 2000);
+                displayResult(response.images);
+
+                if (response.images.length > 1) {
+                    document.getElementById("zip-btn").addEventListener("click", () => {
+                        downloadZip(response.images);
+                    });
+                } else {
+                    const image = response.images[0];
+                    document.getElementById("save-btn").addEventListener("click", () => {
+                        saveImage(image.filename, image.base64);
+                    });
+                }
+            } else {
+                message.classList.add('pop-up', 'alert', 'alert-danger');
+                message.textContent = response.message || 'Error processing images';
+                setTimeout(() => message.setAttribute("id", "hidden"), 2000);
+            }
+            processBtn.disabled = false;
+            processBtn.textContent = 'Remove Human';
+        });
+
+        useTransparent.addEventListener('change', (e) => {
+            backgroundColorPicker.disabled = e.target.checked;
+        });
     }
 
 
