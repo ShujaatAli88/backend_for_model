@@ -126,7 +126,7 @@ router.post('/remove-background', protect, upload.array('files', MAX_FILES), asy
 
         const backgroundColor = req.body.backgroundColor
 
-        const result = await imageModelService.backgroundRemover(req.files, backgroundColor);
+        const result = await imageModelService.removeHuman(req.files, backgroundColor);
 
         return res.status(200).json({
             success: true,
@@ -136,6 +136,36 @@ router.post('/remove-background', protect, upload.array('files', MAX_FILES), asy
     }
     catch (err) {
         console.error('Error in remove-background controller:', err);
+        return res.status(500).json({
+            success: false,
+            message: err.message || 'Error processing the image'
+        });
+    }
+});
+
+router.post('/remove-human', protect, upload.array('files', MAX_FILES), async (req, res) => {
+    try {
+        console.log('Received files:', req.files);
+
+        if (!req.files || req.files.length === 0) {
+            return res.status(400).json({
+                success: false,
+                message: 'No files uploaded'
+            });
+        }
+
+        const backgroundColor = req.body.backgroundColor
+
+        const result = await imageModelService.backgroundRemover(req.files, backgroundColor);
+
+        return res.status(200).json({
+            success: true,
+            result: result,
+            message: 'Human removed successfully from the picture'
+        });
+    }
+    catch (err) {
+        console.error('Error in human-background controller:', err);
         return res.status(500).json({
             success: false,
             message: err.message || 'Error processing the image'

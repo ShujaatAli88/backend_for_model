@@ -337,5 +337,9 @@ const backgroundRemover = async (files, backgroundColor) => {
     return results;
 };
 
+const removeHuman = async (files) => {
 
-module.exports = { backgroundRemover };
+}
+
+
+module.exports = { backgroundRemover, removeHuman };
