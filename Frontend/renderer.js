@@ -33,7 +33,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const imageUpload = document.getElementById('image-upload');
     const uploadedImageContainer = document.getElementById('uploaded-image-container');
     const processBtn = document.getElementById('process-btn');
-    // const processBtnFolder = document.getElementById('process-btn-folder');
     const processedImageContainer = document.getElementById('processed-image-container');
     const backgroundColorPicker = document.getElementById('backgroundColorPicker');
     const useTransparent = document.getElementById('useTransparent');
@@ -43,6 +42,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const folderUploadHuman = document.getElementById('folder-upload-human')
     const uploadAreaHuman = document.getElementById('upload-area-human');
     const imageUploadHuman = document.getElementById('image-upload-human');
+    const uploadedImageContainerHuman = document.getElementById('uploaded-image-container-human');
+    const processBtnHuman = document.getElementById('process-btn-human');
+    const processedImageContainerHuman = document.getElementById('processed-image-container-human');
+    const backgroundColorPickerHuman = document.getElementById('backgroundColorPickerHuman');
+    const useTransparentHuman = document.getElementById('useTransparentHuman');
 
     if ((uploadArea && imageUpload) || (folderUpload && folderUploadArea)) {
         // Handle image upload area click for single image
@@ -223,14 +227,14 @@ document.addEventListener('DOMContentLoaded', () => {
     if (uploadAreaHuman && imageUploadHuman || folderUploadAreaHuman && folderUploadHuman) {
         if (uploadAreaHuman && imageUploadHuman) {
             uploadAreaHuman.addEventListener('click', () => {
-                imageUpload.click();
+                imageUploadHuman.click();
             });
         }
 
         // Handle folder upload area click for folder of images
         if (folderUploadHuman && folderUploadAreaHuman) {
-            folderUploadArea.addEventListener('click', () => {
-                folderUpload.click();
+            folderUploadAreaHuman.addEventListener('click', () => {
+                folderUploadHuman.click();
             });
         }
 
@@ -241,9 +245,9 @@ document.addEventListener('DOMContentLoaded', () => {
             if (file) {
                 const reader = new FileReader();
                 reader.onload = (e) => {
-                    uploadedImageContainer.innerHTML = `<h3>Original Image:</h3><img src="${e.target.result}" alt="Uploaded Image" class="translate images">`;
+                    uploadedImageContainerHuman.innerHTML = `<h3>Original Image:</h3><img src="${e.target.result}" alt="Uploaded Image" class="translate images">`;
                     document.getElementById("fileName").textContent = "Filename: " + file.name;
-                    processBtn.disabled = false;
+                    processBtnHuman.disabled = false;
                 };
                 reader.readAsDataURL(file);
             }
@@ -270,9 +274,9 @@ document.addEventListener('DOMContentLoaded', () => {
                             `;
                             if (index === files.length - 1) {
                                 previewHTML += '</div>';
-                                uploadedImageContainer.innerHTML = previewHTML;
+                                uploadedImageContainerHuman.innerHTML = previewHTML;
                                 document.getElementById("fileName").textContent = "Folder Name: " + folderName;
-                                processBtn.disabled = false;
+                                processBtnHuman.disabled = false;
                             }
                         };
                         reader.readAsDataURL(file);
@@ -282,15 +286,15 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         // Process button click handler for both single image and folder uploads
-        processBtn.addEventListener('click', async () => {
+        processBtnHuman.addEventListener('click', async () => {
             const isSingleImage = imageUploadHuman.files.length > 0;
             const isFolderUpload = folderUploadHuman.files.length > 0;
             const token = localStorage.getItem('authToken');
-            const backgroundColor = useTransparent.checked ? 'transparent' : backgroundColorPicker.value;
+            const backgroundColor = useTransparentHuman.checked ? 'transparent' : backgroundColorPickerHuman.value;
 
             try {
-                processBtn.disabled = true;
-                processBtn.textContent = 'Processing...';
+                processBtnHuman.disabled = true;
+                processBtnHuman.textContent = 'Processing...';
 
                 if (isSingleImage) {
                     const file = imageUploadHuman.files[0];
@@ -300,7 +304,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     const compressedBlob = await compressImage(file);
                     const base64Image = await blobToBase64(compressedBlob);
 
-                    processedImageContainer.innerHTML = `
+                    processedImageContainerHuman.innerHTML = `
                             <div class="processing-indicator">
                                 <div class="spinner-border text-primary" role="status">
                                 <span class="visually-hidden">Processing...</span>
@@ -318,10 +322,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     });
                 } else if (isFolderUpload) {
                     // Handle multiple images in folder upload
-                    const files = Array.from(folderUpload.files).filter(file => file.type.startsWith('image/'));
+                    const files = Array.from(folderUploadHuman.files).filter(file => file.type.startsWith('image/'));
                     if (files.length === 0) throw new Error('Please upload valid image files.');
 
-                    processedImageContainer.innerHTML = `
+                    processedImageContainerHuman.innerHTML = `
                                 <div class="processing-indicator">
                                     <div class="spinner-border text-primary" role="status">
                                     <span class="visually-hidden">Processing...</span>
@@ -343,8 +347,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         backgroundColor: backgroundColor
                     });
 
-                    processBtn.disabled = true;
-                    processBtn.textContent = 'Processing...';
+                    processBtnHuman.disabled = true;
+                    processBtnHuman.textContent = 'Processing...';
 
                 } else {
                     throw new Error('Please upload an image or select a folder of images.');
@@ -354,13 +358,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 message.textContent = error.message || 'An error occurred while processing the image(s)';
                 setTimeout(() => message.setAttribute("id", "hidden"), 2000);
             } finally {
-                processBtn.disabled = false;
-                processBtn.textContent = 'Remove Background';
+                processBtnHuman.disabled = false;
+                processBtnHuman.textContent = 'Remove Background';
             }
         });
 
         // Handle response for both single image and folder uploads
-        ipcRenderer.on('remove-background-result', (event, response) => {
+        ipcRenderer.on('remove-human-result', (event, response) => {
             if (response.success && response.images && response.images.length > 0) {
                 message.classList.add('pop-up', 'alert', 'alert-success');
                 message.textContent = response.message;
@@ -382,12 +386,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 message.textContent = response.message || 'Error processing images';
                 setTimeout(() => message.setAttribute("id", "hidden"), 2000);
             }
-            processBtn.disabled = false;
-            processBtn.textContent = 'Remove Human';
+            processBtnHuman.disabled = false;
+            processBtnHuman.textContent = 'Remove Human';
         });
 
-        useTransparent.addEventListener('change', (e) => {
-            backgroundColorPicker.disabled = e.target.checked;
+        useTransparentHuman.addEventListener('change', (e) => {
+            backgroundColorPickerHuman.disabled = e.target.checked;
         });
     }
 

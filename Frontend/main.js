@@ -490,6 +490,94 @@ ipcMain.on('remove-background', async (event, data) => {
 
 ipcMain.on('remove-human', async (event, data) => {
     requestQueue.push({ event, data });
+    const processNextInQueue = async () => {
+        if (isProcessing || requestQueue.length === 0) return;
+
+        isProcessing = true;
+        const { event, data } = requestQueue.shift();
+
+        try {
+            // Create form data and check if we're dealing with a single image or multiple images
+            const formData = new FormData();
+            const images = Array.isArray(data.images) ? data.images : [{ base64: data.imageBuffer, fileName: data.fileName }];
+            if (data.backgroundColor) {
+                formData.append('backgroundColor', data.backgroundColor);
+            }
+            // Check cache and add images to formData
+            const cacheResults = [];
+            let allCached = true;
+
+            for (let imageData of images) {
+                const cacheKey = imageData.base64 || imageData.imageBuffer;
+                if (processedCache.has(cacheKey)) {
+                    cacheResults.push(processedCache.get(cacheKey));
+                } else {
+                    allCached = false;
+                    const imageBuffer = Buffer.from(cacheKey, 'base64');
+                    formData.append('files', imageBuffer, {
+                        filename: imageData.fileName,
+                        contentType: 'image/png'
+                    });
+                }
+            }
+
+            // If all images were cached, return the cached results
+            if (allCached) {
+                event.reply("remove-background-result", {
+                    success: true,
+                    images: cacheResults,
+                    message: "Retrieved from cache",
+                });
+                return;
+            }
+
+            // If not cached, make request to backend
+            const response = await axios.post(
+                'http://localhost:3000/imageModel/remove-background',
+                formData,
+                {
+                    headers: {
+                        'Authorization': `Bearer ${data.token}`,
+                        ...formData.getHeaders()
+                    },
+                    maxContentLength: Infinity,
+                    maxBodyLength: Infinity
+                }
+            );
+
+            // Cache and reply with the response for each processed image
+            response.data.result.forEach((result, index) => {
+                const cacheKey = images[index].base64 || images[index].imageBuffer;
+                processedCache.set(cacheKey, result);
+                cacheResults.push(result);
+            });
+
+            // Limit cache size
+            if (processedCache.size > 50) {
+                const firstKey = processedCache.keys().next().value;
+                processedCache.delete(firstKey);
+            }
+
+            event.reply("remove-human-result", {
+                success: true,
+                images: cacheResults,
+                message: response.data.message,
+            });
+        } catch (error) {
+            event.reply('remove-human-result', {
+                success: false,
+                message: error.response?.data?.message || error.message
+            });
+        } finally {
+            isProcessing = false;
+            processNextInQueue();
+        }
+    }
+
+    ipcMain.on('remove-background', async (event, data) => {
+        requestQueue.push({ event, data });
+        processNextInQueue();
+    })
     processNextInQueue();
 });
 
