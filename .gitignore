@@ -7,3 +7,5 @@ Frontend/.env
 uploads
 
 services/uploads
+
+services/__pycache__
