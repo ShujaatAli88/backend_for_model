@@ -113,6 +113,7 @@ const upload = multer({
     }
 });
 
+// Controller for background removal of the picture
 router.post('/remove-background', protect, upload.array('files', MAX_FILES), async (req, res) => {
     try {
         console.log('Received files:', req.files);
@@ -126,7 +127,7 @@ router.post('/remove-background', protect, upload.array('files', MAX_FILES), asy
 
         const backgroundColor = req.body.backgroundColor
 
-        const result = await imageModelService.removeHuman(req.files, backgroundColor);
+        const result = await imageModelService.backgroundRemover(req.files, backgroundColor);
 
         return res.status(200).json({
             success: true,
@@ -143,6 +144,7 @@ router.post('/remove-background', protect, upload.array('files', MAX_FILES), asy
     }
 });
 
+// Controller for Human removal from the picture
 router.post('/remove-human', protect, upload.array('files', MAX_FILES), async (req, res) => {
     try {
         console.log('Received files:', req.files);
@@ -156,7 +158,9 @@ router.post('/remove-human', protect, upload.array('files', MAX_FILES), async (r
 
         const backgroundColor = req.body.backgroundColor
 
-        const result = await imageModelService.backgroundRemover(req.files, backgroundColor);
+        const result = await imageModelService.removeHuman(req.files, backgroundColor);
+
+        // console.log("Result: ", result)
 
         return res.status(200).json({
             success: true,

@@ -485,7 +485,9 @@ async function processNextInQueue() {
 
 ipcMain.on('remove-background', async (event, data) => {
     requestQueue.push({ event, data });
+    console.log("Started processing")
     processNextInQueue();
+    console.log("Ended processing")
 });
 
 ipcMain.on('remove-human', async (event, data) => {
@@ -533,7 +535,7 @@ ipcMain.on('remove-human', async (event, data) => {
 
             // If not cached, make request to backend
             const response = await axios.post(
-                'http://localhost:3000/imageModel/remove-background',
+                'http://localhost:3000/imageModel/remove-human',
                 formData,
                 {
                     headers: {
@@ -546,11 +548,13 @@ ipcMain.on('remove-human', async (event, data) => {
             );
 
             // Cache and reply with the response for each processed image
+
             response.data.result.forEach((result, index) => {
                 const cacheKey = images[index].base64 || images[index].imageBuffer;
                 processedCache.set(cacheKey, result);
                 cacheResults.push(result);
             });
+
 
             // Limit cache size
             if (processedCache.size > 50) {

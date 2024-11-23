@@ -337,8 +337,93 @@ const backgroundRemover = async (files, backgroundColor) => {
     return results;
 };
 
-const removeHuman = async (files) => {
+const removeHuman = async (files, backgroundColor) => {
+    if (!files?.length) throw new Error('No file found');
+    if (files.length > MAX_FILES) throw new Error(`Maximum ${MAX_FILES} files allowed`);
 
+    const uploadsDir = await ensureUploadsDirectory();
+
+    const processFile = async (file) => {
+        const fileExt = path.extname(file.originalname).toLowerCase();
+        if (!ALLOWED_TYPES.includes(fileExt)) {
+            throw new Error(`File type not allowed for ${file.originalname}`);
+        }
+
+        const inputFileName = `input_${uuidv4()}${fileExt}`;
+        const outputFileName = `output_${uuidv4()}.png`;
+        const inputFilePath = path.join(uploadsDir, inputFileName);
+        const outputFilePath = path.join(uploadsDir, outputFileName);
+
+        await fs.writeFile(inputFilePath, file.buffer);
+
+        try {
+            await new Promise((resolve, reject) => {
+                const pythonScript = path.join(__dirname, 'image_processing.py');
+                const pythonArgs = [
+                    pythonScript,
+                    inputFilePath,
+                    outputFilePath,
+                    backgroundColor
+                ];
+
+                const pythonProcess = spawn('python', pythonArgs, {
+                    stdio: ['pipe', 'pipe', 'pipe']
+                });
+
+                let errorOutput = '';
+
+                pythonProcess.stderr.on('data', (data) => {
+                    errorOutput += data.toString();
+                });
+
+                pythonProcess.on('error', (error) => {
+                    reject(new Error(`Failed to start Python process: ${error.message}`));
+                });
+
+                pythonProcess.on('close', (code) => {
+                    if (code === 0) {
+                        resolve();
+                    } else {
+                        reject(new Error(`Python process failed with code ${code}: ${errorOutput}`));
+                    }
+                });
+            });
+
+            const processedBuffer = await fs.readFile(outputFilePath);
+            const base64Image = `data:image/png;base64,${processedBuffer.toString('base64')}`;
+
+            // Cleanup files
+            await Promise.all([
+                fs.unlink(inputFilePath),
+                fs.unlink(outputFilePath)
+            ]).catch(console.error);
+
+            return {
+                filename: file.originalname,
+                base64: base64Image
+            };
+        } catch (error) {
+            // Ensure cleanup even on error
+            await Promise.all([
+                fs.unlink(inputFilePath),
+                fs.unlink(outputFilePath)
+            ]).catch(console.error);
+            throw error;
+        }
+    };
+
+    // Process files in parallel with concurrency limit
+    const concurrencyLimit = 3;
+    const results = await Promise.all(
+        files.map(async (file, index) => {
+            await new Promise(resolve =>
+                setTimeout(resolve, Math.floor(index / concurrencyLimit) * 100)
+            );
+            return processFile(file);
+        })
+    );
+
+    return results;
 }
 
 

@@ -369,7 +369,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 message.classList.add('pop-up', 'alert', 'alert-success');
                 message.textContent = response.message;
                 setTimeout(() => message.setAttribute("id", "hidden"), 2000);
-                displayResult(response.images);
+                displayResultHuman(response.images);
 
                 if (response.images.length > 1) {
                     document.getElementById("zip-btn").addEventListener("click", () => {
@@ -466,32 +466,6 @@ document.addEventListener('DOMContentLoaded', () => {
     //         processBtn.textContent = 'Remove Background';
     //     }
     // });
-
-    // // Handle response for both single image and folder uploads
-    // ipcRenderer.on('remove-background-result', (event, response) => {
-    //     if (response.success && response.images && response.images.length > 0) {
-    //         message.classList.add('pop-up', 'alert', 'alert-success');
-    //         message.textContent = response.message;
-    //         setTimeout(() => message.setAttribute("id", "hidden"), 2000);
-    //         displayResult(response.images);
-
-    //         if (response.images.length > 1) {
-    //             document.getElementById("zip-btn").addEventListener("click", () => {
-    //                 downloadZip(response.images);
-    //             });
-    //         } else {
-    //             const image = response.images[0];
-    //             document.getElementById("save-btn").addEventListener("click", () => {
-    //                 saveImage(image.filename, image.base64);
-    //             });
-    //         }
-    //     } else {
-    //         message.classList.add('pop-up', 'alert', 'alert-danger');
-    //         message.textContent = response.message || 'Error processing images';
-    //         setTimeout(() => message.setAttribute("id", "hidden"), 2000);
-    //     }
-    //     processBtn.disabled = false;
-    //     processBtn.textContent = 'Remove Background';
     // });
 
 
@@ -564,48 +538,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     //             reader.readAsArrayBuffer(compressedBlob);
     //             // Listen for the response
-    //             ipcRenderer.on('remove-background-result', (event, response) => {
-    //                 if (response.success && response.images && response.images.length > 0) {
-    //                     message.classList.add('pop-up', 'alert', 'alert-success');
-    //                     message.textContent = response.message;
-    //                     setTimeout(() => {
-    //                         // message.classList.add('hide');
-    //                         message.setAttribute("id", "hidden")
-    //                     }, 2000);
-    //                     displayResult(response.images);
-    //                     const image = response.images[0];
-    //                     document.getElementById("save-btn").addEventListener('click', () => { saveImage(image.filename, image.base64) })
-
-
-    //                 } else if (!response.success && (response.message === 'Not Authorized' || response.message === 'Not Authorized, No Token')) {
-    //                     message.classList.add('pop-up', 'alert', 'alert-danger');
-    //                     console.log('Error: ', response.message);
-    //                     message.textContent = response.message;
-    //                     setTimeout(() => {
-    //                         // message.classList.add('hide');
-    //                         message.setAttribute("id", "hidden")
-    //                     }, 2000);
-    //                     setTimeout(() => {
-    //                         window.location.href = 'dashboard.html';
-    //                     }, 3000);
-    //                 } else {
-    //                     message.classList.add('pop-up', 'alert', 'alert-danger');
-    //                     message.textContent = response.message || 'Error processing image';
-    //                     setTimeout(() => {
-    //                         // message.classList.add('hide');
-    //                         message.setAttribute("id", "hidden")
-    //                     }, 2000);
-    //                 }
-    //             });
-    //             // reader.readAsArrayBuffer(file);
-    //         } catch (error) {
-    //             message.classList.add('pop-up', 'alert', 'alert-danger');
-    //             message.textContent = error.message || 'An error occurred while processing the image';
-    //         } finally {
-    //             processBtn.disabled = false;
-    //             processBtn.textContent = 'Process Image';
-    //         }
-    //     });
     // }
 
     // if (folderUpload && folderUploadArea) {
@@ -692,28 +624,6 @@ document.addEventListener('DOMContentLoaded', () => {
     //         }
     //     });
 
-    //     // Handle the response
-    //     ipcRenderer.on('remove-background-result', (event, response) => {
-    //         if (response.success && response.images && response.images.length > 0) {
-    //             message.classList.add('pop-up', 'alert', 'alert-success');
-    //             message.textContent = response.message;
-    //             setTimeout(() => message.setAttribute("id", "hidden"), 2000);
-    //             displayResult(response.images);
-    //             // document.getElementById("save-btn").addEventListener("click", () => { saveImage(image.filename, image.base64) })
-    //             document.getElementById("zip-btn").addEventListener("click", () => { downloadZip(response.images) })
-
-    //         } else {
-    //             message.classList.add('pop-up', 'alert', 'alert-danger');
-    //             message.textContent = response.message || 'Error processing images';
-    //             setTimeout(() => message.setAttribute("id", "hidden"), 2000);
-    //         }
-    //         processBtn.disabled = false;
-    //         processBtn.textContent = 'Remove Background';
-    //     });
-    // }
-
-    // ---------------- Working code for handling single file upload -------------------
-
     // }
     // onclick="saveImage('${image.filename}', '${image.base64}')"
 
@@ -755,6 +665,46 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
 
             processedImageContainer.innerHTML = html;
+        }
+    }
+
+    function displayResultHuman(images) {
+        if (images.length === 1) {
+            // Single image display
+            const image = images[0];
+            processedImageContainerHuman.innerHTML = `
+                <h3>Processed Image:</h3>
+                <div class="processed-image-container">
+                <div class="img-container"></div>
+                    <img src="${image.base64}" alt="Processed Image" class="processed-image">
+                    <button class="btn btn-primary mt-2" id="save-btn" >
+                        Download Image
+                    </button>
+                </div>
+            `;
+        } else {
+            // Multiple images display
+            let html = `
+                <h3>Processed Images (${images.length}):</h3>
+                <div class="processed-images-grid">
+            `;
+
+            images.forEach(image => {
+                html += `
+                    <div class="processed-image-item">
+                        <img src="${image.base64}" alt="${image.filename}" class="processed-image">
+                    </div>
+                `;
+            });
+
+            html += `
+                </div>
+                <button class="btn btn-primary mt-3" id="zip-btn">
+                    Download All as ZIP
+                </button>
+            `;
+
+            processedImageContainerHuman.innerHTML = html;
         }
     }
 
