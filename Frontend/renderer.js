@@ -47,6 +47,24 @@ document.addEventListener('DOMContentLoaded', () => {
     const processedImageContainerHuman = document.getElementById('processed-image-container-human');
     const backgroundColorPickerHuman = document.getElementById('backgroundColorPickerHuman');
     const useTransparentHuman = document.getElementById('useTransparentHuman');
+    const navLinks = document.querySelectorAll(".nav-link a")
+
+    if (navLinks) {
+        for (let i = 0; i < navLinks.length; i++) {
+            navLinks[i].addEventListener("click", function (event) {
+                // Loop through all links
+                for (let j = 0; j < navLinks.length; j++) {
+                    // Remove 'active' class only from links that are not the clicked one
+                    if (navLinks[j] !== event.target) {
+                        navLinks[j].id = "";
+                    }
+                }
+
+                // Add 'active' class to the clicked link
+                event.target.id = "active";
+            });
+        }
+    }
 
     if ((uploadArea && imageUpload) || (folderUpload && folderUploadArea)) {
         // Handle image upload area click for single image
