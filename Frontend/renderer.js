@@ -86,6 +86,8 @@ document.addEventListener('DOMContentLoaded', () => {
         imageUpload.addEventListener('change', (event) => {
             const file = imageUpload.files[0];
             if (file) {
+                uploadedImageContainer.innerHTML = "";
+                processedImageContainer.innerHTML = "";
                 const reader = new FileReader();
                 reader.onload = (e) => {
                     uploadedImageContainer.innerHTML = `<h3>Original Image:</h3><img src="${e.target.result}" alt="Uploaded Image" class="translate images">`;
@@ -101,6 +103,8 @@ document.addEventListener('DOMContentLoaded', () => {
         folderUpload.addEventListener('change', (event) => {
             const files = Array.from(folderUpload.files);
             if (files.length > 0) {
+                uploadedImageContainer.innerHTML = "";
+                processedImageContainer.innerHTML = "";
                 const folderPath = files[0].webkitRelativePath;
                 const folderName = folderPath.split("/")[0];
                 let previewHTML = '<h3>Original Images:</h3><div class="image-preview-grid">';
@@ -203,7 +207,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 message.classList.add('pop-up', 'alert', 'alert-danger');
                 message.textContent = error.message || 'An error occurred while processing the image(s)';
                 setTimeout(() => message.setAttribute("id", "hidden"), 2000);
-            } finally {
                 processBtn.disabled = false;
                 processBtn.textContent = 'Remove Background';
             }
@@ -212,6 +215,8 @@ document.addEventListener('DOMContentLoaded', () => {
         // Handle response for both single image and folder uploads
         ipcRenderer.on('remove-background-result', (event, response) => {
             if (response.success && response.images && response.images.length > 0) {
+                processBtn.disabled = false;
+                processBtn.textContent = 'Remove Background';
                 message.classList.add('pop-up', 'alert', 'alert-success');
                 message.textContent = response.message;
                 setTimeout(() => message.setAttribute("id", "hidden"), 2000);
@@ -261,6 +266,8 @@ document.addEventListener('DOMContentLoaded', () => {
         imageUploadHuman.addEventListener('change', (event) => {
             const file = imageUploadHuman.files[0];
             if (file) {
+                uploadedImageContainerHuman.innerHTML = "";
+                processedImageContainerHuman.innerHTML = "";
                 const reader = new FileReader();
                 reader.onload = (e) => {
                     uploadedImageContainerHuman.innerHTML = `<h3>Original Image:</h3><img src="${e.target.result}" alt="Uploaded Image" class="translate images">`;
@@ -276,6 +283,8 @@ document.addEventListener('DOMContentLoaded', () => {
         folderUploadHuman.addEventListener('change', (event) => {
             const files = Array.from(folderUploadHuman.files);
             if (files.length > 0) {
+                uploadedImageContainerHuman.innerHTML = "";
+                processedImageContainerHuman.innerHTML = "";
                 const folderPath = files[0].webkitRelativePath;
                 const folderName = folderPath.split("/")[0];
                 let previewHTML = '<h3>Original Images:</h3><div class="image-preview-grid">';
@@ -375,15 +384,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 message.classList.add('pop-up', 'alert', 'alert-danger');
                 message.textContent = error.message || 'An error occurred while processing the image(s)';
                 setTimeout(() => message.setAttribute("id", "hidden"), 2000);
-            } finally {
                 processBtnHuman.disabled = false;
                 processBtnHuman.textContent = 'Remove Background';
             }
+            // finally {
+            //     processBtnHuman.disabled = false;
+            //     processBtnHuman.textContent = 'Remove Background';
+            // }
         });
 
         // Handle response for both single image and folder uploads
         ipcRenderer.on('remove-human-result', (event, response) => {
             if (response.success && response.images && response.images.length > 0) {
+                processBtnHuman.disabled = false;
+                processBtnHuman.textContent = 'Remove Background';
                 message.classList.add('pop-up', 'alert', 'alert-success');
                 message.textContent = response.message;
                 setTimeout(() => message.setAttribute("id", "hidden"), 2000);
