@@ -7,7 +7,6 @@ const Stripe = require("stripe")
 // const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
 const sendgrid = require('@sendgrid/mail')
 const dotenv = require('dotenv');
-// const dashboard = require('../Frontend/')
 
 dotenv.config();
 
@@ -70,8 +69,6 @@ async function sendVerificationCode(email, code) {
 
     console.log('Message sent: %s', info.messageId);
 }
-
-
 
 
 // regex to check for the correct email format
@@ -432,37 +429,6 @@ async function checkoutSession(body) {
 // create a stripe customer
 // }
 
-// async function checkoutSession(body) {
-//     const { paymentMethod, name, email, priceId } = body;
-
-//     const customer = await stripe.customers.create({
-//         name,
-//         email,
-//         payment_method: paymentMethod,
-//         invoice_settings: {
-//             default_payment_method: paymentMethod,
-//         },
-//     });
-
-//     const subscription = await stripe.subscriptions.create({
-//         customer: customer.id,
-//         items: [{ price: priceId }],
-//         payment_settings: {
-//             payment_method_options: {
-//                 card: {
-//                     request_three_d_secure: 'any',
-//                 },
-//             },
-//             payment_method_types: ['card'],
-//             save_default_payment_method: 'on_subscription',
-//         },
-//         expand: ['latest_invoice.payment_intent'],
-//     });
-//     return {
-//         clientSecret: subscription.latest_invoice.payment_intent.client_secret,
-//         subscriptionId: subscription.id,
-//     }
-// }
 
 module.exports =
     { registerUser, loginUser, verifyCode, resendVerificationCode, activateTrialPeriod, checkoutSession, createSubscription }
