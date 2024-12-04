@@ -49,6 +49,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const useTransparentHuman = document.getElementById('useTransparentHuman');
     const navLinks = document.querySelectorAll(".nav-link a")
 
+    // Variables for the dummy remover model
+    const folderUploadAreaDummy = document.getElementById('folder-upload-area-dummy')
+    const folderUploadDummy = document.getElementById('folder-upload-dummy')
+    const uploadAreaDummy = document.getElementById('upload-area-dummy');
+    const imageUploadDummy = document.getElementById('image-upload-dummy');
+    const uploadedImageContainerDummy = document.getElementById('uploaded-image-container-dummy');
+    const processBtnDummy = document.getElementById('process-btn-dummy');
+    const processedImageContainerDummy = document.getElementById('processed-image-container-dummy');
+    const backgroundColorPickerDummy = document.getElementById('backgroundColorPickerDummy');
+    const useTransparentDummy = document.getElementById('useTransparentDummy');
+
     // if (navLinks) {
     //     for (let i = 0; i < navLinks.length; i++) {
     //         navLinks[i].addEventListener("click", function (event) {
@@ -427,6 +438,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    if (uploadAreaDummy && imageUploadDummy || folderUploadAreaDummy && folderUploadDummy) { }
 
     // processBtn.addEventListener('click', async () => {
     //     const isSingleImage = imageUpload.files.length > 0;

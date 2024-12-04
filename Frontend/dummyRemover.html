@@ -195,13 +195,13 @@
             color: #262730;
         }
 
-        #uploaded-image-container-human {
+        #uploaded-image-container-dummy {
             border-radius: 8px;
             width: 200px;
             height: auto;
         }
 
-        #processed-image-container-human {
+        #processed-image-container-dummy {
             border-radius: 8px;
             width: 200px;
             height: auto;
@@ -248,7 +248,7 @@
             gap: 0.5rem;
         }
 
-        #backgroundColorPickerHuman {
+        #backgroundColorPickerDummy {
             padding: 0;
             width: 50px;
             height: 50px;
@@ -257,7 +257,7 @@
             cursor: pointer;
         }
 
-        #useTransparentHuman {
+        #useTransparentDummy {
             margin-right: 0.5rem;
         }
 
@@ -275,6 +275,11 @@
         .nav-link a {
             color: white;
             text-decoration: none;
+        }
+
+        .link:hover {
+            font-size: 1.05rem;
+            color: #1A1A1D;
         }
 
         #active {
@@ -298,9 +303,9 @@
         </a>
 
         <div class="nav-link">
-            <a href="dashboard.html">Background remover</a>
-            <a href="humanRemover.html">Human remover</a>
-            <a href="dummyRemover.html" id="active">Dummy remover</a>
+            <a href="dashboard.html" class="link">Background remover</a>
+            <a href="humanRemover.html" class="link">Human remover</a>
+            <a href="dummyRemover.html" id="active" class="link">Dummy remover</a>
         </div>
 
         <form id="logout">
@@ -313,16 +318,16 @@
             <h1 class="app-title">Dummy Remover</h1>
         </div>
 
-        <div class="upload-area my-2" id="upload-area-human">
+        <div class="upload-area my-2" id="upload-area-dummy">
             <p>Choose image or drag and drop here</p>
             <!-- <input type="file" id="image-upload" accept=".png,.jpg,.jpeg" multiple> -->
         </div>
 
-        <div class="upload-area my-2" id="folder-upload-area-human">
+        <div class="upload-area my-2" id="folder-upload-area-dummy">
             <p>Choose folder or drag and drop here</p>
         </div>
 
-        <button id="process-btn-human" class="processbtn" disabled>
+        <button id="process-btn-dummy" class="processbtn" disabled>
             Remove Dummy
         </button>
         <div class="color-picker-container"></div>
@@ -330,11 +335,11 @@
             <span>Background Color:</span>
         </div>
         <div class="color-picker-wrapper">
-            <input type="color" id="backgroundColorPickerHuman" value="#ffffff">
+            <input type="color" id="backgroundColorPickerDummy" value="#ffffff">
         </div>
         <div class="transparent-option">
-            <input type="checkbox" id="useTransparentHuman">
-            <label for="useTransparentHuman">Use transparent background</label>
+            <input type="checkbox" id="useTransparentDummy">
+            <label for="useTransparentDummy">Use transparent background</label>
         </div>
         <h5 id="fileName" class="my-2"> </h5>
         <div class="footer">
@@ -344,16 +349,16 @@
     <div class="main-content">
         <div class="image-grid">
             <div class="image-container">
-                <div id="uploaded-image-container-human"></div>
+                <div id="uploaded-image-container-dummy"></div>
             </div>
             <div class="image-container">
-                <div id="processed-image-container-human"></div>
+                <div id="processed-image-container-dummy"></div>
             </div>
         </div>
     </div>
 
-    <input type="file" id="image-upload-human" accept=".png,.jpg,.jpeg" hidden>
-    <input type="file" id="folder-upload-human" accept=".png,.jpg,.jpeg" hidden multiple webkitdirectory>
+    <input type="file" id="image-upload-dummy" accept=".png,.jpg,.jpeg" hidden>
+    <input type="file" id="folder-upload-dummy" accept=".png,.jpg,.jpeg" hidden multiple webkitdirectory>
     <!-- webkitdirectory -->
     <script src="renderer.js"></script>
 </body>
