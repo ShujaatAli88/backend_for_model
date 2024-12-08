@@ -633,7 +633,7 @@ ipcMain.on('remove-dummy', async (event, data) => {
 
             // If not cached, make request to backend
             const response = await axios.post(
-                'http://localhost:3000/imageModel/remove-dummy',
+                'http://localhost:5000/remove-dummy',
                 formData,
                 {
                     headers: {

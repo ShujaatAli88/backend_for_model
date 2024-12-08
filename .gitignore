@@ -9,3 +9,9 @@ uploads
 services/uploads
 
 services/__pycache__
+
+services/dummy_remover/.venv
+
+services/dummy_remover/weights
+
+services/dummy_remover/GroundingDINO
