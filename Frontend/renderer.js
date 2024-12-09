@@ -408,7 +408,7 @@ document.addEventListener('DOMContentLoaded', () => {
         ipcRenderer.on('remove-human-result', (event, response) => {
             if (response.success && response.images && response.images.length > 0) {
                 processBtnHuman.disabled = false;
-                processBtnHuman.textContent = 'Remove Background';
+                processBtnHuman.textContent = 'Remove Human';
                 message.classList.add('pop-up', 'alert', 'alert-success');
                 message.textContent = response.message;
                 setTimeout(() => message.setAttribute("id", "hidden"), 2000);
@@ -588,10 +588,11 @@ document.addEventListener('DOMContentLoaded', () => {
         ipcRenderer.on('remove-dummy-result', (event, response) => {
             if (response.success && response.images && response.images.length > 0) {
                 processBtnDummy.disabled = false;
-                processBtnDummy.textContent = 'Remove Background';
+                processBtnDummy.textContent = 'Remove Dummy';
                 message.classList.add('pop-up', 'alert', 'alert-success');
                 message.textContent = response.message;
                 setTimeout(() => message.setAttribute("id", "hidden"), 2000);
+                console.log(response.images)
                 displayResultDummy(response.images);
 
                 if (response.images.length > 1) {
@@ -931,19 +932,62 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function displayResultDummy(images) {
+        // if (images.length === 1) {
+        //     // Single image display
+        //     const image = images[0];
+        //     processedImageContainerDummy.innerHTML = `
+        //         <h3>Processed Image:</h3>
+        //         <div class="processed-image-container">
+        //         <div class="img-container"></div>
+        //             <img src="${image.base64}" alt="Processed Image" class="processed-image">
+        //             <button class="btn btn-primary mt-2" id="save-btn" >
+        //                 Download Image
+        //             </button>
+        //         </div>
+        //     `;
+        // } else {
+        //     // Multiple images display
+        //     let html = `
+        //         <h3>Processed Images (${images.length}):</h3>
+        //         <div class="processed-images-grid">
+        //     `;
+
+        //     images.forEach(image => {
+        //         html += `
+        //             <div class="processed-image-item">
+        //                 <img src="${image.base64}" alt="${image.filename}" class="processed-image">
+        //             </div>
+        //         `;
+        //     });
+
+        //     html += `
+        //         </div>
+        //         <button class="btn btn-primary mt-3" id="zip-btn">
+        //             Download All as ZIP
+        //         </button>
+        //     `;
+
+        //     processedImageContainerDummy.innerHTML = html;
+        // }
         if (images.length === 1) {
             // Single image display
             const image = images[0];
             processedImageContainerDummy.innerHTML = `
                 <h3>Processed Image:</h3>
                 <div class="processed-image-container">
-                <div class="img-container"></div>
-                    <img src="${image.base64}" alt="Processed Image" class="processed-image">
-                    <button class="btn btn-primary mt-2" id="save-btn" >
+                    <div class="img-container">
+                        <img src="data:image/png;base64,${image.processedImage}" alt="Processed Image" class="processed-image">
+                    </div>
+                    <button class="btn btn-primary mt-2" id="save-btn">
                         Download Image
                     </button>
                 </div>
             `;
+
+            // Add event listener for save button
+            document.getElementById('save-btn').addEventListener('click', () => {
+                saveImage(image.fileName, image.processedImage);
+            });
         } else {
             // Multiple images display
             let html = `
@@ -954,7 +998,7 @@ document.addEventListener('DOMContentLoaded', () => {
             images.forEach(image => {
                 html += `
                     <div class="processed-image-item">
-                        <img src="${image.base64}" alt="${image.filename}" class="processed-image">
+                        <img src="data:image/png;base64,${image.processedImage}" alt="${image.fileName}" class="processed-image">
                     </div>
                 `;
             });

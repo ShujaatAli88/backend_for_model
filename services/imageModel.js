@@ -4,6 +4,7 @@ const fs = require('fs').promises;
 const { v4: uuidv4 } = require('uuid');
 const sharp = require('sharp');
 
+
 // async function backgroundRemover(files) {
 //     if (!files || files.length === 0) {
 //         throw new Error("No file found, Please upload a file");
@@ -449,15 +450,17 @@ const dummyRemover = async (files, backgroundColor) => {
 
         try {
             await new Promise((resolve, reject) => {
+                const pythonEnv = path.join(__dirname, './dummy_remover/.venv', process.platform === 'win32' ? 'Scripts' : 'bin', 'python');
+                // const pythonEnv = path.join(__dirname, './dummy_remover/.venv', 'bin', 'python');
                 const pythonScript = path.join(__dirname, './dummy_remover/dummyRemover.py');
                 const pythonArgs = [
                     pythonScript,
                     inputFilePath,
                     outputFilePath,
-                    // backgroundColor
+                    backgroundColor
                 ];
 
-                const pythonProcess = spawn('python', pythonArgs, {
+                const pythonProcess = spawn(pythonEnv, pythonArgs, {
                     stdio: ['pipe', 'pipe', 'pipe']
                 });
 

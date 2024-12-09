@@ -13,7 +13,8 @@ from segment_anything import sam_model_registry, SamPredictor
 
 
 # Set HOME directory
-HOME = os.getcwd()
+# HOME = os.getcwd()
+HOME = os.path.dirname(os.path.abspath(__file__))
 print("HOME:", HOME)
 
 # Define repository details
@@ -357,134 +358,155 @@ def process_folder(input_folder, resized_folder, masks_folder, output_folder):
                                mask_image_path, output_folder)
 
 
+# def main():
+#     # Define folder paths (now relative to current directory)
+#     input_folder = "input_folder"        # Replace with your input folder path
+#     resized_folder = "./resized_images"  # Relative folder path
+#     masks_folder = "./masks"             # Relative folder path
+#     output_folder = "./output_images"    # Relative folder path
+
+#     # Ensure directories are created and processed
+#     process_folder(input_folder, resized_folder, masks_folder, output_folder)
+
+
+
+    
+def process_image(input_path, output_path, background_color=None):
+    """
+    Process a single image to remove mannequin
+
+    Args:
+        input_path (str): Path to input image
+        output_path (str): Path to save output image
+        background_color (list, optional): Background color in RGB. Defaults to white.
+
+    Returns:
+        str: Path to output image
+    """
+    # Initialize remover
+    remover = ImprovedMannequinRemover()
+
+    # Read image
+    original_image = cv2.imread(input_path)
+    if original_image is None:
+        raise ValueError(f"Could not read image at {input_path}")
+
+    # Convert to RGB
+    original_image = cv2.cvtColor(original_image, cv2.COLOR_BGR2RGB)
+
+    # Resize and pad
+    resized_image = remover.resize_image(original_image)
+    padded_image = remover.pad_image(resized_image)
+
+    # Create mask
+    mask = remover.create_refined_mask(padded_image)
+
+    # Apply inverse mask
+    result = apply_inverse_mask(padded_image, mask, background_color)
+
+    # Save result
+    cv2.imwrite(output_path, cv2.cvtColor(result, cv2.COLOR_RGB2BGR))
+    return output_path
+
+
+def process_input(input_path, output_path, background_color=None):
+    """
+    Process either a single image or a folder of images
+
+    Args:
+        input_path (str): Path to input image or folder
+        output_path (str): Path to save output image or folder
+        background_color (list, optional): Background color in RGB
+
+    Returns:
+        dict: Processing results
+    """
+    # Ensure output directory exists
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+
+    # Check if input is a directory or file
+    if os.path.isdir(input_path):
+        results = []
+        for filename in os.listdir(input_path):
+            if filename.lower().endswith(('.png', '.jpg', '.jpeg')):
+                input_file = os.path.join(input_path, filename)
+                output_file = os.path.join(
+                    output_path, f"processed_{filename}")
+
+                try:
+                    processed_path = process_image(
+                        input_file, output_file, background_color)
+                    
+                    # if background_color and background_color != 'transparent':
+                    #     # Convert hex color to RGB
+                    #     if background_color.startswith('#'):
+                    #         background_color = background_color[1:]
+                    #         r = int(background_color[:2], 16)
+                    #         g = int(background_color[2:4], 16)
+                    #         b = int(background_color[4:], 16)
+
+                    #         # Create a new image with the background color
+                    #         background = Image.new('RGBA', img.size, (r, g, b, 255))
+                    #         # Paste the processed image onto the background
+                    #         background.paste(img, mask=img)
+                    #         img = background
+
+                    #         # Save the result
+                    #     img.save(output_path, 'PNG')
+                    results.append({
+                        'input': input_file,
+                        'output': processed_path
+                    })
+                except Exception as e:
+                    results.append({
+                        'input': input_file,
+                        'error': str(e)
+                    })
+        
+        return results
+    else:
+        # Single image processing
+        processed_path = process_image(
+            input_path, output_path, background_color)
+        return {
+            'input': input_path,
+            'output': processed_path
+        }
+
+
 def main():
-    # Define folder paths (now relative to current directory)
-    input_folder = "input_folder"        # Replace with your input folder path
-    resized_folder = "./resized_images"  # Relative folder path
-    masks_folder = "./masks"             # Relative folder path
-    output_folder = "./output_images"    # Relative folder path
+    # Expect command-line arguments
+    if len(sys.argv) < 3:
+        print(json.dumps({
+            'error': 'Usage: python script.py <input_path> <output_path> [background_color]'
+        }))
+        sys.exit(1)
 
-    # Ensure directories are created and processed
-    process_folder(input_folder, resized_folder, masks_folder, output_folder)
+    input_path = sys.argv[1]
+    output_path = sys.argv[2]
 
+    # Parse background color if provided
+    background_color = None
+    if len(sys.argv) > 3:
+        try:
+            # Convert string representation of list to actual list
+            background_color = ast.literal_eval(sys.argv[3])
+        except (ValueError, SyntaxError):
+            print(json.dumps({
+                'error': 'Invalid background color format. Use format like [255,255,255]'
+            }))
+            sys.exit(1)
+
+    try:
+        # Process input and output results as JSON
+        result = process_input(input_path, output_path, background_color)
+        print(json.dumps(result))
+        return result
+    except Exception as e:
+        print(json.dumps({
+            'error': str(e)
+        }))
+        sys.exit(1)
 
 if __name__ == "__main__":
     main()
-# def process_image(input_path, output_path, background_color=None):
-#     """
-#     Process a single image to remove mannequin
-
-#     Args:
-#         input_path (str): Path to input image
-#         output_path (str): Path to save output image
-#         background_color (list, optional): Background color in RGB. Defaults to white.
-
-#     Returns:
-#         str: Path to output image
-#     """
-#     # Initialize remover
-#     remover = ImprovedMannequinRemover()
-
-#     # Read image
-#     original_image = cv2.imread(input_path)
-#     if original_image is None:
-#         raise ValueError(f"Could not read image at {input_path}")
-
-#     # Convert to RGB
-#     original_image = cv2.cvtColor(original_image, cv2.COLOR_BGR2RGB)
-
-#     # Resize and pad
-#     resized_image = remover.resize_image(original_image)
-#     padded_image = remover.pad_image(resized_image)
-
-#     # Create mask
-#     mask = remover.create_refined_mask(padded_image)
-
-#     # Apply inverse mask
-#     result = apply_inverse_mask(padded_image, mask, background_color)
-
-#     # Save result
-#     cv2.imwrite(output_path, cv2.cvtColor(result, cv2.COLOR_RGB2BGR))
-#     return output_path
-
-
-# def process_input(input_path, output_path, background_color=None):
-#     """
-#     Process either a single image or a folder of images
-
-#     Args:
-#         input_path (str): Path to input image or folder
-#         output_path (str): Path to save output image or folder
-#         background_color (list, optional): Background color in RGB
-
-#     Returns:
-#         dict: Processing results
-#     """
-#     # Ensure output directory exists
-#     os.makedirs(os.path.dirname(output_path), exist_ok=True)
-
-#     # Check if input is a directory or file
-#     if os.path.isdir(input_path):
-#         results = []
-#         for filename in os.listdir(input_path):
-#             if filename.lower().endswith(('.png', '.jpg', '.jpeg')):
-#                 input_file = os.path.join(input_path, filename)
-#                 output_file = os.path.join(
-#                     output_path, f"processed_{filename}")
-
-#                 try:
-#                     processed_path = process_image(
-#                         input_file, output_file, background_color)
-#                     results.append({
-#                         'input': input_file,
-#                         'output': processed_path
-#                     })
-#                 except Exception as e:
-#                     results.append({
-#                         'input': input_file,
-#                         'error': str(e)
-#                     })
-#         return results
-#     else:
-#         # Single image processing
-#         processed_path = process_image(
-#             input_path, output_path, background_color)
-#         return {
-#             'input': input_path,
-#             'output': processed_path
-#         }
-
-
-# def main():
-#     # Expect command-line arguments
-#     if len(sys.argv) < 3:
-#         print(json.dumps({
-#             'error': 'Usage: python script.py <input_path> <output_path> [background_color]'
-#         }))
-#         sys.exit(1)
-
-#     input_path = sys.argv[1]
-#     output_path = sys.argv[2]
-
-#     # Parse background color if provided
-#     background_color = None
-#     if len(sys.argv) > 3:
-#         try:
-#             # Convert string representation of list to actual list
-#             background_color = ast.literal_eval(sys.argv[3])
-#         except (ValueError, SyntaxError):
-#             print(json.dumps({
-#                 'error': 'Invalid background color format. Use format like [255,255,255]'
-#             }))
-#             sys.exit(1)
-
-#     try:
-#         # Process input and output results as JSON
-#         result = process_input(input_path, output_path, background_color)
-#         print(json.dumps(result))
-#         return result
-#     except Exception as e:
-#         print(json.dumps({
-#             'error': str(e)
-#         }))
-#         sys.exit(1)
