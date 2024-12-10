@@ -596,14 +596,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 displayResultDummy(response.images);
 
                 if (response.images.length > 1) {
-                    document.getElementById("zip-btn").addEventListener("click", () => {
-                        downloadZip(response.images);
-                    });
+                    // document.getElementById("zip-btn").addEventListener("click", () => {
+                    //     downloadZip(response.images);
+                    // });
                 } else {
                     const image = response.images[0];
-                    document.getElementById("save-btn").addEventListener("click", () => {
-                        saveImage(image.filename, image.base64);
-                    });
+                    // document.getElementById("save-btn").addEventListener("click", () => {
+                    //     saveImage(image.originalFileName, image.base64);
+                    // });
                 }
             } else {
                 message.classList.add('pop-up', 'alert', 'alert-danger');
@@ -932,43 +932,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function displayResultDummy(images) {
-        // if (images.length === 1) {
-        //     // Single image display
-        //     const image = images[0];
-        //     processedImageContainerDummy.innerHTML = `
-        //         <h3>Processed Image:</h3>
-        //         <div class="processed-image-container">
-        //         <div class="img-container"></div>
-        //             <img src="${image.base64}" alt="Processed Image" class="processed-image">
-        //             <button class="btn btn-primary mt-2" id="save-btn" >
-        //                 Download Image
-        //             </button>
-        //         </div>
-        //     `;
-        // } else {
-        //     // Multiple images display
-        //     let html = `
-        //         <h3>Processed Images (${images.length}):</h3>
-        //         <div class="processed-images-grid">
-        //     `;
-
-        //     images.forEach(image => {
-        //         html += `
-        //             <div class="processed-image-item">
-        //                 <img src="${image.base64}" alt="${image.filename}" class="processed-image">
-        //             </div>
-        //         `;
-        //     });
-
-        //     html += `
-        //         </div>
-        //         <button class="btn btn-primary mt-3" id="zip-btn">
-        //             Download All as ZIP
-        //         </button>
-        //     `;
-
-        //     processedImageContainerDummy.innerHTML = html;
-        // }
         if (images.length === 1) {
             // Single image display
             const image = images[0];
@@ -986,7 +949,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Add event listener for save button
             document.getElementById('save-btn').addEventListener('click', () => {
-                saveImage(image.fileName, image.processedImage);
+                saveImageDummy(image.fileName, image.processedImage);
             });
         } else {
             // Multiple images display
@@ -1009,8 +972,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     Download All as ZIP
                 </button>
             `;
-
             processedImageContainerDummy.innerHTML = html;
+
+            document.getElementById("zip-btn").addEventListener("click", () => {
+                downloadZipDummy(images);
+            });
         }
     }
 
@@ -1054,6 +1020,23 @@ document.addEventListener('DOMContentLoaded', () => {
         images.forEach((image) => {
             const base64Data = image.base64.replace(/^data:image\/(png|jpg|jpeg);base64,/, "");
             zip.file(`processed_${image.filename}`, base64Data, { base64: true });
+        });
+
+        const content = await zip.generateAsync({ type: "blob" });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(content);
+        link.download = 'processed_images.zip';
+        document.body.appendChild(link);
+        link.click();
+        // document.body.removeChild(link);
+    }
+
+    async function downloadZipDummy(images) {
+        const zip = new JSZip();
+
+        images.forEach((image) => {
+            // const base64Data = image.base64.replace(/^data:image\/(png|jpg|jpeg);base64,/, "");
+            zip.file(`processed_${image.fileName}`, image.processedImage, { base64: true });
         });
 
         const content = await zip.generateAsync({ type: "blob" });
@@ -1336,6 +1319,15 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.removeChild(link);
     }
 
+
+    function saveImageDummy(filename, base64Data) {
+        const link = document.createElement('a');
+        link.href = `data:image/png;base64,${base64Data}`;
+        link.download = `processed_${filename}`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
 
     // async function downloadZip(images) {
     //     const zip = new JSZip();
