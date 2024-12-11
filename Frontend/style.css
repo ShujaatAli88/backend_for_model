@@ -218,6 +218,33 @@ a:hover {
     }
 }
 
+.messageContainer {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+#message {
+    position: absolute;
+    display: flex;
+    background-color: rgb(120, 6, 228);
+    color: white;
+    padding: 10px;
+    width: auto;
+    height: auto;
+    border-radius: 10px;
+    justify-content: center;
+    font-weight: bolder;
+    font-size: 1rem;
+    visibility: hidden;
+}
+
+#message:hover {
+    background-color: white;
+    color: rgb(120, 6, 228);
+    border: 1px solid rgb(120, 6, 228);
+}
+
 /* body {
     display: flex;
     justify-content: center;

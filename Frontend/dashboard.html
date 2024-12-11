@@ -24,6 +24,7 @@
         }
 
         .navbar {
+            position: fixed;
             background: linear-gradient(to right, #3a7bd5, #3a6073);
             position: fixed;
             top: 0;
@@ -287,11 +288,40 @@
             font-size: 1.025rem;
             color: #1A1A1D !important;
         }
+
+        .messageContainer {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+            z-index: 2000;
+        }
+
+        /* #message {
+            position: fixed;
+            display: flex;
+            background-color: rgb(120, 6, 228);
+            color: white;
+            padding: 10px;
+            width: auto;
+            height: auto;
+            border-radius: 10px;
+            justify-content: center;
+            font-weight: bolder;
+            font-size: 1rem;
+            visibility: hidden;
+        }
+
+        #message:hover {
+            background-color: white;
+            color: rgb(120, 6, 228);
+            border: 1px solid rgb(120, 6, 228);
+        } */
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js"></script>
 </head>
 
 <body>
+
     <!-- <div id="message"></div> -->
     <div class="row align-items-center justify-content-center h-auto g-0 px-4 mx-2 px-sm-0 w-100">
         <p id="message"></p>
@@ -312,6 +342,10 @@
             <button type="submit" class="btn btn-primary">Logout</button>
         </form>
     </div>
+
+    <!-- <div class="messageContainer">
+        <p id="message"></p>
+    </div> -->
 
     <div class="sidebar">
         <div class="app-header">

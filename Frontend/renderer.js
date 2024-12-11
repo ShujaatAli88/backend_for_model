@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const resendVerifyForm = document.getElementById('resendVerifyForm');
     const logout = document.getElementById('logout');
     const message = document.getElementById('message');
+    const messageContainer = document.getElementsByClassName("messageContainer")
     const freeTrial = document.getElementById('freeTrial');
     const monthlySub = document.getElementById('monthlySub');
     const upgrade = document.getElementById('upgrade');
@@ -215,9 +216,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     throw new Error('Please upload an image or select a folder of images.');
                 }
             } catch (error) {
-                message.classList.add('pop-up', 'alert', 'alert-danger');
+                // message.classList.add('pop-up', 'alert', 'alert-danger');
                 message.textContent = error.message || 'An error occurred while processing the image(s)';
-                setTimeout(() => message.setAttribute("id", "hidden"), 2000);
+                setTimeout(() => message.style.visibility = "visible", 2000);
                 processBtn.disabled = false;
                 processBtn.textContent = 'Remove Background';
             }
@@ -1263,22 +1264,6 @@ document.addEventListener('DOMContentLoaded', () => {
     //     });
     // }
 
-    // Modified display result function
-    // function displayResult(images) {
-    //     if (Array.isArray(images) && images.length > 0) {
-    //         const image = images[0];
-    //         processedImageContainer.innerHTML = `
-    //         <div class="img-container">
-    //             <h3>Processed Image:</h3>
-    //             <img src="${image.base64}" alt="Processed Image"  class="translate images" onclick="saveImage('${image.filename}', '${image.base64}')">
-    //             <button class="btn btn-primary mt-2" id="save-btn" >
-    //                 Save Image
-    //             </button>
-    //         </div>
-    //     `;
-    //     }
-    // }
-
     // function displayResult(images) {
     //     processedImageContainer.innerHTML = '';
 
@@ -1556,7 +1541,8 @@ document.addEventListener('DOMContentLoaded', () => {
         ipcRenderer.on('login-response', (event, response) => {
 
             if (response.success) {
-                message.classList.add('pop-up', 'alert', 'alert-primary');
+                // message.classList.add('pop-up', 'alert', 'alert-primary');
+                message.style.visibility = "visible"
                 message.textContent = response.message;
                 if (!response.isVerified) {
                     localStorage.setItem('authToken', response.token);
@@ -1602,7 +1588,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
             else if (!response.success) {
-                message.classList.add('pop-up', 'alert', 'alert-danger');
+                // message.classList.add('pop-up', 'alert', 'alert-danger');
                 message.textContent = response.message;
                 if (response.message === 'Your trial period has expired.' || response.message === 'Your subscription period has expired.') {
                     localStorage.setItem('authToken', response.token);
@@ -1613,11 +1599,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 else {
                     setTimeout(() => {
-                        message.classList.add('hide');
+                        // message.classList.add("messageContainer")
+                        message.style.visibility = "visible"
                     }, 2000);
                     setTimeout(() => {
                         window.location.href = 'login.html';
-                    }, 1000)
+                    }, 3000)
                 }
             }
         });
@@ -1636,7 +1623,8 @@ document.addEventListener('DOMContentLoaded', () => {
         ipcRenderer.on('register-response', (event, response) => {
             // message.textContent = response.message;
             if (response.success) {
-                message.classList.add('pop-up', 'alert', 'alert-primary');
+                // message.classList.add('pop-up', 'alert', 'alert-primary');
+                message.style.visibility = "visible"
                 message.textContent = response.message;
                 localStorage.setItem('authToken', response.token);
                 localStorage.setItem('userEmail', response.email);
@@ -1646,14 +1634,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
             }
             else if (!response.success) {
-                message.classList.add('pop-up', 'alert', 'alert-danger');
+                // message.classList.add('pop-up', 'alert', 'alert-danger');
                 message.textContent = response.message;
                 setTimeout(() => {
-                    message.classList.add('hide');
+                    message.style.visibility = "visible"
                 }, 2000);
                 setTimeout(() => {
                     window.location.href = 'register.html';
-                }, 1000)
+                }, 3000)
             }
         })
     }
@@ -1671,7 +1659,8 @@ document.addEventListener('DOMContentLoaded', () => {
         ipcRenderer.on('verify-code-response', (event, response) => {
             // message.textContent = response.message;
             if (response.success) {
-                message.classList.add('pop-up', 'alert', 'alert-primary');
+                // message.classList.add('pop-up', 'alert', 'alert-primary');
+                message.style.visibility = "visible"
                 message.textContent = response.message;
                 localStorage.setItem('authToken', response.token);
                 localStorage.setItem('userEmail', response.email);
@@ -1679,15 +1668,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 setTimeout("window.location.href = 'subscription.html';", 3000);
             }
             else if (!response.success && response.message === 'Not Authorized' || 'Not Authorized, No Token') {
-                message.classList.add('pop-up', 'alert', 'alert-danger');
+                // message.classList.add('pop-up', 'alert', 'alert-danger');
+                message.style.visibility = "visible"
                 message.textContent = response.message;
                 setTimeout("window.location.href = 'login.html';", 3000);
             }
-            else if (response.succes) {
-                message.classList.add('pop-up', 'alert', 'alert-danger');
+            else if (!response.succes) {
+                // message.classList.add('pop-up', 'alert', 'alert-danger');
                 message.textContent = response.message;
                 setTimeout(() => {
-                    message.classList.add('hide');
+                    // message.classList.add('hide');
+                    message.style.visibility = "visible"
                 }, 2000);
                 setTimeout(() => {
                     window.location.href = 'verify.html';
@@ -1712,7 +1703,8 @@ document.addEventListener('DOMContentLoaded', () => {
             // message.textContent = response.message;
 
             if (response.success) {
-                message.classList.add('pop-up', 'alert', 'alert-primary');
+                // message.classList.add('pop-up', 'alert', 'alert-primary');
+                message.style.visibility = "visible"
                 message.textContent = response.message;
                 // localStorage.setItem('authToken', response.token);
                 // localStorage.setItem('userEmail', response.email);
@@ -1720,7 +1712,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 setTimeout("window.location.href = 'verify.html';", 3000);
             }
             else if (!response.success && response.message === 'Not Authorized' || 'Not Authorized, No Token') {
-                message.classList.add('pop-up', 'alert', 'alert-danger');
+                // message.classList.add('pop-up', 'alert', 'alert-danger');
+                message.style.visibility = "visible"
                 message.textContent = response.message;
                 setTimeout("window.location.href = 'login.html';", 3000);
             }
@@ -1728,10 +1721,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 // message.classList.add('pop-up', 'alert', 'alert-danger');
                 // message.textContent = response.message;
                 // setTimeout("window.location.href = 'login.html';", 3000);
-                message.classList.add('pop-up', 'alert', 'alert-danger');
+                // message.classList.add('pop-up', 'alert', 'alert-danger');
                 message.textContent = response.message;
                 setTimeout(() => {
-                    message.classList.add('hide');
+                    // message.classList.add('hide');
+                    message.style.visibility = "visible"
                 }, 2000);
                 setTimeout(() => {
                     window.location.href = 'resendverify.html';
@@ -1743,14 +1737,15 @@ document.addEventListener('DOMContentLoaded', () => {
         logout.addEventListener('submit', (e) => {
             e.preventDefault();
             localStorage.clear();
-            message.classList.add('pop-up', 'alert', 'alert-danger');
+            // message.classList.add('pop-up', 'alert', 'alert-danger');
             message.textContent = "Logout SuccessFul";
             setTimeout(() => {
-                message.classList.add('hide');
+                // message.classList.add('hide');
+                message.style.visibility = "visible"
             }, 2000);
             setTimeout(() => {
                 window.location.href = 'http://localhost:3000/api/login';
-            }, 1000)
+            }, 3000)
         })
     }
 
@@ -1766,7 +1761,8 @@ document.addEventListener('DOMContentLoaded', () => {
         ipcRenderer.on('activate-trial', (event, response) => {
             // message.textContent = response.message;
             if (response.success) {
-                message.classList.add('pop-up', 'alert', 'alert-primary');
+                // message.classList.add('pop-up', 'alert', 'alert-primary');
+                message.style.visibility = "visible"
                 message.textContent = response.message;
 
                 // localStorage.setItem('authToken', response.token);
@@ -1777,14 +1773,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
             }
             else if (!response.success) {
-                message.classList.add('pop-up', 'alert', 'alert-danger');
+                // message.classList.add('pop-up', 'alert', 'alert-danger');
                 message.textContent = response.message;
                 setTimeout(() => {
-                    message.classList.add('hide');
+                    // message.classList.add('hide');
+                    message.style.visibility = "visible"
                 }, 2000);
                 setTimeout(() => {
                     window.location.href = 'subscription.html';
-                }, 1000)
+                }, 3000)
             }
         })
     }
