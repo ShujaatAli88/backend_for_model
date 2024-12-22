@@ -270,6 +270,183 @@ async function activateTrialPeriod(body) {
     return { message: "Trial period activated" };
 }
 
+// Function to handle the stripe events from the webhook
+async function stripeEventsHandler(event) {
+    switch (event.type) {
+        case 'charge.captured':
+            const chargeCaptured = event.data.object;
+            // Then define and call a function to handle the event charge.captured
+            break;
+        case 'charge.expired':
+            const chargeExpired = event.data.object;
+            // Then define and call a function to handle the event charge.expired
+            break;
+        case 'charge.failed':
+            const chargeFailed = event.data.object;
+            // Then define and call a function to handle the event charge.failed
+            break;
+        case 'charge.pending':
+            const chargePending = event.data.object;
+            // Then define and call a function to handle the event charge.pending
+            break;
+        case 'charge.refunded':
+            const chargeRefunded = event.data.object;
+            // Then define and call a function to handle the event charge.refunded
+            break;
+        case 'charge.succeeded':
+            const chargeSucceeded = event.data.object;
+            // Then define and call a function to handle the event charge.succeeded
+            break;
+        case 'charge.dispute.closed':
+            const chargeDisputeClosed = event.data.object;
+            // Then define and call a function to handle the event charge.dispute.closed
+            break;
+        case 'charge.dispute.created':
+            const chargeDisputeCreated = event.data.object;
+            // Then define and call a function to handle the event charge.dispute.created
+            break;
+        case 'charge.dispute.funds_reinstated':
+            const chargeDisputeFundsReinstated = event.data.object;
+            // Then define and call a function to handle the event charge.dispute.funds_reinstated
+            break;
+        case 'charge.dispute.funds_withdrawn':
+            const chargeDisputeFundsWithdrawn = event.data.object;
+            // Then define and call a function to handle the event charge.dispute.funds_withdrawn
+            break;
+        case 'checkout.session.async_payment_failed':
+            const checkoutSessionAsyncPaymentFailed = event.data.object;
+            // Then define and call a function to handle the event checkout.session.async_payment_failed
+            break;
+        case 'checkout.session.async_payment_succeeded':
+            const checkoutSessionAsyncPaymentSucceeded = event.data.object;
+            // Then define and call a function to handle the event checkout.session.async_payment_succeeded
+            break;
+        case 'checkout.session.completed':
+            const checkoutSessionCompleted = event.data.object;
+            // Then define and call a function to handle the event checkout.session.completed
+            break;
+        case 'checkout.session.expired':
+            const checkoutSessionExpired = event.data.object;
+            // Then define and call a function to handle the event checkout.session.expired
+            break;
+        case 'customer.created':
+            const customerCreated = event.data.object;
+            // Then define and call a function to handle the event customer.created
+            break;
+        case 'customer.source.expiring':
+            const customerSourceExpiring = event.data.object;
+            // Then define and call a function to handle the event customer.source.expiring
+            break;
+        case 'customer.subscription.created':
+            const customerSubscriptionCreated = event.data.object;
+            // Then define and call a function to handle the event customer.subscription.created
+            break;
+        case 'customer.subscription.deleted':
+            const customerSubscriptionDeleted = event.data.object;
+            // Then define and call a function to handle the event customer.subscription.deleted
+            break;
+        case 'customer.subscription.paused':
+            const customerSubscriptionPaused = event.data.object;
+            // Then define and call a function to handle the event customer.subscription.paused
+            break;
+        case 'customer.subscription.pending_update_applied':
+            const customerSubscriptionPendingUpdateApplied = event.data.object;
+            // Then define and call a function to handle the event customer.subscription.pending_update_applied
+            break;
+        case 'customer.subscription.pending_update_expired':
+            const customerSubscriptionPendingUpdateExpired = event.data.object;
+            // Then define and call a function to handle the event customer.subscription.pending_update_expired
+            break;
+        case 'customer.subscription.resumed':
+            const customerSubscriptionResumed = event.data.object;
+            // Then define and call a function to handle the event customer.subscription.resumed
+            break;
+        case 'customer.subscription.updated':
+            const customerSubscriptionUpdated = event.data.object;
+            // Then define and call a function to handle the event customer.subscription.updated
+            break;
+        case 'invoice.created':
+            const invoiceCreated = event.data.object;
+            // Then define and call a function to handle the event invoice.created
+            break;
+        case 'invoice.overdue':
+            const invoiceOverdue = event.data.object;
+            // Then define and call a function to handle the event invoice.overdue
+            break;
+        case 'invoice.paid':
+            const invoicePaid = event.data.object;
+            // Then define and call a function to handle the event invoice.paid
+            break;
+        case 'invoice.payment_action_required':
+            const invoicePaymentActionRequired = event.data.object;
+            // Then define and call a function to handle the event invoice.payment_action_required
+            break;
+        case 'invoice.payment_failed':
+            const invoicePaymentFailed = event.data.object;
+            // Then define and call a function to handle the event invoice.payment_failed
+            break;
+        case 'invoice.payment_succeeded':
+            const invoicePaymentSucceeded = event.data.object;
+            // Then define and call a function to handle the event invoice.payment_succeeded
+            break;
+        case 'invoice.sent':
+            const invoiceSent = event.data.object;
+            // Then define and call a function to handle the event invoice.sent
+            break;
+        case 'invoice.will_be_due':
+            const invoiceWillBeDue = event.data.object;
+            // Then define and call a function to handle the event invoice.will_be_due
+            break;
+        case 'payment_link.created':
+            const paymentLinkCreated = event.data.object;
+            // Then define and call a function to handle the event payment_link.created
+            break;
+        case 'payment_method.attached':
+            const paymentMethodAttached = event.data.object;
+            // Then define and call a function to handle the event payment_method.attached
+            break;
+        case 'payment_method.automatically_updated':
+            const paymentMethodAutomaticallyUpdated = event.data.object;
+            // Then define and call a function to handle the event payment_method.automatically_updated
+            break;
+        case 'payment_method.updated':
+            const paymentMethodUpdated = event.data.object;
+            // Then define and call a function to handle the event payment_method.updated
+            break;
+        case 'plan.updated':
+            const planUpdated = event.data.object;
+            // Then define and call a function to handle the event plan.updated
+            break;
+        case 'price.updated':
+            const priceUpdated = event.data.object;
+            // Then define and call a function to handle the event price.updated
+            break;
+        case 'product.created':
+            const productCreated = event.data.object;
+            // Then define and call a function to handle the event product.created
+            break;
+        case 'product.updated':
+            const productUpdated = event.data.object;
+            // Then define and call a function to handle the event product.updated
+            break;
+        case 'refund.created':
+            const refundCreated = event.data.object;
+            // Then define and call a function to handle the event refund.created
+            break;
+        case 'refund.failed':
+            const refundFailed = event.data.object;
+            // Then define and call a function to handle the event refund.failed
+            break;
+        case 'refund.updated':
+            const refundUpdated = event.data.object;
+            // Then define and call a function to handle the event refund.updated
+            break;
+        // ... handle other event types
+        default:
+            console.log(`Unhandled event type ${event.type}`);
+    }
+}
+
 // Function to create a subscription detail for the user in database
 async function createSubscription(body) {
     const { email, priceId } = body
@@ -431,4 +608,4 @@ async function checkoutSession(body) {
 
 
 module.exports =
-    { registerUser, loginUser, verifyCode, resendVerificationCode, activateTrialPeriod, checkoutSession, createSubscription }
+    { registerUser, loginUser, verifyCode, resendVerificationCode, activateTrialPeriod, checkoutSession, createSubscription, stripeEventsHandler }

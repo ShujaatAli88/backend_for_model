@@ -1,4 +1,6 @@
+const stripe = require('stripe')('sk_test_...');
 const express = require("express")
+require("dotenv").config()
 const app = express()
 const router = express.Router()
 const userService = require("../services/user")
@@ -84,6 +86,35 @@ router.post("/payment-checkout", protect, async (req, res) => {
         res.status(500).json({ error: 'An error occurred while creating the subscription.' });
     }
 })
+
+// Web socket for stripe
+// router.post("/stripe-webhook", protect, express.raw({ type: "application/json" }), async (req, res) => {
+//     const sig = req.headers["stripe-signature"]
+// })
+
+// This is your Stripe CLI webhook secret for testing your endpoint locally.
+const endpointSecret = process.env.STRIPE_WEBHOOK_KEY;
+
+// Webhook for the stripe events
+app.post('/webhook', express.raw({ type: 'application/json' }), (request, response) => {
+    const sig = request.headers['stripe-signature'];
+
+    let event;
+
+    try {
+        event = stripe.webhooks.constructEvent(request.body, sig, endpointSecret);
+    } catch (err) {
+        response.status(400).send(`Webhook Error: ${err.message}`);
+        return;
+    }
+
+    // Handle the event
+    const result = userService.stripeEventsHandler(event)
+
+    // Return a 200 response to acknowledge receipt of the event
+    response.send();
+});
+
 
 // Test api
 
