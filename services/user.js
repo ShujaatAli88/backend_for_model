@@ -510,7 +510,7 @@ async function createSubscription(body) {
 }
 
 async function checkoutSession(body) {
-    const { priceId, email } = body
+    const { priceId, email, success_url, cancel_url } = body
     console.log(typeof (priceId), email)
     // console.log(process.env.STRIPE_SECRET_KEY)
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
@@ -523,8 +523,10 @@ async function checkoutSession(body) {
             },
         ],
         mode: 'subscription',
-        success_url: `http://localhost:3000/api/success/${email}/${priceId}`,
-        cancel_url: `http://localhost:3000/api/cancel`,
+        // success_url: `http://localhost:3000/api/success/${email}/${priceId}`,
+        // cancel_url: `http://localhost:3000/api/cancel`,
+        success_url: `${success_url}`,
+        cancel_url: `${cancel_url}`,
         client_reference_id: email,
     });
     // console.log(session)

@@ -59,7 +59,46 @@ function createWindow() {
     mainWindow.loadFile('login.html');
 }
 
-app.whenReady().then(createWindow);
+// app.whenReady().then(createWindow);
+
+app.whenReady().then(() => {
+    createWindow();
+
+    // Set the app as the default protocol client for "your-electron-app"
+    app.setAsDefaultProtocolClient('your-electron-app');
+});
+
+// app.on('open-url', (event, url) => {
+//     event.preventDefault();
+
+//     const urlParams = new URL(url);
+//     const email = urlParams.searchParams.get('email');
+//     const priceId = urlParams.searchParams.get('priceId');
+
+//     console.log('Payment successful:', { email, priceId });
+
+//     // Send data to the renderer process if the main window is available
+//     if (mainWindow && mainWindow.webContents) {
+//         mainWindow.webContents.send('payment-success', { email, priceId });
+//     } else {
+//         console.error('Main window not available to send payment success data.');
+//     }
+// });
+
+app.on("open-url", (event, url) => {
+    event.preventDefault();
+    const params = new URL(url);
+    if (params.protocol === "myapp:") {
+        if (params.hostname === "success") {
+            // Handle success (e.g., show confirmation page)
+            // window.location = response.sessionUrl;
+            window.location = 'dashboard.html'
+        } else if (params.hostname === "cancel") {
+            // Handle cancellation (e.g., show retry message)
+            window.location = 'subError.html'
+        }
+    }
+});
 
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
@@ -303,7 +342,9 @@ ipcMain.on("monthly-subscription", async (event, data) => {
         const response = await axios.post(`${API_URL}/payment-checkout`,
             {
                 email: data.email,
-                priceId: data.priceId
+                priceId: data.priceId,
+                success_url: "myapp://success", // Custom scheme
+                cancel_url: "myapp://cancel",
             },
             {
                 headers: {
@@ -329,7 +370,9 @@ ipcMain.on("yearly-subscription", async (event, data) => {
         const response = await axios.post(`${API_URL}/payment-checkout`,
             {
                 email: data.email,
-                priceId: data.priceId
+                priceId: data.priceId,
+                success_url: "myapp://success", // Custom scheme
+                cancel_url: "myapp://cancel",
             },
             {
                 headers: {

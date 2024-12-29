@@ -1,4 +1,4 @@
-const { ipcRenderer } = require('electron');
+const { ipcRenderer, shell } = require('electron');
 const dotenv = require('dotenv');
 const JSZip = require('jszip');
 // const { saveAs } = require('file-saver');
@@ -1483,7 +1483,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         ipcRenderer.on('monthly-subscription-result', (event, response) => {
             if (response.success && response.sessionUrl) {
-                window.location = response.sessionUrl;
+                // window.location = response.sessionUrl;
+                shell.openExternal(response.sessionUrl);
             } else {
                 alert(response.message || 'An error occurred. Please try again.');
                 submitButton.disabled = false;
@@ -1521,7 +1522,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         ipcRenderer.on('yearly-subscription-result', (event, response) => {
             if (response.success && response.sessionUrl) {
-                window.location = response.sessionUrl;
+                // window.location = response.sessionUrl;
+                shell.openExternal(response.sessionUrl);
             } else {
                 alert(response.message || 'An error occurred. Please try again.');
                 submitButton.disabled = false;
