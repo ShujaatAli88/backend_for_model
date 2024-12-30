@@ -129,6 +129,12 @@ router.get("/success/:email/:priceId", async (req, res) => {
         const body = req.params
         const subscription = await userService.createSubscription(body)
         console.log(req.params.email)
+
+        // const electronAppUrl = `myapp://success?email=${body.email}&priceId=${body.priceId}`;
+        const electronAppUrl = `myapp://success`;
+
+        // Redirect the user to the custom URL scheme
+        res.redirect(electronAppUrl);
         res.status(200).sendFile(path.resolve(__dirname, "../Frontend", "dashboard.html"))
     }
     catch (err) {

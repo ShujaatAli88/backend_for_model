@@ -297,22 +297,6 @@ async function stripeEventsHandler(event) {
             const chargeSucceeded = event.data.object;
             // Then define and call a function to handle the event charge.succeeded
             break;
-        case 'charge.dispute.closed':
-            const chargeDisputeClosed = event.data.object;
-            // Then define and call a function to handle the event charge.dispute.closed
-            break;
-        case 'charge.dispute.created':
-            const chargeDisputeCreated = event.data.object;
-            // Then define and call a function to handle the event charge.dispute.created
-            break;
-        case 'charge.dispute.funds_reinstated':
-            const chargeDisputeFundsReinstated = event.data.object;
-            // Then define and call a function to handle the event charge.dispute.funds_reinstated
-            break;
-        case 'charge.dispute.funds_withdrawn':
-            const chargeDisputeFundsWithdrawn = event.data.object;
-            // Then define and call a function to handle the event charge.dispute.funds_withdrawn
-            break;
         case 'checkout.session.async_payment_failed':
             const checkoutSessionAsyncPaymentFailed = event.data.object;
             // Then define and call a function to handle the event checkout.session.async_payment_failed
@@ -401,14 +385,6 @@ async function stripeEventsHandler(event) {
             const paymentLinkCreated = event.data.object;
             // Then define and call a function to handle the event payment_link.created
             break;
-        case 'payment_method.attached':
-            const paymentMethodAttached = event.data.object;
-            // Then define and call a function to handle the event payment_method.attached
-            break;
-        case 'payment_method.automatically_updated':
-            const paymentMethodAutomaticallyUpdated = event.data.object;
-            // Then define and call a function to handle the event payment_method.automatically_updated
-            break;
         case 'payment_method.updated':
             const paymentMethodUpdated = event.data.object;
             // Then define and call a function to handle the event payment_method.updated
@@ -429,19 +405,6 @@ async function stripeEventsHandler(event) {
             const productUpdated = event.data.object;
             // Then define and call a function to handle the event product.updated
             break;
-        case 'refund.created':
-            const refundCreated = event.data.object;
-            // Then define and call a function to handle the event refund.created
-            break;
-        case 'refund.failed':
-            const refundFailed = event.data.object;
-            // Then define and call a function to handle the event refund.failed
-            break;
-        case 'refund.updated':
-            const refundUpdated = event.data.object;
-            // Then define and call a function to handle the event refund.updated
-            break;
-        // ... handle other event types
         default:
             console.log(`Unhandled event type ${event.type}`);
     }
@@ -510,8 +473,9 @@ async function createSubscription(body) {
 }
 
 async function checkoutSession(body) {
-    const { priceId, email, success_url, cancel_url } = body
+    const { priceId, email } = body
     console.log(typeof (priceId), email)
+    // console.log("Success and cancel url: ", success_url, cancel_url)
     // console.log(process.env.STRIPE_SECRET_KEY)
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
     const session = await stripe.checkout.sessions.create({
@@ -523,10 +487,10 @@ async function checkoutSession(body) {
             },
         ],
         mode: 'subscription',
-        // success_url: `http://localhost:3000/api/success/${email}/${priceId}`,
-        // cancel_url: `http://localhost:3000/api/cancel`,
-        success_url: `${success_url}`,
-        cancel_url: `${cancel_url}`,
+        success_url: `http://localhost:3000/api/success/${email}/${priceId}`,
+        cancel_url: `http://localhost:3000/api/cancel`,
+        // success_url: `${success_url}`,
+        // cancel_url: `${cancel_url}`,
         client_reference_id: email,
     });
     // console.log(session)

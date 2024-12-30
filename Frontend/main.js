@@ -65,7 +65,17 @@ app.whenReady().then(() => {
     createWindow();
 
     // Set the app as the default protocol client for "your-electron-app"
-    app.setAsDefaultProtocolClient('your-electron-app');
+    // app.setAsDefaultProtocolClient('myapp');
+    // Register custom protocol
+    if (process.defaultApp) {
+        // For development, use this for debugging when running with 'electron' binary
+        if (process.argv.length >= 2) {
+            app.setAsDefaultProtocolClient('myapp', process.execPath, [path.resolve(process.argv[1])]);
+        }
+    } else {
+        // For packaged Electron apps
+        app.setAsDefaultProtocolClient('myapp');
+    }
 });
 
 // app.on('open-url', (event, url) => {
@@ -88,6 +98,7 @@ app.whenReady().then(() => {
 app.on("open-url", (event, url) => {
     event.preventDefault();
     const params = new URL(url);
+    console.log('URL opened:', params);
     if (params.protocol === "myapp:") {
         if (params.hostname === "success") {
             // Handle success (e.g., show confirmation page)
@@ -343,8 +354,8 @@ ipcMain.on("monthly-subscription", async (event, data) => {
             {
                 email: data.email,
                 priceId: data.priceId,
-                success_url: "myapp://success", // Custom scheme
-                cancel_url: "myapp://cancel",
+                // success_url: "myapp://success", // Custom scheme
+                // cancel_url: "myapp://cancel",
             },
             {
                 headers: {
@@ -371,8 +382,8 @@ ipcMain.on("yearly-subscription", async (event, data) => {
             {
                 email: data.email,
                 priceId: data.priceId,
-                success_url: "myapp://success", // Custom scheme
-                cancel_url: "myapp://cancel",
+                // success_url: "myapp://success", // Custom scheme
+                // cancel_url: "myapp://cancel",
             },
             {
                 headers: {
