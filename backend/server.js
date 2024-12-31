@@ -20,7 +20,11 @@ mongoose.connect(process.env.MONGODB_URI, {
 })
     .catch((err) => { console.log(err) });
 
-app.use(cors());
+app.use(cors(
+    {
+        origin: '*', // Allow all origins for local testing
+    }
+));
 
 app.use(express.static(path.join(__dirname, "../Frontend")))
 app.use(bodyParser.urlencoded({ extended: false }));

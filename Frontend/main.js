@@ -1,6 +1,7 @@
 import { app, BrowserWindow, ipcMain, dialog } from 'electron';
 
-import dotenv from 'dotenv'
+// import dotenv from 'dotenv'
+// import 'dotenv/config'
 
 import axios from 'axios';
 import { writeFile, createReadStream, unlinkSync, existsSync } from 'node:fs';
@@ -9,7 +10,7 @@ import FormData from 'form-data';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-dotenv.config()
+// dotenv.config()
 
 
 // function createWindow() {
@@ -124,7 +125,8 @@ app.on('activate', () => {
 });
 
 
-const API_URL = 'http://localhost:3000/api'; // Replace with your backend URL
+const API_URL = 'http://127.0.0.1:3000/api' || process.env.API_URL_BACKEND_API; // Replace with your backend URL
+// const API_URL = process.env.API_URL_BACKEND_API; // Replace with your backend URL
 
 ipcMain.on('register', async (event, userData) => {
     try {

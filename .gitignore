@@ -1,24 +1,25 @@
-node_modules
-.env
+backend/node_modules
+backend/.env
 Frontend/node_modules
 
 Frontend/.env
 
-uploads
+backend/uploads
 
-services/uploads
+backend/services/uploads
 
-services/__pycache__
+backend/services/__pycache__
 
-services/dummy_remover/.venv
+backend/services/dummy_remover/.venv
 
-# services/dummy_remover/weights
+backend/services/dummy_remover/weights
 
-# services/dummy_remover/GroundingDINO
+backend/services/dummy_remover/GroundingDINO
 
-services/dummy_remover/output_images
+backend/services/dummy_remover/output_images
 
-weights
+backend/weights
 
-GroundingDINO
+backend/GroundingDINO
 
+Frontend/out
