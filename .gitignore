@@ -10,13 +10,13 @@ backend/services/uploads
 
 backend/services/__pycache__
 
-backend/services/dummy_remover/.venv
+dummy_remover/.venv
 
-backend/services/dummy_remover/weights
+dummy_remover/weights
 
-backend/services/dummy_remover/GroundingDINO
+dummy_remover/GroundingDINO
 
-backend/services/dummy_remover/output_images
+dummy_remover/output_images
 
 backend/weights
 
