@@ -97,8 +97,7 @@ def initialize():
     if not os.path.exists(segment_anything_repo):
         os.system(f"{sys.executable} -m pip install {segment_anything_url}")
     else:
-        print(f"{segment_anything_repo} already installed or cloned."
-              )
+        print(f"{segment_anything_repo} already installed or cloned.")
     HOME = os.getcwd()
     print("HOME Directory:", HOME)
 
@@ -107,9 +106,11 @@ def initialize():
     if not is_package_installed("supervision", required_supervision_version):
         print(f"Installing supervision=={required_supervision_version}...")
         subprocess.run(["pip", "uninstall", "-y", "supervision"], check=True)
-        subprocess.run(["pip", "install", f"supervision=={required_supervision_version}"], check=True)
+        subprocess.run(["pip", "install", f"supervision=={
+                       required_supervision_version}"], check=True)
     else:
-        print(f"supervision=={required_supervision_version} is already installed.")
+        print(f"supervision=={
+              required_supervision_version} is already installed.")
 
     # Verify supervision version
     print("Supervision version:", sv.__version__)
@@ -206,6 +207,7 @@ def initialize():
     if not os.path.exists(SAM_CHECKPOINT_PATH):
         raise FileNotFoundError(f"Checkpoint sam file not found: {
                                 SAM_CHECKPOINT_PATH}")
+
     else:
         print(f"Sam Model Found at:{SAM_CHECKPOINT_PATH}")
     sam = sam_model_registry["vit_h"](
@@ -323,12 +325,12 @@ def initialize():
 # def process_input(input_path, output_path, background_color=None):
 #     """
 #     Process a single image
-    
+
 #     Args:
 #         input_path (str): Path to input image
 #         output_path (str): Path to save processed image
 #         background_color (list, optional): Background color in RGB
-    
+
 #     Returns:
 #         str: Path to output image
 #     """
@@ -337,17 +339,17 @@ def initialize():
 
 #     # Process image
 #     remover = ImprovedMannequinRemover()
-    
+
 #     # Your existing image processing logic
 #     result = remover.process_image(input_path)
-    
+
 #     return result
 
 class ImprovedMannequinRemover:
     def __init__(self, target_size: int = 512):
         """
         Initialize the Mannequin Remover with configurable parameters
-        
+
         Args:
             target_size (int): Target size for image resizing, defaults to 512
         """
@@ -357,7 +359,7 @@ class ImprovedMannequinRemover:
     def ensure_directory_exists(self, folder_path: str) -> None:
         """
         Ensure that the directory exists, create if not.
-        
+
         Args:
             folder_path (str): Path to the directory to be created
         """
@@ -371,11 +373,11 @@ class ImprovedMannequinRemover:
     def resize_image(self, image: np.ndarray, target_size: Optional[int] = None) -> np.ndarray:
         """
         Resize image maintaining aspect ratio
-        
+
         Args:
             image (np.ndarray): Input image
             target_size (int, optional): Target size for resizing, uses class default if None
-        
+
         Returns:
             np.ndarray: Resized image
         """
@@ -397,11 +399,11 @@ class ImprovedMannequinRemover:
     def pad_image(self, image: np.ndarray, target_size: Optional[int] = None) -> np.ndarray:
         """
         Pad image to target size with white background
-        
+
         Args:
             image (np.ndarray): Input image
             target_size (int, optional): Target size for padding, uses class default if None
-        
+
         Returns:
             np.ndarray: Padded image
         """
@@ -422,10 +424,10 @@ class ImprovedMannequinRemover:
     # def create_refined_mask(self, image: np.ndarray) -> np.ndarray:
     #     """
     #     Create a refined mask to remove mannequin/dummy
-        
+
     #     Args:
     #         image (np.ndarray): Input image
-        
+
     #     Returns:
     #         np.ndarray: Binary mask
     #     """
@@ -457,10 +459,10 @@ class ImprovedMannequinRemover:
     def create_refined_mask(self, image: np.ndarray) -> np.ndarray:
         """
         Create a refined mask to remove mannequin/dummy
-        
+
         Args:
             image (np.ndarray): Input image
-        
+
         Returns:
             np.ndarray: Binary mask with same height and width as input image
         """
@@ -491,19 +493,19 @@ class ImprovedMannequinRemover:
         return mask
 
     # def process_single_image(
-    #     self, 
-    #     input_path: str, 
-    #     output_folder: str, 
+    #     self,
+    #     input_path: str,
+    #     output_folder: str,
     #     background_color: Optional[List[int]] = None
     # ) -> Tuple[str, str]:
     #     """
     #     Process a single image
-        
+
     #     Args:
     #         input_path (str): Path to input image
     #         output_folder (str): Folder to save processed images
     #         background_color (list, optional): Custom background color
-        
+
     #     Returns:
     #         Tuple of (processed image path, mask path)
     #     """
@@ -515,7 +517,7 @@ class ImprovedMannequinRemover:
     #         original_image = cv2.imread(input_path)
     #         if original_image is None:
     #             raise ValueError(f"Could not read image at {input_path}")
-            
+
     #         # Convert to RGB
     #         original_image = cv2.cvtColor(original_image, cv2.COLOR_BGR2RGB)
 
@@ -542,8 +544,8 @@ class ImprovedMannequinRemover:
 
     #         # Apply mask
     #         result = np.where(
-    #             expanded_mask_3d == 255, 
-    #             original_image, 
+    #             expanded_mask_3d == 255,
+    #             original_image,
     #             background
     #         )
 
@@ -569,32 +571,33 @@ class ImprovedMannequinRemover:
     def expand_mask(self, mask: np.ndarray, expansion_pixels: int = 10) -> np.ndarray:
         """
         Expand the mask for better coverage
-        
+
         Args:
             mask (np.ndarray): Input mask
             expansion_pixels (int): Number of pixels to expand
-        
+
         Returns:
             np.ndarray: Expanded mask
         """
-        kernel = np.ones((expansion_pixels - 60, expansion_pixels - 60), np.uint8)
+        kernel = np.ones(
+            (expansion_pixels - 60, expansion_pixels - 60), np.uint8)
         expanded_mask = cv2.dilate(mask, kernel, iterations=1)
         return expanded_mask
 
     # def process_single_image(
-    #     self, 
-    #     input_path: str, 
-    #     output_folder: str, 
+    #     self,
+    #     input_path: str,
+    #     output_folder: str,
     #     background_color: Optional[List[int]] = None
     # ) -> Tuple[str, str]:
     #     """
     #     Process a single image
-        
+
     #     Args:
     #         input_path (str): Path to input image
     #         output_folder (str): Folder to save processed images
     #         background_color (list, optional): Custom background color
-        
+
     #     Returns:
     #         Tuple of (processed image path, mask path)
     #     """
@@ -606,7 +609,7 @@ class ImprovedMannequinRemover:
     #         original_image = cv2.imread(input_path)
     #         if original_image is None:
     #             raise ValueError(f"Could not read image at {input_path}")
-            
+
     #         original_image = cv2.cvtColor(original_image, cv2.COLOR_BGR2RGB)
 
     #         # Resize and pad
@@ -640,8 +643,8 @@ class ImprovedMannequinRemover:
 
     #         # Apply mask
     #         result = np.where(
-    #             expanded_mask[:, :, None] == 255, 
-    #             cv2.cvtColor(original_image, cv2.COLOR_RGB2BGR), 
+    #             expanded_mask[:, :, None] == 255,
+    #             cv2.cvtColor(original_image, cv2.COLOR_RGB2BGR),
     #             cv2.cvtColor(background, cv2.COLOR_RGB2BGR)
     #         )
 
@@ -655,19 +658,19 @@ class ImprovedMannequinRemover:
     #         raise
 
     def process_single_image(
-        self, 
-        input_path: str, 
-        output_folder: str, 
+        self,
+        input_path: str,
+        output_folder: str,
         background_color: Optional[List[int]] = None
-        ) -> Tuple[str, str]:
+    ) -> Tuple[str, str]:
         """
         Process a single image
-        
+
         Args:
             input_path (str): Path to input image
             output_folder (str): Folder to save processed images
             background_color (list, optional): Custom background color
-        
+
         Returns:
             Tuple of (processed image path, mask path)
         """
@@ -679,7 +682,7 @@ class ImprovedMannequinRemover:
             original_image = cv2.imread(input_path)
             if original_image is None:
                 raise ValueError(f"Could not read image at {input_path}")
-            
+
             original_image = cv2.cvtColor(original_image, cv2.COLOR_BGR2RGB)
 
             # Resize and pad
@@ -690,12 +693,16 @@ class ImprovedMannequinRemover:
             image_filename = f"{uuid.uuid4()}_{os.path.basename(input_path)}"
 
             # Paths for saving
-            resized_image_path = os.path.join(output_folder, f"resized_{image_filename}")
-            mask_image_path = os.path.join(output_folder, f"mask_{image_filename}")
-            processed_image_path = os.path.join(output_folder, f"processed_{image_filename}")
+            resized_image_path = os.path.join(
+                output_folder, f"resized_{image_filename}")
+            mask_image_path = os.path.join(
+                output_folder, f"mask_{image_filename}")
+            processed_image_path = os.path.join(
+                output_folder, f"processed_{image_filename}")
 
             # Save resized image
-            cv2.imwrite(resized_image_path, cv2.cvtColor(padded_image, cv2.COLOR_RGB2BGR))
+            cv2.imwrite(resized_image_path, cv2.cvtColor(
+                padded_image, cv2.COLOR_RGB2BGR))
 
             # Create mask
             mask = self.create_refined_mask(padded_image)
@@ -706,7 +713,8 @@ class ImprovedMannequinRemover:
             expanded_mask = self.expand_mask(mask_inv, 60)
 
             # Resize expanded mask to match padded image dimensions
-            expanded_mask = cv2.resize(expanded_mask, (padded_image.shape[1], padded_image.shape[0]))
+            expanded_mask = cv2.resize(
+                expanded_mask, (padded_image.shape[1], padded_image.shape[0]))
 
             # Background color handling
             if background_color is None:
@@ -719,13 +727,14 @@ class ImprovedMannequinRemover:
 
             # Apply mask with proper broadcasting
             result = np.where(
-                expanded_mask_3d == 255, 
-                padded_image, 
+                expanded_mask_3d == 255,
+                padded_image,
                 background
             )
 
             # Save processed image
-            cv2.imwrite(processed_image_path, cv2.cvtColor(result, cv2.COLOR_RGB2BGR))
+            cv2.imwrite(processed_image_path, cv2.cvtColor(
+                result, cv2.COLOR_RGB2BGR))
 
             return processed_image_path, mask_image_path
 
@@ -734,19 +743,19 @@ class ImprovedMannequinRemover:
             raise
 
     def process_images(
-        self, 
-        input_source: Union[str, List[str]], 
-        output_folder: str, 
+        self,
+        input_source: Union[str, List[str]],
+        output_folder: str,
         background_color: Optional[List[int]] = None
     ) -> List[Tuple[str, str]]:
         """
         Process multiple images from a folder or list of image paths
-        
+
         Args:
             input_source (str or list): Folder path or list of image paths
             output_folder (str): Folder to save processed images
             background_color (list, optional): Custom background color
-        
+
         Returns:
             List of tuples containing (processed image path, mask path)
         """
@@ -757,8 +766,9 @@ class ImprovedMannequinRemover:
         if isinstance(input_source, str):
             # If input is a directory, get all image files
             if not os.path.isdir(input_source):
-                raise ValueError(f"Input path {input_source} is not a valid directory")
-            
+                raise ValueError(
+                    f"Input path {input_source} is not a valid directory")
+
             image_paths = [
                 os.path.join(input_source, f) for f in os.listdir(input_source)
                 if f.lower().endswith(('.png', '.jpg', '.jpeg', '.bmp', '.tiff'))
@@ -772,8 +782,8 @@ class ImprovedMannequinRemover:
         for image_path in image_paths:
             try:
                 result = self.process_single_image(
-                    image_path, 
-                    output_folder, 
+                    image_path,
+                    output_folder,
                     background_color
                 )
                 processed_results.append(result)
@@ -786,13 +796,13 @@ class ImprovedMannequinRemover:
 def parse_background_color(color: str) -> np.ndarray:
     """
     Parse background color from various input formats
-    
+
     Args:
         color (str): Color input in various formats
-    
+
     Returns:
         np.ndarray: RGB color values
-    
+
     Supported formats:
     - Hex string: '#FFFFFF', 'FFFFFF'
     - RGB string: 'rgb(255, 255, 255)'
@@ -802,14 +812,14 @@ def parse_background_color(color: str) -> np.ndarray:
     # Handle None or empty input
     if color is None or color == '':
         return np.array([255, 255, 255], dtype=np.uint8)  # Default white
-    
+
     # If already a list or tuple of integers, return as numpy array
     if isinstance(color, (list, tuple)) and len(color) == 3:
         return np.array(color, dtype=np.uint8)
-    
+
     # Convert to string if it's not already
     color = str(color).strip()
-    
+
     # Hex color parsing (with or without #)
     hex_match = re.match(r'^#?([0-9A-Fa-f]{6})$', color)
     if hex_match:
@@ -819,7 +829,7 @@ def parse_background_color(color: str) -> np.ndarray:
             int(hex_color[2:4], 16),
             int(hex_color[4:], 16)
         ], dtype=np.uint8)
-    
+
     # RGB function style parsing
     rgb_match = re.match(r'^rgb\((\d+),\s*(\d+),\s*(\d+)\)$', color)
     if rgb_match:
@@ -828,7 +838,7 @@ def parse_background_color(color: str) -> np.ndarray:
             int(rgb_match.group(2)),
             int(rgb_match.group(3))
         ], dtype=np.uint8)
-    
+
     # Named colors (basic set)
     named_colors = {
         'white': [255, 255, 255],
@@ -838,52 +848,54 @@ def parse_background_color(color: str) -> np.ndarray:
         'blue': [0, 0, 255],
         'transparent': [255, 255, 255]  # Default to white
     }
-    
+
     # Case-insensitive named color lookup
     color_lower = color.lower()
     if color_lower in named_colors:
         return np.array(named_colors[color_lower], dtype=np.uint8)
-    
+
     # If no match, return default white
     print(f"Warning: Could not parse color '{color}'. Defaulting to white.")
     return np.array([255, 255, 255], dtype=np.uint8)
 
 # Modify process_input to use the new parsing function
+
+
 def process_input(
-    input_path: str, 
-    output_path: str, 
+    input_path: str,
+    output_path: str,
     background_color: Optional[Union[str, List[int]]] = None
 ) -> str:
     """
     Universal input processing function with improved color parsing
-    
+
     Args:
         input_path (str): Path to input image or folder
         output_path (str): Path to save processed images
         background_color (str or list, optional): Background color in various formats
-    
+
     Returns:
         str: Path to output folder or processed image
     """
     remover = ImprovedMannequinRemover()
-    
+
     # Parse background color
     parsed_color = parse_background_color(background_color)
-    
+
     # Determine if input is a file or directory
     if os.path.isfile(input_path):
         # Single file processing
         processed_result, _ = remover.process_single_image(
-            input_path, 
-            output_path, 
+            input_path,
+            output_path,
             parsed_color
         )
         return processed_result
     elif os.path.isdir(input_path):
         # Directory processing
         processed_results = remover.process_images(
-            input_path, 
-            output_path, 
+            input_path,
+            output_path,
             parsed_color
         )
         return output_path
@@ -891,42 +903,43 @@ def process_input(
         raise ValueError(f"Invalid input path: {input_path}")
 
 # def process_input(
-#     input_path: str, 
-#     output_path: str, 
+#     input_path: str,
+#     output_path: str,
 #     background_color: Optional[List[int]] = None
 # ) -> str:
 #     """
 #     Universal input processing function
-    
+
 #     Args:
 #         input_path (str): Path to input image or folder
 #         output_path (str): Path to save processed images
 #         background_color (list, optional): Background color in RGB
-    
+
 #     Returns:
 #         str: Path to output folder or processed image
 #     """
 #     remover = ImprovedMannequinRemover()
-    
+
 #     # Determine if input is a file or directory
 #     if os.path.isfile(input_path):
 #         # Single file processing
 #         processed_result, _ = remover.process_single_image(
-#             input_path, 
-#             output_path, 
+#             input_path,
+#             output_path,
 #             background_color
 #         )
 #         return processed_result
 #     elif os.path.isdir(input_path):
 #         # Directory processing
 #         processed_results = remover.process_images(
-#             input_path, 
-#             output_path, 
+#             input_path,
+#             output_path,
 #             background_color
 #         )
 #         return output_path
 #     else:
 #         raise ValueError(f"Invalid input path: {input_path}")
+
 
 def expand_mask(mask, expansion_pixels=10):
     kernel = np.ones((expansion_pixels - 60, expansion_pixels - 60), np.uint8)
@@ -964,6 +977,8 @@ def apply_inverse_mask(image_path, mask_path, output_folder):
     print(f"Processed image saved to: {final_output_path}")
 
 # Endpoint to remove dummy from images
+
+
 @app.route('/remove-dummy', methods=['POST'])
 def remove_dummy():
     output_dir = 'output_images'
@@ -974,7 +989,7 @@ def remove_dummy():
         token = request.headers.get('Authorization')
         if not token:
             return jsonify({'message': 'Token is missing!'}), 401
-        
+
         # Get list of uploaded files
         images_data = request.files.getlist('files')
         background_color = request.form.get('backgroundColor', None)
@@ -995,14 +1010,14 @@ def remove_dummy():
 
                 # Process the image
                 processing_result = process_input(
-                    input_path=temp_file_path, 
-                    output_path=output_dir, 
+                    input_path=temp_file_path,
+                    output_path=output_dir,
                     background_color=background_color
                 )
-                
+
                 # Read the processed image
                 processed_image = cv2.imread(processing_result)
-                
+
                 # Convert processed image to base64
                 _, img_buffer = cv2.imencode('.png', processed_image)
                 img_base64 = base64.b64encode(img_buffer).decode('utf-8')
@@ -1025,7 +1040,7 @@ def remove_dummy():
                     "success": False
                 }
                 results.append(result)
-            
+
             finally:
                 # Clean up the temporary file
                 os.unlink(temp_file_path)
@@ -1047,9 +1062,9 @@ def remove_dummy():
     #     token = request.headers.get('Authorization')
     #     if not token:
     #         return jsonify({'message': 'Token is missing!'}), 401
-        
+
     #     print("Running mannequin remover model")
-        
+
     #     # Get list of uploaded files
     #     images_data = request.files.getlist('files')
     #     background_color = request.form.get('backgroundColor', None)
@@ -1082,14 +1097,14 @@ def remove_dummy():
     #             # Process the image using your existing function
     #             # Modify process_input to handle background color if needed
     #             processing_result = process_input(
-    #                     input_path=temp_file_path, 
-    #                     output_path=output_dir, 
+    #                     input_path=temp_file_path,
+    #                     output_path=output_dir,
     #                     background_color=background_color
     #                     )
     #             print("processing block done")
     #             # Read the processed image
     #             processed_image = cv2.imread(processing_result)
-                
+
     #             # Convert processed image to base64
     #             _, img_buffer = cv2.imencode('.png', processed_image)
     #             img_base64 = base64.b64encode(img_buffer).decode('utf-8')
@@ -1106,7 +1121,7 @@ def remove_dummy():
     #                 "fileName": unique_filename,
     #                 "error": str(e)
     #             })
-            
+
     #         finally:
     #             # Clean up the temporary file
     #             os.unlink(temp_file_path)
