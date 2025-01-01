@@ -11,8 +11,8 @@ services:
   - name: dummy_remover
     type: web
     runtime: python
-    buildCommand: "pip install -r dummy_remover/requirements.txt"
-    startCommand: "python dummy_remover/dummyRemovalApi.py"
+    buildCommand: "cd dummy_remover && pip install -r requirements.txt"
+    startCommand: "cd dummy_remover && python dummyRemovalApi.py"
     envVars:
       - key: FLASK_ENV
         value: production
