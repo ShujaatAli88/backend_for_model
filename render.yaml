@@ -3,7 +3,7 @@ services:
     type: web
     runtime: node
     buildCommand: "cd backend && yarn"
-    startCommand: "node server.js"
+    startCommand: "cd backend && yarn start"
     envVars:
       - key: NODE_ENV
         value: production
