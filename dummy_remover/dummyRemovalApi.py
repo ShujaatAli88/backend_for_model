@@ -107,11 +107,9 @@ def initialize():
     if not is_package_installed("supervision", required_supervision_version):
         print(f"Installing supervision=={required_supervision_version}...")
         subprocess.run(["pip", "uninstall", "-y", "supervision"], check=True)
-        subprocess.run(["pip", "install", f"supervision=={
-            required_supervision_version}"], check=True)
+        subprocess.run(["pip", "install", f"supervision=={required_supervision_version}"], check=True)
     else:
-        print(f"supervision=={
-              required_supervision_version} is already installed.")
+        print(f"supervision=={required_supervision_version} is already installed.")
 
     # Verify supervision version
     print("Supervision version:", sv.__version__)
