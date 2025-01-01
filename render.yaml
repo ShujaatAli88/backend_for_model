@@ -2,7 +2,7 @@ services:
   - name: backend
     type: web
     runtime: node
-    buildCommand: "cd backend && npm install"
+    buildCommand: "cd backend && yarn"
     startCommand: "node server.js"
     envVars:
       - key: NODE_ENV
