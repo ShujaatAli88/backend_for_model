@@ -172,11 +172,9 @@ def initialize():
 
     # Validate paths
     if not os.path.exists(GROUNDING_DINO_CONFIG_PATH):
-        raise FileNotFoundError(f"Configuration file not found: {
-                                GROUNDING_DINO_CONFIG_PATH}")
+        raise FileNotFoundError(f"Configuration file not found: {GROUNDING_DINO_CONFIG_PATH}")
     if not os.path.exists(GROUNDING_DINO_CHECKPOINT_PATH):
-        raise FileNotFoundError(f"Checkpoint file not found: {
-                                GROUNDING_DINO_CHECKPOINT_PATH}")
+        raise FileNotFoundError(f"Checkpoint file not found: {GROUNDING_DINO_CHECKPOINT_PATH}")
 
     # Add GroundingDINO to Python path
     GROUNDING_DINO_PATH = os.path.join(HOME, "GroundingDINO")
@@ -205,9 +203,13 @@ def initialize():
 
     SAM_CHECKPOINT_PATH = os.path.join(HOME, "weights", "sam_vit_h_4b8939.pth")
     if not os.path.exists(SAM_CHECKPOINT_PATH):
+<<<<<<< Updated upstream
         raise FileNotFoundError(f"Checkpoint sam file not found: {
                                 SAM_CHECKPOINT_PATH}")
 
+=======
+        raise FileNotFoundError(f"Checkpoint sam file not found: {SAM_CHECKPOINT_PATH}")
+>>>>>>> Stashed changes
     else:
         print(f"Sam Model Found at:{SAM_CHECKPOINT_PATH}")
     sam = sam_model_registry["vit_h"](
