@@ -106,11 +106,10 @@ def initialize():
     if not is_package_installed("supervision", required_supervision_version):
         print(f"Installing supervision=={required_supervision_version}...")
         subprocess.run(["pip", "uninstall", "-y", "supervision"], check=True)
-        subprocess.run(["pip", "install", f"supervision=={
-                       required_supervision_version}"], check=True)
+        subprocess.run(["pip", "install", f"supervision=={required_supervision_version}"],
+                        check=True)
     else:
-        print(f"supervision=={
-              required_supervision_version} is already installed.")
+        print(f"supervision=={required_supervision_version} is already installed.")
 
     # Verify supervision version
     print("Supervision version:", sv.__version__)
@@ -203,13 +202,7 @@ def initialize():
 
     SAM_CHECKPOINT_PATH = os.path.join(HOME, "weights", "sam_vit_h_4b8939.pth")
     if not os.path.exists(SAM_CHECKPOINT_PATH):
-<<<<<<< Updated upstream
-        raise FileNotFoundError(f"Checkpoint sam file not found: {
-                                SAM_CHECKPOINT_PATH}")
-
-=======
         raise FileNotFoundError(f"Checkpoint sam file not found: {SAM_CHECKPOINT_PATH}")
->>>>>>> Stashed changes
     else:
         print(f"Sam Model Found at:{SAM_CHECKPOINT_PATH}")
     sam = sam_model_registry["vit_h"](
