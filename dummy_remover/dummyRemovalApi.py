@@ -965,8 +965,9 @@ def apply_inverse_mask(image_path, mask_path, output_folder):
     result = np.where(expanded_mask[:, :, None]
                       == 255, image, white_background)
 
-    final_output_path = os.path.join(output_folder, f"output_{
-                                     os.path.basename(image_path)}")
+    final_output_path = os.path.join(output_folder, f"output_{os.path.basename(image_path)}")
+
+    
     cv2.imwrite(final_output_path, result)
 
     print(f"Processed image saved to: {final_output_path}")
