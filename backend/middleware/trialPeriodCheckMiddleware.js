@@ -1,7 +1,8 @@
 const User = require("../models/users.model.js")
 
 const checkTrialPeriod = async (req, res, next) => {
-    // console.log(req.body.email)
+    // console.log("Check trial period ", req.body.email)
+
     const userResult = await User.findOne({ email: req.body.email });
     if (!userResult) {
         return res.status(401).send('User not found');
