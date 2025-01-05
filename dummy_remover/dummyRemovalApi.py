@@ -1040,6 +1040,7 @@ def remove_dummy():
             finally:
                 # Clean up the temporary file
                 os.unlink(temp_file_path)
+                os.unlink(output_dir)
 
         # Return a consistent response structure
         return jsonify({

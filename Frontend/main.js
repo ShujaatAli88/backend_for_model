@@ -126,6 +126,7 @@ app.on('activate', () => {
 
 
 const API_URL = 'http://127.0.0.1:3000/api' || process.env.API_URL_BACKEND_API; // Replace with your backend URL
+// const API_URL = 'https://backend-for-model-w5hd.onrender.com/api/'; // Replace with your backend URL
 // const API_URL = process.env.API_URL_BACKEND_API; // Replace with your backend URL
 
 ipcMain.on('register', async (event, userData) => {
