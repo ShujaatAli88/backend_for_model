@@ -419,7 +419,7 @@ async function createSubscription(body) {
         throw new Error("User Not found. Please register an account.")
     }
     const alreadySub = await subsciptionSchema.findOne({ userId: user._id })
-    // console.log(alreadySub.length, "alreadySub")
+    console.log("alreadySub: ", alreadySub)
     if (alreadySub) {
         if (alreadySub.subscriptionStatus) {
             throw new Error("You have already subscribed")

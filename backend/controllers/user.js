@@ -119,7 +119,7 @@ app.post('/webhook', express.raw({ type: 'application/json' }), (request, respon
 // Test api
 
 router.get("/cancel", (req, res) => {
-    res.status(200).sendFile(path.resolve(__dirname, "../Frontend", "subscription.html"))
+    res.status(200).sendFile(path.join(__dirname, "../../Frontend", "subscription.html"))
     // res.status(200).sendFile(path.resolve(__dirname, "../Frontend", "subError.html"))
 })
 
@@ -135,7 +135,7 @@ router.get("/success/:email/:priceId", async (req, res) => {
 
         // Redirect the user to the custom URL scheme
         res.redirect(electronAppUrl);
-        res.status(200).sendFile(path.resolve(__dirname, "../Frontend", "dashboard.html"))
+        res.status(200).sendFile(path.join(__dirname, "../../Frontend", "dashboard.html"))
     }
     catch (err) {
         console.error(err.message);
@@ -144,20 +144,20 @@ router.get("/success/:email/:priceId", async (req, res) => {
 })
 
 router.get("/subscription", (req, res) => {
-    res.status(200).sendFile(path.resolve(__dirname, "../Frontend", "subscription.html"))
+    res.status(200).sendFile(path.resolve(__dirname, "../../Frontend", "subscription.html"))
 })
 
 router.get("/style", (req, res) => {
-    res.status(200).sendFile(path.resolve(__dirname, "../Frontend", "style.css"))
+    res.status(200).sendFile(path.resolve(__dirname, "../../Frontend", "style.css"))
 })
 
 router.get("/login", (req, res) => {
-    res.status(200).sendFile(path.resolve(__dirname, "../Frontend", "login.html"))
+    res.status(200).sendFile(path.resolve(__dirname, "../../Frontend", "login.html"))
 })
 
 // res.setHeader('Content-Type', 'application/javascript')
 router.get("/script", (req, res) => {
-    res.status(200).setHeader('Content-Type', 'application/javascript').sendFile(path.resolve(__dirname, "../Frontend", "renderer.js"))
+    res.status(200).setHeader('Content-Type', 'application/javascript').sendFile(path.resolve(__dirname, "../../Frontend", "renderer.js"))
 })
 
 // app.post('/create-subscription', async (req, res) => {
