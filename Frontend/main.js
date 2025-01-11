@@ -125,8 +125,8 @@ app.on('activate', () => {
 });
 
 
-const API_URL = 'http://127.0.0.1:3000/api' || process.env.API_URL_BACKEND_API; // Replace with your backend URL
-// const API_URL = 'https://backend-for-model-w5hd.onrender.com/api/'; // Replace with your backend URL
+// const API_URL = 'http://127.0.0.1:3000/api' || process.env.API_URL_BACKEND_API; // Replace with your backend URL
+const API_URL = 'https://backend-for-model-w5hd.onrender.com/api/'; // Replace with your backend URL
 // const API_URL = process.env.API_URL_BACKEND_API; // Replace with your backend URL
 
 ipcMain.on('register', async (event, userData) => {
@@ -499,7 +499,7 @@ async function processNextInQueue() {
 
         // If not cached, make request to backend
         const response = await axios.post(
-            'http://localhost:3000/imageModel/remove-background',
+            'https://backend-for-model-w5hd.onrender.com/imageModel/remove-background',
             formData,
             {
                 headers: {
