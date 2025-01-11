@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "npm run install-python-dependencies && nodemon server.js",
     "build": "npm run install-python-deps && npm run build-node",
-    "install-python-dependencies": "pip install -r requirements.txt",
+    "install-python-dependencies": "python3 -m venv venv && . venv/bin/activate && pip install -r requirements.txt",
     "build-node": "node build.js"
   },
   "author": "",
