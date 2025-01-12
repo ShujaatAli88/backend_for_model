@@ -69,7 +69,7 @@ orjson==3.10.9
 packaging==24.1
 pandas==2.2.2
 parso==0.8.4
-pillow==10.4.0
+pillow
 platformdirs==4.2.2
 pooch==1.8.2
 prompt_toolkit==3.0.48

@@ -788,7 +788,7 @@ ipcMain.on('remove-dummy', async (event, data) => {
 
             // Make request to backend
             const response = await axios.post(
-                'http://localhost:8000/remove-dummy',
+                'http://ec2-3-94-9-72.compute-1.amazonaws.com:8000/remove-dummy',
                 formData,
                 {
                     headers: {
