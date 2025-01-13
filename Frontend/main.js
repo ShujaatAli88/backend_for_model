@@ -126,7 +126,8 @@ app.on('activate', () => {
 
 
 // const API_URL = 'http://127.0.0.1:3000/api' || process.env.API_URL_BACKEND_API; // Replace with your backend URL
-const API_URL = 'https://backend-for-model-w5hd.onrender.com/api/'; // Replace with your backend URL
+// const API_URL = 'http://ec2-3-94-9-72.compute-1.amazonaws.com:3000/api'; // Replace with your backend URL
+const API_URL = 'https://backend-for-model-w5hd.onrender.com/api'; // Replace with your backend URL
 // const API_URL = process.env.API_URL_BACKEND_API; // Replace with your backend URL
 
 ipcMain.on('register', async (event, userData) => {
@@ -594,7 +595,7 @@ ipcMain.on('remove-human', async (event, data) => {
 
             // If not cached, make request to backend
             const response = await axios.post(
-                'http://localhost:3000/imageModel/remove-human',
+                'https://backend-for-model-w5hd.onrender.com/imageModel/remove-human',
                 formData,
                 {
                     headers: {
