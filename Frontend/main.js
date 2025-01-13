@@ -112,6 +112,33 @@ app.on("open-url", (event, url) => {
     }
 });
 
+// const handleDeepLink = (url) => {
+//     if (mainWindow) {
+//         const queryParams = new URL(url).searchParams;
+//         const status = queryParams.get('status'); // Read status (success or failure) from URL
+
+//         // Send message to the renderer process to update the UI
+//         mainWindow.webContents.send('payment-status', status);
+//     }
+// };
+
+// // Ensure only one instance of the app runs
+// const isFirstInstance = app.requestSingleInstanceLock();
+// if (!isFirstInstance) {
+//     app.quit();
+// } else {
+//     app.on('second-instance', (event, commandLine) => {
+//         if (mainWindow) {
+//             mainWindow.focus();
+//         }
+
+//         const deepLink = commandLine.find((arg) => arg.startsWith('myapp://'));
+//         if (deepLink) {
+//             handleDeepLink(deepLink);
+//         }
+//     });
+// }
+
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
         app.quit();
