@@ -1846,6 +1846,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
 })
 
+ipcRenderer.on('payment-status', (event, status) => {
+    if (status === 'success') {
+        // Redirect to the dashboard
+        window.location.href = 'dashboard.html';
+    } else if (status === 'cancel') {
+        // Redirect to the error page
+        window.location.href = 'subError.html';
+    }
+});
+
 document.getElementById("welcome-message").innerHTML = `Welcome ${localStorage.getItem('firstName')}`
 
 

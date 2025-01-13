@@ -112,6 +112,25 @@ app.on("open-url", (event, url) => {
     }
 });
 
+
+app.on("open-url", (event, url) => {
+    event.preventDefault();
+    const params = new URL(url);
+    console.log('URL opened:', params);
+
+    if (mainWindow) {
+        // Send the event to the renderer process
+        if (params.protocol === "myapp:") {
+            if (params.hostname === "success") {
+                mainWindow.webContents.send('payment-status', 'success');
+            } else if (params.hostname === "cancel") {
+                mainWindow.webContents.send('payment-status', 'cancel');
+            }
+        }
+    }
+});
+
+
 // const handleDeepLink = (url) => {
 //     if (mainWindow) {
 //         const queryParams = new URL(url).searchParams;
@@ -152,9 +171,9 @@ app.on('activate', () => {
 });
 
 
-// const API_URL = 'http://127.0.0.1:3000/api' || process.env.API_URL_BACKEND_API; // Replace with your backend URL
+const API_URL = 'http://127.0.0.1:3000/api' || process.env.API_URL_BACKEND_API; // Replace with your backend URL
 // const API_URL = 'http://ec2-3-94-9-72.compute-1.amazonaws.com:3000/api'; // Replace with your backend URL
-const API_URL = 'https://backend-for-model-w5hd.onrender.com/api'; // Replace with your backend URL
+// const API_URL = 'https://backend-for-model-w5hd.onrender.com/api'; // Replace with your backend URL
 // const API_URL = process.env.API_URL_BACKEND_API; // Replace with your backend URL
 
 ipcMain.on('register', async (event, userData) => {
