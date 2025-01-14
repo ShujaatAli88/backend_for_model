@@ -10,6 +10,12 @@ backend/services/uploads
 
 backend/.venv
 
+backend/venv
+
+
+
+
+
 backend/services/__pycache__
 
 dummy_remover/.venv
