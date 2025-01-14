@@ -171,8 +171,9 @@ app.on('activate', () => {
 });
 
 
-const API_URL = 'http://127.0.0.1:3000/api' || process.env.API_URL_BACKEND_API; // Replace with your backend URL
+// const API_URL = 'http://127.0.0.1:3000/api' || process.env.API_URL_BACKEND_API; // Replace with your backend URL
 // const API_URL = 'http://ec2-3-94-9-72.compute-1.amazonaws.com:3000/api'; // Replace with your backend URL
+const API_URL = 'http://ec2-13-53-124-75.eu-north-1.compute.amazonaws.com:3000/api'; // Replace with your backend URL
 // const API_URL = 'https://backend-for-model-w5hd.onrender.com/api'; // Replace with your backend URL
 // const API_URL = process.env.API_URL_BACKEND_API; // Replace with your backend URL
 
