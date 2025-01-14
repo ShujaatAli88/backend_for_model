@@ -8,6 +8,8 @@ backend/uploads
 
 backend/services/uploads
 
+backend/.venv
+
 backend/services/__pycache__
 
 dummy_remover/.venv
