@@ -104,9 +104,9 @@ tifffile==2024.9.20
 tokenizers==0.20.3
 toml==0.10.2
 tomlkit==0.12.0
-torch==2.5.1+cpu
-torchaudio==2.5.1+cpu
-torchvision==0.20.1+cpu
+torch==2.5.1
+torchaudio==2.5.1
+torchvision==0.20.1
 tornado==6.4.1
 tqdm==4.66.5
 transformers==4.46.3
