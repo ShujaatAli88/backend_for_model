@@ -22,3 +22,4 @@ tqdm==4.66.5
 transformers==4.48.0
 typer==0.15.1
 yapf==0.43.0
+numba
