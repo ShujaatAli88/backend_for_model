@@ -3,7 +3,7 @@ fiftyone==1.2.0
 gradio
 huggingface_hub==0.26.0
 ipdb==0.13.13
-matplotlib==3.10.0
+matplotlib
 numpy==2.2.1
 opencv_python_headless==4.10.0.84
 Pillow==11.1.0
