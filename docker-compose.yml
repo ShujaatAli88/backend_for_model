@@ -1,0 +1,41 @@
+version: "3.8"
+
+services:
+  flask_api:
+    build:
+      context: ./dummy_remover
+      dockerfile: Dockerfile
+    container_name: flask_api
+    ports:
+      - "8000:8000" # Expose Flask API on port 8000
+    environment:
+      - JWT_SECRET=HelloWorld
+    volumes:
+      - ./dummy_remover:/app # Mount the local directory
+    networks:
+      - app_network
+
+  node_api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: node_api
+    ports:
+      - "3000:3000" # Expose Node.js API on port 3000
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL='mongodb+srv://devUser:_WGxMHv3X9HyjR.@cluster0.necspjk.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'
+      - JWT_SECRET=HelloWorld
+      - USER_EMAIL = 'random.luqi150@gmail.com'
+      - PASSWORD_FOR_APP = 'mvrt dhof ovlg fgxh'
+      - STRIPE_SECRET_KEY = "sk_test_51PeLrvGQqr36Qs46EcrQ0J77N8AIWm88mdsRc324EL5gN7pUVyEEZ542LdFVZJUoNNw7wdQWcpouY3tl6QkXtGIf00hddn6P1K"
+      - STRIPE_PUBLIC_KEY = "pk_test_51PeLrvGQqr36Qs46HEU1SLOkkajz5x6p2OgrxZHnA7xuoqGuEbjKPLW6soYEBHLJ0oCc5ECKvOtwHZ8VsW7mjejd00WkLPe8YY"
+      - STRIPE_WEBHOOK_KEY = "whsec_6pdYa5VUkAh4FD41xVNgfoUNg0BUH87o"
+    volumes:
+      - ./backend:/app # Mount the local directory
+    networks:
+      - app_network
+
+networks:
+  app_network:
+    driver: bridge
