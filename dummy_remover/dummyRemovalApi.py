@@ -17,6 +17,8 @@ import shutil
 from pathlib import Path
 from typing import Union, List, Tuple, Optional
 import re
+# from functools import wraps
+# import jwt
 
 # Set up the Flask application
 app = Flask(__name__)
@@ -107,9 +109,10 @@ def initialize():
         print(f"Installing supervision=={required_supervision_version}...")
         subprocess.run(["pip", "uninstall", "-y", "supervision"], check=True)
         subprocess.run(["pip", "install", f"supervision=={required_supervision_version}"],
-                        check=True)
+                       check=True)
     else:
-        print(f"supervision=={required_supervision_version} is already installed.")
+        print(f"supervision=={
+              required_supervision_version} is already installed.")
 
     # Verify supervision version
     print("Supervision version:", sv.__version__)
@@ -171,9 +174,11 @@ def initialize():
 
     # Validate paths
     if not os.path.exists(GROUNDING_DINO_CONFIG_PATH):
-        raise FileNotFoundError(f"Configuration file not found: {GROUNDING_DINO_CONFIG_PATH}")
+        raise FileNotFoundError(f"Configuration file not found: {
+                                GROUNDING_DINO_CONFIG_PATH}")
     if not os.path.exists(GROUNDING_DINO_CHECKPOINT_PATH):
-        raise FileNotFoundError(f"Checkpoint file not found: {GROUNDING_DINO_CHECKPOINT_PATH}")
+        raise FileNotFoundError(f"Checkpoint file not found: {
+                                GROUNDING_DINO_CHECKPOINT_PATH}")
 
     # Add GroundingDINO to Python path
     GROUNDING_DINO_PATH = os.path.join(HOME, "GroundingDINO")
@@ -202,7 +207,8 @@ def initialize():
 
     SAM_CHECKPOINT_PATH = os.path.join(HOME, "weights", "sam_vit_h_4b8939.pth")
     if not os.path.exists(SAM_CHECKPOINT_PATH):
-        raise FileNotFoundError(f"Checkpoint sam file not found: {SAM_CHECKPOINT_PATH}")
+        raise FileNotFoundError(f"Checkpoint sam file not found: {
+                                SAM_CHECKPOINT_PATH}")
     else:
         print(f"Sam Model Found at:{SAM_CHECKPOINT_PATH}")
     sam = sam_model_registry["vit_h"](
@@ -965,17 +971,49 @@ def apply_inverse_mask(image_path, mask_path, output_folder):
     result = np.where(expanded_mask[:, :, None]
                       == 255, image, white_background)
 
-    final_output_path = os.path.join(output_folder, f"output_{os.path.basename(image_path)}")
+    final_output_path = os.path.join(output_folder, f"output_{
+                                     os.path.basename(image_path)}")
 
-    
     cv2.imwrite(final_output_path, result)
 
     print(f"Processed image saved to: {final_output_path}")
+
+# code and method to validate the token
+# JWT_SECRET = os.environ.get('JWT_SECRET', 'your-secret-key')
+
+# def verify_token(f):
+#     @wraps(f)
+#     def decorated(*args, **kwargs):
+#         token = None
+
+#         # Get token from header
+#         auth_header = request.headers.get('Authorization')
+#         if auth_header:
+#             try:
+#                 token = auth_header.split(' ')[1]
+#             except IndexError:
+#                 return jsonify({'message': 'Invalid token format'}), 401
+
+#         if not token:
+#             return jsonify({'message': 'Token is missing'}), 401
+
+#         try:
+#             # Verify token using the same secret as Node.js
+#             payload = jwt.decode(token, JWT_SECRET, algorithms=['HS256'])
+#             request.user = payload
+#         except jwt.ExpiredSignatureError:
+#             return jsonify({'message': 'Token has expired'}), 401
+#         except jwt.InvalidTokenError:
+#             return jsonify({'message': 'Invalid token'}), 401
+
+#         return f(*args, **kwargs)
+#     return decorated
 
 # Endpoint to remove dummy from images
 
 
 @app.route('/remove-dummy', methods=['POST'])
+# @verify_token
 def remove_dummy():
     output_dir = 'output_images'
     os.makedirs(output_dir, exist_ok=True)
