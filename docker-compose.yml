@@ -3,7 +3,7 @@ version: "3.8"
 services:
   flask_api:
     build:
-      context: ./dummy_remover
+      context: dummy_remover
       dockerfile: Dockerfile
     container_name: flask_api
     ports:
